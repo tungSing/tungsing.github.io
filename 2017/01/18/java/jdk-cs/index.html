@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Mysql," />
+  <meta name="keywords" content="Java,JDK,CA," />
 
 
 
@@ -87,47 +87,44 @@
 
 
 <meta name="description" content="环境
-Windows10 操作系统
-mysql 安装包
+JDK6
+Windows
+Tomcat 6.35
 
-下载mysql安装包在官网下载社区版。本文安装的是mysql5.6。
-安装直接双击运行即可">
+创建证书1keytool -genkey -alias tomcat -keypass tomcat -keyalg RSA -keystore tomcat.keystore
+
+ps：keystore密码要和-keypass密码保持一致
+导出证书1keytool -export -file tomcat.crt -alias tomcat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记录Windows 系统安装mysql数据库">
-<meta property="og:url" content="http://yoursite.com/2017/01/16/mysql/mysql-install/index.html">
+<meta property="og:title" content="用JDK自带的keytool工具生成安全证书">
+<meta property="og:url" content="http://yoursite.com/2017/01/18/java/jdk-cs/index.html">
 <meta property="og:site_name" content="Bolg">
 <meta property="og:description" content="环境
-Windows10 操作系统
-mysql 安装包
+JDK6
+Windows
+Tomcat 6.35
 
-下载mysql安装包在官网下载社区版。本文安装的是mysql5.6。
-安装直接双击运行即可">
-<meta property="og:image" content="http://yoursite.com/images/mysql/14.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/4.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/5.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/6.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/7.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/8.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/9.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/10.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/11.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/12.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/13.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/15.jpg">
-<meta property="og:image" content="http://yoursite.com/images/mysql/16.jpg">
-<meta property="og:updated_time" content="2017-01-17T02:58:27.395Z">
+创建证书1keytool -genkey -alias tomcat -keypass tomcat -keyalg RSA -keystore tomcat.keystore
+
+ps：keystore密码要和-keypass密码保持一致
+导出证书1keytool -export -file tomcat.crt -alias tomcat">
+<meta property="og:image" content="http://yoursite.com/images/java/jdk-ca.jpg">
+<meta property="og:image" content="http://yoursite.com/images/java/jdk-ca-export.jpg">
+<meta property="og:image" content="http://yoursite.com/images/java/jdk-ca-import.jpg">
+<meta property="og:image" content="http://yoursite.com/images/java/jdk-ca-view.jpg">
+<meta property="og:updated_time" content="2017-01-18T05:14:40.271Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="记录Windows 系统安装mysql数据库">
+<meta name="twitter:title" content="用JDK自带的keytool工具生成安全证书">
 <meta name="twitter:description" content="环境
-Windows10 操作系统
-mysql 安装包
+JDK6
+Windows
+Tomcat 6.35
 
-下载mysql安装包在官网下载社区版。本文安装的是mysql5.6。
-安装直接双击运行即可">
-<meta name="twitter:image" content="http://yoursite.com/images/mysql/14.jpg">
+创建证书1keytool -genkey -alias tomcat -keypass tomcat -keyalg RSA -keystore tomcat.keystore
+
+ps：keystore密码要和-keypass密码保持一致
+导出证书1keytool -export -file tomcat.crt -alias tomcat">
+<meta name="twitter:image" content="http://yoursite.com/images/java/jdk-ca.jpg">
 
 
 
@@ -155,13 +152,13 @@ mysql 安装包
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/16/mysql/mysql-install/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/01/18/java/jdk-cs/"/>
 
 
 
 
 
-  <title> 记录Windows 系统安装mysql数据库 | Bolg </title>
+  <title> 用JDK自带的keytool工具生成安全证书 | Bolg </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -284,7 +281,7 @@ mysql 安装包
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/16/mysql/mysql-install/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/18/java/jdk-cs/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="tungSing">
@@ -308,7 +305,7 @@ mysql 安装包
             
             
               
-                记录Windows 系统安装mysql数据库
+                用JDK自带的keytool工具生成安全证书
               
             
           </h1>
@@ -323,8 +320,8 @@ mysql 安装包
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-16T08:50:12Z">
-                2017-01-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-18T04:59:34Z">
+                2017-01-18
               </time>
             
 
@@ -334,28 +331,6 @@ mysql 安装包
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">Mysql</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -364,8 +339,8 @@ mysql 安装包
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/16/mysql/mysql-install/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/16/mysql/mysql-install/" itemprop="commentCount"></span>
+                <a href="/2017/01/18/java/jdk-cs/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/18/java/jdk-cs/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -392,30 +367,23 @@ mysql 安装包
 
       
         <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>Windows10 操作系统</li>
-<li>mysql 安装包</li>
+<li>JDK6</li>
+<li>Windows</li>
+<li>Tomcat 6.35</li>
 </ul>
-<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://dev.mysql.com/downloads/mysql/5.6.html#downloads" target="_blank" rel="external">官网</a>下载社区版。本文安装的是mysql5.6。<br><img src="/images/mysql/14.jpg" alt=""></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="直接双击运行即可"><a href="#直接双击运行即可" class="headerlink" title="直接双击运行即可"></a>直接双击运行即可</h5><p><img src="/images/mysql/1.jpg" alt=""></p>
-<a id="more"></a>
-<h5 id="根据情况选择安装类型"><a href="#根据情况选择安装类型" class="headerlink" title="根据情况选择安装类型"></a>根据情况选择安装类型</h5><p><img src="/images/mysql/2.jpg" alt=""><br>这个地方需要注意的是，如果要自定义安装和数据路径，一定要选择自定义选项。</p>
-<h5 id="根据自己的情况选择选择产品和功能"><a href="#根据自己的情况选择选择产品和功能" class="headerlink" title="根据自己的情况选择选择产品和功能"></a>根据自己的情况选择选择产品和功能</h5><p><img src="/images/mysql/3.jpg" alt=""></p>
-<h5 id="选择自定义的安装和数据路径"><a href="#选择自定义的安装和数据路径" class="headerlink" title="选择自定义的安装和数据路径"></a>选择自定义的安装和数据路径</h5><p><img src="/images/mysql/4.jpg" alt=""><br><img src="/images/mysql/5.jpg" alt=""></p>
-<h5 id="检查要求时直接点击执行按钮即，执行完成点击下一步"><a href="#检查要求时直接点击执行按钮即，执行完成点击下一步" class="headerlink" title="检查要求时直接点击执行按钮即，执行完成点击下一步"></a>检查要求时直接点击执行按钮即，执行完成点击下一步</h5><p><img src="/images/mysql/6.jpg" alt=""></p>
-<h5 id="接下来就是真正的安装了，点击执行"><a href="#接下来就是真正的安装了，点击执行" class="headerlink" title="接下来就是真正的安装了，点击执行"></a>接下来就是真正的安装了，点击执行</h5><p><img src="/images/mysql/7.jpg" alt=""></p>
-<h5 id="点击下一步进行配数据库配置"><a href="#点击下一步进行配数据库配置" class="headerlink" title="点击下一步进行配数据库配置"></a>点击下一步进行配数据库配置</h5><p><img src="/images/mysql/8.jpg" alt=""></p>
-<ol>
-<li>配置服务器类型和网络<br><img src="/images/mysql/9.jpg" alt=""></li>
-<li>配置账户和角色<br><img src="/images/mysql/10.jpg" alt=""></li>
-<li>配置访问数据库权限<br><img src="/images/mysql/11.jpg" alt=""></li>
-<li>配置Windows服务<br><img src="/images/mysql/12.jpg" alt=""></li>
-</ol>
-<h5 id="点击执行应用服务器配置"><a href="#点击执行应用服务器配置" class="headerlink" title="点击执行应用服务器配置"></a>点击执行应用服务器配置</h5><p><img src="/images/mysql/13.jpg" alt=""></p>
-<h5 id="测试是否安装成功"><a href="#测试是否安装成功" class="headerlink" title="测试是否安装成功"></a>测试是否安装成功</h5><ol>
-<li>打开命令窗口，输入密码<br><img src="/images/mysql/15.jpg" alt=""></li>
-<li>选择test数据库，操作正常，说明我们安装成功了。<br><img src="/images/mysql/16.jpg" alt=""></li>
-</ol>
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>本文记录了最简单的安装过程，适用于学习mysql初期使用。</p>
+<h4 id="创建证书"><a href="#创建证书" class="headerlink" title="创建证书"></a>创建证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -genkey -alias tomcat -keypass tomcat -keyalg RSA -keystore tomcat.keystore</div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca.jpg" alt=""></p>
+<p>ps：keystore密码要和-keypass密码保持一致</p>
+<h4 id="导出证书"><a href="#导出证书" class="headerlink" title="导出证书"></a>导出证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -export -file tomcat.crt -alias tomcat -keypass tomcat -keystore tomcat.keystore</div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca-export.jpg" alt=""></p>
+<h4 id="为客户端JVM导入证书"><a href="#为客户端JVM导入证书" class="headerlink" title="为客户端JVM导入证书"></a>为客户端JVM导入证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -import -file E:\keys\tomcat.crt -keypass tomcat -alias tomcat -keystore <span class="string">"cacerts"</span></div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca-import.jpg" alt=""></p>
+<p>ps:此处keystore的密码要输入：changeit 不然会报错</p>
+<h4 id="应用证书到web容器-tomcat"><a href="#应用证书到web容器-tomcat" class="headerlink" title="应用证书到web容器- tomcat"></a>应用证书到web容器- tomcat</h4><p>打开tomcat目录的conf/server.xml文件，开启83和87行的注释代码，并设置keystoreFile、keystorePass修改结果如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span></span></div><div class="line">               <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span></div><div class="line">               <span class="attr">clientAuth</span>=<span class="string">"false"</span> <span class="attr">sslProtocol</span>=<span class="string">"TLS"</span> <span class="attr">keystoreFile</span>=<span class="string">"E:/keys/tomcat.keystore"</span> <span class="attr">keystorePass</span>=<span class="string">"tomcat"</span>/&gt;</div></pre></td></tr></table></figure>
+<p> 启动tomcat，访问<a href="https://localhost:8443/出现此页面说明成功" target="_blank" rel="external">https://localhost:8443/出现此页面说明成功</a></p>
+<p> <img src="/images/java/jdk-ca-view.jpg" alt=""></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p> <a href="http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html" target="_blank" rel="external">http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html</a><br> <a href="http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html" target="_blank" rel="external">http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html</a></p>
 
       
     </div>
@@ -439,7 +407,11 @@ mysql 安装包
       
         <div class="post-tags">
           
-            <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/JDK/" rel="tag"># JDK</a>
+          
+            <a href="/tags/CA/" rel="tag"># CA</a>
           
         </div>
       
@@ -448,8 +420,8 @@ mysql 安装包
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/13/hexo-github/" rel="next" title="基于Hexo 和 Github Pages 免费搭建自己的博客">
-                <i class="fa fa-chevron-left"></i> 基于Hexo 和 Github Pages 免费搭建自己的博客
+              <a href="/2017/01/18/hexo-markdown/" rel="next" title="用Markdown来写博客文章">
+                <i class="fa fa-chevron-left"></i> 用Markdown来写博客文章
               </a>
             
           </div>
@@ -458,8 +430,8 @@ mysql 安装包
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/17/hexo-themes/" rel="prev" title="美化自己的博客">
-                美化自己的博客 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/01/18/flex/flex-web/" rel="prev" title="Ecplice 中用Flex插件 BlazeDS 开发Flex web应用">
+                Ecplice 中用Flex插件 BlazeDS 开发Flex web应用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -486,8 +458,8 @@ mysql 安装包
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/16/mysql/mysql-install/"
-           data-title="记录Windows 系统安装mysql数据库" data-url="http://yoursite.com/2017/01/16/mysql/mysql-install/">
+      <div class="ds-thread" data-thread-key="2017/01/18/java/jdk-cs/"
+           data-title="用JDK自带的keytool工具生成安全证书" data-url="http://yoursite.com/2017/01/18/java/jdk-cs/">
       </div>
     
   </div>
@@ -623,7 +595,7 @@ mysql 安装包
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下载mysql安装包"><span class="nav-number">2.</span> <span class="nav-text">下载mysql安装包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#直接双击运行即可"><span class="nav-number">3.1.</span> <span class="nav-text">直接双击运行即可</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#根据情况选择安装类型"><span class="nav-number">3.2.</span> <span class="nav-text">根据情况选择安装类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#根据自己的情况选择选择产品和功能"><span class="nav-number">3.3.</span> <span class="nav-text">根据自己的情况选择选择产品和功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#选择自定义的安装和数据路径"><span class="nav-number">3.4.</span> <span class="nav-text">选择自定义的安装和数据路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查要求时直接点击执行按钮即，执行完成点击下一步"><span class="nav-number">3.5.</span> <span class="nav-text">检查要求时直接点击执行按钮即，执行完成点击下一步</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#接下来就是真正的安装了，点击执行"><span class="nav-number">3.6.</span> <span class="nav-text">接下来就是真正的安装了，点击执行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#点击下一步进行配数据库配置"><span class="nav-number">3.7.</span> <span class="nav-text">点击下一步进行配数据库配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#点击执行应用服务器配置"><span class="nav-number">3.8.</span> <span class="nav-text">点击执行应用服务器配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#测试是否安装成功"><span class="nav-number">3.9.</span> <span class="nav-text">测试是否安装成功</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建证书"><span class="nav-number">2.</span> <span class="nav-text">创建证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导出证书"><span class="nav-number">3.</span> <span class="nav-text">导出证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为客户端JVM导入证书"><span class="nav-number">4.</span> <span class="nav-text">为客户端JVM导入证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用证书到web容器-tomcat"><span class="nav-number">5.</span> <span class="nav-text">应用证书到web容器- tomcat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

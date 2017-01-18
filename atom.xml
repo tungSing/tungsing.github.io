@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-01-18T03:27:55.905Z</updated>
+  <updated>2017-01-18T05:46:31.952Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,121 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ecplice 中用Flex插件 BlazeDS 开发Flex web应用</title>
+    <link href="http://yoursite.com/2017/01/18/flex/flex-web/"/>
+    <id>http://yoursite.com/2017/01/18/flex/flex-web/</id>
+    <published>2017-01-18T05:17:10.470Z</published>
+    <updated>2017-01-18T05:46:31.952Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>这几天在搞Flex 开发，记录下开发过程，是一个总结也给和我一样的人一些帮助。</p>
+</blockquote>
+<h4 id="工具环境"><a href="#工具环境" class="headerlink" title="工具环境"></a>工具环境</h4><ul>
+<li><a href="http://www.eclipse.org/downloads/" target="_blank" rel="external">Eclipse Helios Release</a></li>
+<li><a href="http://trials.adobe.com/AdobeProducts/FLBR/4/win32/FlashBuilder_4_Plugin_LS10.exe" target="_blank" rel="external">FlashBuilder_4_Plugin_LS10</a></li>
+<li><a href="http://tomcat.apache.org/download-60.cgi" target="_blank" rel="external">Tomcat6.0.16</a></li>
+<li>JDK6</li>
+<li>Windows 7</li>
+</ul>
+<h4 id="工程建立"><a href="#工程建立" class="headerlink" title="工程建立"></a>工程建立</h4><h5 id="在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project"><a href="#在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project" class="headerlink" title="在eclipse中 File –&gt; New  –&gt; Dynamic Web project"></a>在eclipse中 File –&gt; New  –&gt; Dynamic Web project</h5><p><img src="/images/flex/1.jpg" alt=""></p>
+<a id="more"></a>
+<h5 id="然后点击“Next”-把“src”-Remove后添加一个“javasrc”-不改容易和flex的src混淆"><a href="#然后点击“Next”-把“src”-Remove后添加一个“javasrc”-不改容易和flex的src混淆" class="headerlink" title="然后点击“Next”  把“src” Remove后添加一个“javasrc”(不改容易和flex的src混淆)"></a>然后点击“Next”  把“src” Remove后添加一个“javasrc”(不改容易和flex的src混淆)</h5><p><img src="/images/flex/2.jpg" alt=""></p>
+<h5 id="点击“Next”-把Content-directory-改成“WebRoot”-当然不改也可以-点击“Finish”"><a href="#点击“Next”-把Content-directory-改成“WebRoot”-当然不改也可以-点击“Finish”" class="headerlink" title="点击“Next”  把Content directory 改成“WebRoot”(当然不改也可以),点击“Finish”"></a>点击“Next”  把Content directory 改成“WebRoot”(当然不改也可以),点击“Finish”</h5><p><img src="/images/flex/3.jpg" alt=""></p>
+<h5 id="把blazeds-spring中的文件拷入项目的WebRoot下"><a href="#把blazeds-spring中的文件拷入项目的WebRoot下" class="headerlink" title="把blazeds-spring中的文件拷入项目的WebRoot下"></a>把blazeds-spring中的文件拷入项目的WebRoot下</h5><p><a href="http://opensource.adobe.com/wiki/display/blazeds/BlazeDS" target="_blank" rel="external">blazeds.war</a></p>
+<p><img src="/images/flex/4.jpg" alt=""></p>
+<h5 id="然后在WebRoot-下新建一个index-html-并且把classes的路径修改一下那个buid文件夹就可以删除掉了"><a href="#然后在WebRoot-下新建一个index-html-并且把classes的路径修改一下那个buid文件夹就可以删除掉了" class="headerlink" title="然后在WebRoot 下新建一个index.html,并且把classes的路径修改一下那个buid文件夹就可以删除掉了"></a>然后在WebRoot 下新建一个index.html,并且把classes的路径修改一下那个buid文件夹就可以删除掉了</h5><p><img src="/images/flex/5.jpg" alt=""></p>
+<h5 id="项目右键-Run-As-–-gt-Run-on-Server-选择tomcat就ok"><a href="#项目右键-Run-As-–-gt-Run-on-Server-选择tomcat就ok" class="headerlink" title="项目右键 Run As –&gt; Run on Server  选择tomcat就ok"></a>项目右键 Run As –&gt; Run on Server  选择tomcat就ok</h5><h5 id="没有错误的情况下项目右键-添加-更改项目类型-—-添加Flex项目类型-直接下一步，完成就可以"><a href="#没有错误的情况下项目右键-添加-更改项目类型-—-添加Flex项目类型-直接下一步，完成就可以" class="headerlink" title="没有错误的情况下项目右键 添加/更改项目类型  — 添加Flex项目类型  直接下一步，完成就可以"></a>没有错误的情况下项目右键 添加/更改项目类型  — 添加Flex项目类型  直接下一步，完成就可以</h5><p>ps:(如果前边没配置flex sdk的话 按提示配置一下就可以),此时项目会有个错误,选中右键 创建html模板  就可以解决</p>
+<p><img src="/images/flex/6.jpg" alt=""></p>
+<h5 id="项目右键-Properties-–-gt-flex-服务器-配置如图"><a href="#项目右键-Properties-–-gt-flex-服务器-配置如图" class="headerlink" title="项目右键 Properties –&gt; flex 服务器  配置如图"></a>项目右键 Properties –&gt; flex 服务器  配置如图</h5><p><img src="/images/flex/7.jpg" alt=""></p>
+<h5 id="新建一个名字为HelloWordService的java类"><a href="#新建一个名字为HelloWordService的java类" class="headerlink" title="新建一个名字为HelloWordService的java类"></a>新建一个名字为HelloWordService的java类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.dome.service;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.flex.remoting.RemotingDestination;</div><div class="line"><span class="keyword">import</span> org.springframework.flex.remoting.RemotingInclude;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</div><div class="line"></div><div class="line"><span class="meta">@Service</span>(<span class="string">"HelloWordService"</span>)</div><div class="line"><span class="meta">@RemotingDestination</span>(channels=&#123;<span class="string">"my-amf"</span>&#125;)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWordService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@RemotingInclude</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"HelloWord!"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="修改web-xml-把rds的注释去掉并把true改为false"><a href="#修改web-xml-把rds的注释去掉并把true改为false" class="headerlink" title="修改web.xml,把rds的注释去掉并把true改为false"></a>修改web.xml,把rds的注释去掉并把true改为false</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- begin rds --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>RDSDispatchServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">display-name</span>&gt;</span>RDSDispatchServlet<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>flex.rds.server.servlet.FrontEndServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>useAppserverSecurity<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>messageBrokerId<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>_messageBroker<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>10<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">servlet-mapping</span> <span class="attr">id</span>=<span class="string">"RDS_DISPATCH_MAPPING"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>RDSDispatchServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/CFIDE/main/ide.cfm<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- end rds --&gt;</span></div></pre></td></tr></table></figure>
+<h5 id="启动tomcat"><a href="#启动tomcat" class="headerlink" title="启动tomcat"></a>启动tomcat</h5><h5 id="点击-数据-服务-面板的-“连接数据-服务”"><a href="#点击-数据-服务-面板的-“连接数据-服务”" class="headerlink" title="点击 数据/服务 面板的 “连接数据/服务”"></a>点击 数据/服务 面板的 “连接数据/服务”</h5><p><img src="/images/flex/8.jpg" alt="">  </p>
+<h5 id="然后再弹出的窗口中选择BlazeDS-S-–-gt-Next-–-gt-选不需要密码-–-gt-ok"><a href="#然后再弹出的窗口中选择BlazeDS-S-–-gt-Next-–-gt-选不需要密码-–-gt-ok" class="headerlink" title="然后再弹出的窗口中选择BlazeDS S –&gt; Next –&gt; 选不需要密码- –&gt;ok"></a>然后再弹出的窗口中选择BlazeDS S –&gt; Next –&gt; 选不需要密码- –&gt;ok</h5><p>选择刚才发布的服务，完成</p>
+<p><img src="/images/flex/9.jpg" alt=""> </p>
+<h5 id="在helloWordDome-mxml设计视图下右键-点击“生成服务调用”-选择ok"><a href="#在helloWordDome-mxml设计视图下右键-点击“生成服务调用”-选择ok" class="headerlink" title="在helloWordDome.mxml设计视图下右键 点击“生成服务调用”    选择ok"></a>在helloWordDome.mxml设计视图下右键 点击“生成服务调用”    选择ok</h5><h5 id="添加一个Button组件，右键生成click处理函数"><a href="#添加一个Button组件，右键生成click处理函数" class="headerlink" title="添加一个Button组件，右键生成click处理函数"></a>添加一个Button组件，右键生成click处理函数</h5><h5 id="切换到源码视图找到标签添加endpoint属性"><a href="#切换到源码视图找到标签添加endpoint属性" class="headerlink" title="切换到源码视图找到标签添加endpoint属性"></a>切换到源码视图找到<services:hellowordservice>标签添加endpoint属性</services:hellowordservice></h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">services:HelloWordService</span> <span class="attr">id</span>=<span class="string">"helloWordService"</span> <span class="attr">fault</span>=<span class="string">"Alert.show(event.fault.faultString + </span></span></div><div class="line">        '\n' + event.fault.faultDetail)"</div><div class="line">        <span class="attr">showBusyCursor</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">endpoint</span>=<span class="string">"&#123;&amp;apos;http://&#123;server.name&#125;:&#123;server.port&#125;/helloWordDome/messagebroker/amf&amp;apos;&#125;"</span>/&gt;</div></pre></td></tr></table></figure>
+<h5 id="在click函数里处理后台传来的数据"><a href="#在click函数里处理后台传来的数据" class="headerlink" title="在click函数里处理后台传来的数据"></a>在click函数里处理后台传来的数据</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">protected function button1_clickHandler(event:MouseEvent):void</div><div class="line">            &#123;</div><div class="line">                Alert.show(sayHelloResult.lastResult);</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
+<h5 id="右键-Run-As-–-web应用程序，在页面上点击按钮-弹出HelloWord！-说明成功了"><a href="#右键-Run-As-–-web应用程序，在页面上点击按钮-弹出HelloWord！-说明成功了" class="headerlink" title="右键 Run As – web应用程序，在页面上点击按钮 弹出HelloWord！ 说明成功了"></a>右键 Run As – web应用程序，在页面上点击按钮 弹出HelloWord！ 说明成功了</h5><h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>有不对的地方欢迎指正！！！<br><a href="http://dl.iteye.com/topics/download/fdd40a53-3c0e-30c0-86d3-69bd757e52f7" target="_blank" rel="external">helloWordDome.rar (2.3 MB)</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;这几天在搞Flex 开发，记录下开发过程，是一个总结也给和我一样的人一些帮助。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;工具环境&quot;&gt;&lt;a href=&quot;#工具环境&quot; class=&quot;headerlink&quot; title=&quot;工具环境&quot;&gt;&lt;/a&gt;工具环境&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.eclipse.org/downloads/&quot;&gt;Eclipse Helios Release&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://trials.adobe.com/AdobeProducts/FLBR/4/win32/FlashBuilder_4_Plugin_LS10.exe&quot;&gt;FlashBuilder_4_Plugin_LS10&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://tomcat.apache.org/download-60.cgi&quot;&gt;Tomcat6.0.16&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;JDK6&lt;/li&gt;
+&lt;li&gt;Windows 7&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;工程建立&quot;&gt;&lt;a href=&quot;#工程建立&quot; class=&quot;headerlink&quot; title=&quot;工程建立&quot;&gt;&lt;/a&gt;工程建立&lt;/h4&gt;&lt;h5 id=&quot;在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project&quot;&gt;&lt;a href=&quot;#在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project&quot; class=&quot;headerlink&quot; title=&quot;在eclipse中 File –&amp;gt; New  –&amp;gt; Dynamic Web project&quot;&gt;&lt;/a&gt;在eclipse中 File –&amp;gt; New  –&amp;gt; Dynamic Web project&lt;/h5&gt;&lt;p&gt;&lt;img src=&quot;/images/flex/1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+      <category term="JDK" scheme="http://yoursite.com/tags/JDK/"/>
+    
+      <category term="Ecplice" scheme="http://yoursite.com/tags/Ecplice/"/>
+    
+      <category term="Flex" scheme="http://yoursite.com/tags/Flex/"/>
+    
+      <category term="Tomcat" scheme="http://yoursite.com/tags/Tomcat/"/>
+    
+      <category term="Web" scheme="http://yoursite.com/tags/Web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用JDK自带的keytool工具生成安全证书</title>
+    <link href="http://yoursite.com/2017/01/18/java/jdk-cs/"/>
+    <id>http://yoursite.com/2017/01/18/java/jdk-cs/</id>
+    <published>2017-01-18T04:59:34.020Z</published>
+    <updated>2017-01-18T05:14:40.271Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>JDK6</li>
+<li>Windows</li>
+<li>Tomcat 6.35</li>
+</ul>
+<h4 id="创建证书"><a href="#创建证书" class="headerlink" title="创建证书"></a>创建证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -genkey -alias tomcat -keypass tomcat -keyalg RSA -keystore tomcat.keystore</div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca.jpg" alt=""></p>
+<p>ps：keystore密码要和-keypass密码保持一致</p>
+<h4 id="导出证书"><a href="#导出证书" class="headerlink" title="导出证书"></a>导出证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -export -file tomcat.crt -alias tomcat -keypass tomcat -keystore tomcat.keystore</div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca-export.jpg" alt=""></p>
+<h4 id="为客户端JVM导入证书"><a href="#为客户端JVM导入证书" class="headerlink" title="为客户端JVM导入证书"></a>为客户端JVM导入证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -import -file E:\keys\tomcat.crt -keypass tomcat -alias tomcat -keystore <span class="string">"cacerts"</span></div></pre></td></tr></table></figure>
+<p><img src="/images/java/jdk-ca-import.jpg" alt=""></p>
+<p>ps:此处keystore的密码要输入：changeit 不然会报错</p>
+<h4 id="应用证书到web容器-tomcat"><a href="#应用证书到web容器-tomcat" class="headerlink" title="应用证书到web容器- tomcat"></a>应用证书到web容器- tomcat</h4><p>打开tomcat目录的conf/server.xml文件，开启83和87行的注释代码，并设置keystoreFile、keystorePass修改结果如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span></span></div><div class="line">               <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span></div><div class="line">               <span class="attr">clientAuth</span>=<span class="string">"false"</span> <span class="attr">sslProtocol</span>=<span class="string">"TLS"</span> <span class="attr">keystoreFile</span>=<span class="string">"E:/keys/tomcat.keystore"</span> <span class="attr">keystorePass</span>=<span class="string">"tomcat"</span>/&gt;</div></pre></td></tr></table></figure>
+<p> 启动tomcat，访问<a href="https://localhost:8443/出现此页面说明成功" target="_blank" rel="external">https://localhost:8443/出现此页面说明成功</a></p>
+<p> <img src="/images/java/jdk-ca-view.jpg" alt=""></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p> <a href="http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html" target="_blank" rel="external">http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html</a><br> <a href="http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html" target="_blank" rel="external">http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;JDK6&lt;/li&gt;
+&lt;li&gt;Windows&lt;/li&gt;
+&lt;li&gt;Tomcat 6.35&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;创建
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+      <category term="JDK" scheme="http://yoursite.com/tags/JDK/"/>
+    
+      <category term="CA" scheme="http://yoursite.com/tags/CA/"/>
+    
+  </entry>
   
   <entry>
     <title>用Markdown来写博客文章</title>
