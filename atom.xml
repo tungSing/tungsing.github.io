@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-01-17T02:58:27.395Z</updated>
+  <updated>2017-01-18T03:27:55.905Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,94 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>用Markdown来写博客文章</title>
+    <link href="http://yoursite.com/2017/01/18/hexo-markdown/"/>
+    <id>http://yoursite.com/2017/01/18/hexo-markdown/</id>
+    <published>2017-01-18T02:54:42.765Z</published>
+    <updated>2017-01-18T03:27:55.905Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>所有的准备工作都完成了，接下来开始我们的写文章之旅吧</p>
+</blockquote>
+<h4 id="Markdown"><a href="#Markdown" class="headerlink" title="Markdown"></a>Markdown</h4><p>首先我们简单了解一下什么<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">Makrdown</a></p>
+<h4 id="Markdown语法"><a href="#Markdown语法" class="headerlink" title="Markdown语法"></a>Markdown语法</h4><p>这里就不详细介绍了，可以参考</p>
+<p><a href="https://segmentfault.com/markdown" target="_blank" rel="external">Markdown 编辑器语法指南</a></p>
+<a id="more"></a>
+<h4 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h4><p>用Markdown写文章前，我们还需要找个适合我们写作的工具，工欲善其事必先利其器吗！工具有很多下面简单列举一下</p>
+<p>Windows下有<br><a href="http://www.markdownpad.com/" target="_blank" rel="external">MarkdownPad</a></p>
+<p>Mac下有<br><a href="http://25.io/mou/" target="_blank" rel="external">Mou</a>,据说是国人制作的一款非常优秀的软件。</p>
+<p>我用的是<a href="https://www.sublimetext.com/" target="_blank" rel="external">Sublime</a>+MarkdownEnding插件，windows和mac都有</p>
+<h4 id="用Markdown写文章"><a href="#用Markdown写文章" class="headerlink" title="用Markdown写文章"></a>用Markdown写文章</h4><ol>
+<li>在\Hexo\source_posts 文件夹下新建.md格式的文件，用sublime打开就可以编写了</li>
+<li><p>执行下面命令就可以在编写的时候实时预览自己写的文章</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo -p 9000 server</div></pre></td></tr></table></figure>
+</li>
+<li><p>如何把写好的文章发布出去呢，执行下面的命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo g <span class="_">-d</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>这就是写文章的全部过程了，后边要做的是让精美的文章来丰富我们的博客。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;所有的准备工作都完成了，接下来开始我们的写文章之旅吧&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;Markdown&quot;&gt;&lt;a href=&quot;#Markdown&quot; class=&quot;headerlink&quot; title=&quot;Markdown&quot;&gt;&lt;/a&gt;Markdown&lt;/h4&gt;&lt;p&gt;首先我们简单了解一下什么&lt;a href=&quot;https://zh.wikipedia.org/wiki/Markdown&quot;&gt;Makrdown&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&quot;Markdown语法&quot;&gt;&lt;a href=&quot;#Markdown语法&quot; class=&quot;headerlink&quot; title=&quot;Markdown语法&quot;&gt;&lt;/a&gt;Markdown语法&lt;/h4&gt;&lt;p&gt;这里就不详细介绍了，可以参考&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://segmentfault.com/markdown&quot;&gt;Markdown 编辑器语法指南&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
+    
+      <category term="markdown" scheme="http://yoursite.com/tags/markdown/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>美化自己的博客</title>
+    <link href="http://yoursite.com/2017/01/17/hexo-themes/"/>
+    <id>http://yoursite.com/2017/01/17/hexo-themes/</id>
+    <published>2017-01-17T05:25:39.999Z</published>
+    <updated>2017-01-18T02:48:15.535Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>自己的第一个博客已经运行起来了，但界面简单、单一，我们需要美化一下自己的博客，以下是美化的过程。</p>
+</blockquote>
+<h4 id="进入Hexo的官网主题专栏"><a href="#进入Hexo的官网主题专栏" class="headerlink" title="进入Hexo的官网主题专栏"></a>进入Hexo的<a href="https://hexo.io/themes/" target="_blank" rel="external">官网</a>主题专栏</h4><p><img src="/images/8.jpg" alt=""></p>
+<h4 id="挑选自己喜欢的主题"><a href="#挑选自己喜欢的主题" class="headerlink" title="挑选自己喜欢的主题"></a>挑选自己喜欢的主题</h4><p>可以看到有很多主题给我们选，我们只要选择喜欢的主题点击进去，然后进入到它的github地址，我们只要把这个地址复制下来(例如我是选择：<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="external">hexo-theme-next</a>这个主题)</p>
+<a id="more"></a>
+<p><img src="/images/9.jpg" alt=""></p>
+<h4 id="克隆主题"><a href="#克隆主题" class="headerlink" title="克隆主题"></a>克隆主题</h4><p>再打开Hexo文件夹下的themes目录（F:\Blog\hexo\themes），右键Git Bash，在命令行输入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/iissnan/hexo-theme-next(此处地址替换成你需要使用的主题的地址)</div></pre></td></tr></table></figure>
+<p>回车等待下载完成即可。</p>
+<h4 id="修改Hexo配置文件"><a href="#修改Hexo配置文件" class="headerlink" title="修改Hexo配置文件"></a>修改Hexo配置文件</h4><p>打开Hexo文件夹下的配置文件_config.yml，修改参数为：theme: hexo-theme-next</p>
+<h4 id="预览效果"><a href="#预览效果" class="headerlink" title="预览效果"></a>预览效果</h4><p>在命令窗口hexo目录下执行,就可以看到效果<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo -p 9000 server</div></pre></td></tr></table></figure></p>
+<p><img src="/images/18.png" alt=""></p>
+<h4 id="定制自己的博客"><a href="#定制自己的博客" class="headerlink" title="定制自己的博客"></a>定制自己的博客</h4><p>根据主题的说明<a href="http://theme-next.iissnan.com/" target="_blank" rel="external">文档</a>，配置自己的博客内容。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;自己的第一个博客已经运行起来了，但界面简单、单一，我们需要美化一下自己的博客，以下是美化的过程。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;进入Hexo的官网主题专栏&quot;&gt;&lt;a href=&quot;#进入Hexo的官网主题专栏&quot; class=&quot;headerlink&quot; title=&quot;进入Hexo的官网主题专栏&quot;&gt;&lt;/a&gt;进入Hexo的&lt;a href=&quot;https://hexo.io/themes/&quot;&gt;官网&lt;/a&gt;主题专栏&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;/images/8.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;挑选自己喜欢的主题&quot;&gt;&lt;a href=&quot;#挑选自己喜欢的主题&quot; class=&quot;headerlink&quot; title=&quot;挑选自己喜欢的主题&quot;&gt;&lt;/a&gt;挑选自己喜欢的主题&lt;/h4&gt;&lt;p&gt;可以看到有很多主题给我们选，我们只要选择喜欢的主题点击进去，然后进入到它的github地址，我们只要把这个地址复制下来(例如我是选择：&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot;&gt;hexo-theme-next&lt;/a&gt;这个主题)&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
+    
+      <category term="themes" scheme="http://yoursite.com/tags/themes/"/>
+    
+  </entry>
   
   <entry>
     <title>记录Windows 系统安装mysql数据库</title>
