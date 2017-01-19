@@ -1,28 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>TungSing&#39;s Blog</title>
-  <subtitle>用心记录一切！</subtitle>
-  <link href="/atom.xml" rel="self"/>
+<search>
   
-  <link href="http://tungsing.cc/"/>
-  <updated>2017-01-19T08:37:57.437Z</updated>
-  <id>http://tungsing.cc/</id>
   
-  <author>
-    <name>tungSing</name>
     
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Eclipse 中用Flex插件 BlazeDS 开发Flex web应用</title>
-    <link href="http://tungsing.cc/2017/01/18/flex/flex-web/"/>
-    <id>http://tungsing.cc/2017/01/18/flex/flex-web/</id>
-    <published>2017-01-18T05:17:10.470Z</published>
-    <updated>2017-01-19T08:37:57.437Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+    <entry>
+      <title><![CDATA[Eclipse 中用Flex插件 BlazeDS 开发Flex web应用]]></title>
+      <url>http://tungsing.cc/2017/01/18/flex/flex-web/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>这几天在搞Flex 开发，记录下开发过程，是一个总结也给和我一样的人一些帮助。</p>
 </blockquote>
 <h4 id="工具环境"><a href="#工具环境" class="headerlink" title="工具环境"></a>工具环境</h4><ul>
@@ -51,46 +35,12 @@
 <h5 id="在click函数里处理后台传来的数据"><a href="#在click函数里处理后台传来的数据" class="headerlink" title="在click函数里处理后台传来的数据"></a>在click函数里处理后台传来的数据</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">protected function button1_clickHandler(event:MouseEvent):void</div><div class="line">            &#123;</div><div class="line">                Alert.show(sayHelloResult.lastResult);</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
 <h5 id="右键-Run-As-–-web应用程序，在页面上点击按钮-弹出HelloWord！-说明成功了"><a href="#右键-Run-As-–-web应用程序，在页面上点击按钮-弹出HelloWord！-说明成功了" class="headerlink" title="右键 Run As – web应用程序，在页面上点击按钮 弹出HelloWord！ 说明成功了"></a>右键 Run As – web应用程序，在页面上点击按钮 弹出HelloWord！ 说明成功了</h5><h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>有不对的地方欢迎指正！！！<br><a href="http://dl.iteye.com/topics/download/fdd40a53-3c0e-30c0-86d3-69bd757e52f7" target="_blank" rel="external">helloWordDome.rar (2.3 MB)</a></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;这几天在搞Flex 开发，记录下开发过程，是一个总结也给和我一样的人一些帮助。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;工具环境&quot;&gt;&lt;a href=&quot;#工具环境&quot; class=&quot;headerlink&quot; title=&quot;工具环境&quot;&gt;&lt;/a&gt;工具环境&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.eclipse.org/downloads/&quot;&gt;Eclipse Helios Release&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://trials.adobe.com/AdobeProducts/FLBR/4/win32/FlashBuilder_4_Plugin_LS10.exe&quot;&gt;FlashBuilder_4_Plugin_LS10&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://tomcat.apache.org/download-60.cgi&quot;&gt;Tomcat6.0.16&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;JDK6&lt;/li&gt;
-&lt;li&gt;Windows 7&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;工程建立&quot;&gt;&lt;a href=&quot;#工程建立&quot; class=&quot;headerlink&quot; title=&quot;工程建立&quot;&gt;&lt;/a&gt;工程建立&lt;/h4&gt;&lt;h5 id=&quot;在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project&quot;&gt;&lt;a href=&quot;#在eclipse中-File-–-gt-New-–-gt-Dynamic-Web-project&quot; class=&quot;headerlink&quot; title=&quot;在eclipse中 File –&amp;gt; New  –&amp;gt; Dynamic Web project&quot;&gt;&lt;/a&gt;在eclipse中 File –&amp;gt; New  –&amp;gt; Dynamic Web project&lt;/h5&gt;&lt;p&gt;&lt;img src=&quot;/images/flex/1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Java" scheme="http://tungsing.cc/tags/Java/"/>
-    
-      <category term="JDK" scheme="http://tungsing.cc/tags/JDK/"/>
-    
-      <category term="Flex" scheme="http://tungsing.cc/tags/Flex/"/>
-    
-      <category term="Tomcat" scheme="http://tungsing.cc/tags/Tomcat/"/>
-    
-      <category term="Web" scheme="http://tungsing.cc/tags/Web/"/>
-    
-      <category term="Eclipse" scheme="http://tungsing.cc/tags/Eclipse/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>用JDK自带的keytool工具生成安全证书</title>
-    <link href="http://tungsing.cc/2017/01/18/java/jdk-cs/"/>
-    <id>http://tungsing.cc/2017/01/18/java/jdk-cs/</id>
-    <published>2017-01-18T04:59:34.020Z</published>
-    <updated>2017-01-18T05:14:40.271Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+    <entry>
+      <title><![CDATA[用JDK自带的keytool工具生成安全证书]]></title>
+      <url>http://tungsing.cc/2017/01/18/java/jdk-cs/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
 <li>JDK6</li>
 <li>Windows</li>
 <li>Tomcat 6.35</li>
@@ -109,35 +59,12 @@
 <p> <img src="/images/java/jdk-ca-view.jpg" alt=""></p>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p> <a href="http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html" target="_blank" rel="external">http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html</a><br> <a href="http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html" target="_blank" rel="external">http://www.cnblogs.com/wen12128/archive/2010/10/11/1848076.html</a></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;JDK6&lt;/li&gt;
-&lt;li&gt;Windows&lt;/li&gt;
-&lt;li&gt;Tomcat 6.35&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;创建
-    
-    </summary>
-    
-    
-      <category term="Java" scheme="http://tungsing.cc/tags/Java/"/>
-    
-      <category term="JDK" scheme="http://tungsing.cc/tags/JDK/"/>
-    
-      <category term="CA" scheme="http://tungsing.cc/tags/CA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>用Markdown来写博客文章</title>
-    <link href="http://tungsing.cc/2017/01/18/hexo-markdown/"/>
-    <id>http://tungsing.cc/2017/01/18/hexo-markdown/</id>
-    <published>2017-01-18T02:54:42.765Z</published>
-    <updated>2017-01-18T03:27:55.905Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+    <entry>
+      <title><![CDATA[用Markdown来写博客文章]]></title>
+      <url>http://tungsing.cc/2017/01/18/hexo-markdown/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>所有的准备工作都完成了，接下来开始我们的写文章之旅吧</p>
 </blockquote>
 <h4 id="Markdown"><a href="#Markdown" class="headerlink" title="Markdown"></a>Markdown</h4><p>首先我们简单了解一下什么<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">Makrdown</a></p>
@@ -159,33 +86,12 @@
 </ol>
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>这就是写文章的全部过程了，后边要做的是让精美的文章来丰富我们的博客。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;所有的准备工作都完成了，接下来开始我们的写文章之旅吧&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;Markdown&quot;&gt;&lt;a href=&quot;#Markdown&quot; class=&quot;headerlink&quot; title=&quot;Markdown&quot;&gt;&lt;/a&gt;Markdown&lt;/h4&gt;&lt;p&gt;首先我们简单了解一下什么&lt;a href=&quot;https://zh.wikipedia.org/wiki/Markdown&quot;&gt;Makrdown&lt;/a&gt;&lt;/p&gt;
-&lt;h4 id=&quot;Markdown语法&quot;&gt;&lt;a href=&quot;#Markdown语法&quot; class=&quot;headerlink&quot; title=&quot;Markdown语法&quot;&gt;&lt;/a&gt;Markdown语法&lt;/h4&gt;&lt;p&gt;这里就不详细介绍了，可以参考&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://segmentfault.com/markdown&quot;&gt;Markdown 编辑器语法指南&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Hexo" scheme="http://tungsing.cc/tags/Hexo/"/>
-    
-      <category term="markdown" scheme="http://tungsing.cc/tags/markdown/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>美化自己的博客</title>
-    <link href="http://tungsing.cc/2017/01/17/hexo-themes/"/>
-    <id>http://tungsing.cc/2017/01/17/hexo-themes/</id>
-    <published>2017-01-17T05:25:39.999Z</published>
-    <updated>2017-01-18T02:48:15.535Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+    <entry>
+      <title><![CDATA[美化自己的博客]]></title>
+      <url>http://tungsing.cc/2017/01/17/hexo-themes/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>自己的第一个博客已经运行起来了，但界面简单、单一，我们需要美化一下自己的博客，以下是美化的过程。</p>
 </blockquote>
 <h4 id="进入Hexo的官网主题专栏"><a href="#进入Hexo的官网主题专栏" class="headerlink" title="进入Hexo的官网主题专栏"></a>进入Hexo的<a href="https://hexo.io/themes/" target="_blank" rel="external">官网</a>主题专栏</h4><p><img src="/images/8.jpg" alt=""></p>
@@ -200,32 +106,12 @@
 <p><img src="/images/18.png" alt=""></p>
 <h4 id="定制自己的博客"><a href="#定制自己的博客" class="headerlink" title="定制自己的博客"></a>定制自己的博客</h4><p>根据主题的说明<a href="http://theme-next.iissnan.com/" target="_blank" rel="external">文档</a>，配置自己的博客内容。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;自己的第一个博客已经运行起来了，但界面简单、单一，我们需要美化一下自己的博客，以下是美化的过程。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;进入Hexo的官网主题专栏&quot;&gt;&lt;a href=&quot;#进入Hexo的官网主题专栏&quot; class=&quot;headerlink&quot; title=&quot;进入Hexo的官网主题专栏&quot;&gt;&lt;/a&gt;进入Hexo的&lt;a href=&quot;https://hexo.io/themes/&quot;&gt;官网&lt;/a&gt;主题专栏&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;/images/8.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h4 id=&quot;挑选自己喜欢的主题&quot;&gt;&lt;a href=&quot;#挑选自己喜欢的主题&quot; class=&quot;headerlink&quot; title=&quot;挑选自己喜欢的主题&quot;&gt;&lt;/a&gt;挑选自己喜欢的主题&lt;/h4&gt;&lt;p&gt;可以看到有很多主题给我们选，我们只要选择喜欢的主题点击进去，然后进入到它的github地址，我们只要把这个地址复制下来(例如我是选择：&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot;&gt;hexo-theme-next&lt;/a&gt;这个主题)&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Hexo" scheme="http://tungsing.cc/tags/Hexo/"/>
-    
-      <category term="themes" scheme="http://tungsing.cc/tags/themes/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>记录Windows 系统安装mysql数据库</title>
-    <link href="http://tungsing.cc/2017/01/16/mysql/mysql-install/"/>
-    <id>http://tungsing.cc/2017/01/16/mysql/mysql-install/</id>
-    <published>2017-01-16T08:50:12.667Z</published>
-    <updated>2017-01-17T02:58:27.395Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+    <entry>
+      <title><![CDATA[记录Windows 系统安装mysql数据库]]></title>
+      <url>http://tungsing.cc/2017/01/16/mysql/mysql-install/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
 <li>Windows10 操作系统</li>
 <li>mysql 安装包</li>
 </ul>
@@ -251,33 +137,12 @@
 </ol>
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>本文记录了最简单的安装过程，适用于学习mysql初期使用。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Windows10 操作系统&lt;/li&gt;
-&lt;li&gt;mysql 安装包&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;下载mysql安装包&quot;&gt;&lt;a href=&quot;#下载mysql安装包&quot; class=&quot;headerlink&quot; title=&quot;下载mysql安装包&quot;&gt;&lt;/a&gt;下载mysql安装包&lt;/h4&gt;&lt;p&gt;在&lt;a href=&quot;https://dev.mysql.com/downloads/mysql/5.6.html#downloads&quot;&gt;官网&lt;/a&gt;下载社区版。本文安装的是mysql5.6。&lt;br&gt;&lt;img src=&quot;/images/mysql/14.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h4 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h4&gt;&lt;h5 id=&quot;直接双击运行即可&quot;&gt;&lt;a href=&quot;#直接双击运行即可&quot; class=&quot;headerlink&quot; title=&quot;直接双击运行即可&quot;&gt;&lt;/a&gt;直接双击运行即可&lt;/h5&gt;&lt;p&gt;&lt;img src=&quot;/images/mysql/1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Mysql" scheme="http://tungsing.cc/categories/Mysql/"/>
-    
-    
-      <category term="Mysql" scheme="http://tungsing.cc/tags/Mysql/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>基于Hexo 和 Github Pages 免费搭建自己的博客</title>
-    <link href="http://tungsing.cc/2017/01/13/hexo-github/"/>
-    <id>http://tungsing.cc/2017/01/13/hexo-github/</id>
-    <published>2017-01-13T12:45:18.512Z</published>
-    <updated>2017-01-17T02:58:25.189Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+    <entry>
+      <title><![CDATA[基于Hexo 和 Github Pages 免费搭建自己的博客]]></title>
+      <url>http://tungsing.cc/2017/01/13/hexo-github/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。</p>
 </blockquote>
 <h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
@@ -311,33 +176,8 @@
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>这才完成了第一步，后边找时间写一下美化自己的博客和如何用Markdown写博客</p>
 <h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://my.oschina.net/ryaneLee/blog/638440" target="_blank" rel="external">小白独立搭建博客–Github Pages和Hexo简明教程</a><br>2.<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="external">Hexo 文档</a></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Windows 系统&lt;/li&gt;
-&lt;li&gt;Node.js&lt;/li&gt;
-&lt;li&gt;Hexo&lt;/li&gt;
-&lt;li&gt;Git&lt;/li&gt;
-&lt;li&gt;Github&lt;/li&gt;
-&lt;li&gt;一个属于自己的域名&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;安装Node-js&quot;&gt;&lt;a href=&quot;#安装Node-js&quot; class=&quot;headerlink&quot; title=&quot;安装Node.js&quot;&gt;&lt;/a&gt;安装Node.js&lt;/h4&gt;&lt;p&gt;在 Windows 环境下安装 Node.js 非常简单，仅须到&lt;a href=&quot;https://nodejs.org/en/download/&quot;&gt;官网下载&lt;/a&gt;安装文件并执行即可完成安装。&lt;br&gt;&lt;img src=&quot;/images/1.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;下载完成直接双击安装即可。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Hexo" scheme="http://tungsing.cc/tags/Hexo/"/>
-    
-      <category term="Github Pages" scheme="http://tungsing.cc/tags/Github-Pages/"/>
-    
-      <category term="Node.js" scheme="http://tungsing.cc/tags/Node-js/"/>
-    
-      <category term="Git" scheme="http://tungsing.cc/tags/Git/"/>
-    
-  </entry>
   
-</feed>
+  
+</search>
