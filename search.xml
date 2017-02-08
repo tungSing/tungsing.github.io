@@ -4,6 +4,116 @@
   
     
     <entry>
+      <title><![CDATA[用Samba搭建企业文件共享服务]]></title>
+      <url>http://tungsing.cc/2017/01/24/linux/linux-samba/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>为了tomcat集群部署的时，上传的文件不需要其他操作就可以集中管理，我们通过网络共享硬盘的方式来做，技术有NFS、Samba。用samba是考虑到可以和Windows系统进行文件共享、还有自身提供了安全认证方式。网络共享硬盘适合20-200台机器的小型项目用。</p>
+</blockquote>
+<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Samba 是 SMB/CIFS 网络协议的重新实现, 它作为 NFS 的补充使得在 Linux 和 Windows 系统中进行文件共享、打印机共享更容易实现。</p>
+<a id="more"></a>
+<h4 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h4><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>系统</th>
+<th>ip</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Centos 6.4</td>
+<td>192.168.1.100</td>
+<td>Samba服务器</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Centos 6.4</td>
+<td>192.168.1.101</td>
+<td>挂载机器</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Windows 10</td>
+<td>192.168.1.102</td>
+<td>挂载机器</td>
+</tr>
+</tbody>
+</table>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在A服务器上安装Samba，安装方式有rpm、源码包、yum，此处采用yum方式安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install samba</span></div></pre></td></tr></table></figure>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="服务启动"><a href="#服务启动" class="headerlink" title="服务启动"></a>服务启动</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service smb start</span></div></pre></td></tr></table></figure>
+<h5 id="设置开机启动项"><a href="#设置开机启动项" class="headerlink" title="设置开机启动项"></a>设置开机启动项</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chkconfig smb on</span></div></pre></td></tr></table></figure>
+<h5 id="配置Samba"><a href="#配置Samba" class="headerlink" title="配置Samba"></a>配置Samba</h5><p>Smb服务的配置文件为/etc/samba/smb.conf，首先备份此配置文件，然后开始修改配置</p>
+<h6 id="网络相关配置"><a href="#网络相关配置" class="headerlink" title="网络相关配置"></a>网络相关配置</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">workgroup = WORKGROUP</div><div class="line">server string = Samba Server Version %v</div><div class="line">netbios name = TEST_SMB_SERVER</div><div class="line">interfaces = lo eth0 192.168.12.2/24 192.168.13.2/24</div><div class="line">hosts allow = 127. 192.168.1.</div></pre></td></tr></table></figure>
+<p>workgroup     = Samba Server 所要加入的工作组或者域<br>server string = Samba Server 的注释，可以是任何字符串，也可以不填。宏%v表示显示Samba的版本号<br>netbios name  = Samba Server的NetBIOS名称<br>interfaces    = Samba Server监听哪些网卡，可以写网卡名，也可以写该网卡的IP地址<br>hosts allow   = 表示允许连接到Samba Server的客户端，多个参数以空格隔开</p>
+<h6 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">log</span> file = /var/<span class="built_in">log</span>/samba/log.%m</div><div class="line"><span class="comment"># max 50KB per log file, then rotate</span></div><div class="line">max <span class="built_in">log</span> size = 50</div></pre></td></tr></table></figure>
+<p>log file = 日志文件位置，在文件名后加个宏%m（主机名），表示对每台访问Samba Server的机器都单独记录一个日志文件。如果pc1、pc2访问过Samba Server，就会在/var/log/samba目录下留下log.pc1和log.pc2两个日志文件。</p>
+<p>maxlog size = 设置Samba Server日志文件的最大容量，单位为kB，0代表不限制。</p>
+<h6 id="安全配置"><a href="#安全配置" class="headerlink" title="安全配置"></a>安全配置</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">security = user</div><div class="line">passdb backend = tdbsam</div></pre></td></tr></table></figure>
+<p>security = 设置用户访问Samba Server的验证方式，一共有四种验证方式。</p>
+<ol>
+<li>share：用户访问SambaServer不需要提供用户名和口令, 安全性能较低。</li>
+<li>user：Samba Server共享目录只能被授权的用户访问,由Samba Server负责检查账号和密码的正确性。账号和密码要在本Samba Server中建立。</li>
+<li>server：依靠其他WindowsNT/2000或Samba Server来验证用户的账号和密码,是一种代理验证。此种安全模式下,系统管理员可以把所有的Windows用户和口令集中到一个NT系统上,使用Windows NT进行Samba认证, 远程服务器可以自动认证全部用户和口令,如果认证失败,Samba将使用用户级安全模式作为替代的方式。</li>
+<li>domain：域安全级别,使用主域控制器(PDC)来完成认证。</li>
+</ol>
+<p>passdbbackend = passdb backend就是用户后台的意思。目前有三种后台：smbpasswd、tdbsam和ldapsam。sam应该是security account manager（安全账户管理）的简写。</p>
+<ol>
+<li>smbpasswd：该方式是使用smb自己的工具smbpasswd来给系统用户（真实<br>用户或者虚拟用户）设置一个Samba密码，客户端就用这个密码来访问Samba的资源。smbpasswd文件默认在/etc/samba目录下，不过有时候要手工建立该文件。</li>
+<li>tdbsam：该方式则是使用一个数据库文件来建立用户数据库。数据库文件叫passdb.tdb，默认在/etc/samba目录下。passdb.tdb用户数据库可以使用smbpasswd –a来建立Samba用户，不过要建立的Samba用户必须先是系统用户。我们也可以使用pdbedit命令来建立Samba账户。pdbedit命令的参数很多，我们列出几个主要的。<br>pdbedit –a username：新建Samba账户。<br>pdbedit –x username：删除Samba账户。<br>pdbedit –L：列出Samba用户列表，读取passdb.tdb数据库文件。<br>pdbedit –Lv：列出Samba用户列表的详细信息。<br>pdbedit –c “[D]” –u username：暂停该Samba用户的账号。<br>pdbedit –c “[]” –u username：恢复该Samba用户的账号。</li>
+<li>ldapsam：该方式则是基于LDAP的账户管理方式来验证用户。首先要建立LDAP服务，然后设置“passdb backend = ldapsam:ldap://LDAP Server”</li>
+</ol>
+<h6 id="共享设置"><a href="#共享设置" class="headerlink" title="共享设置"></a>共享设置</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[<span class="built_in">test</span>]</div><div class="line">        comment = <span class="built_in">test</span> share files</div><div class="line">        path = /opt/lar/files</div><div class="line">        browseable = no</div><div class="line">        writable = yes</div><div class="line">        valid users = @root</div></pre></td></tr></table></figure>
+<p>comment = comment是对该共享的描述，可以是任意字符串。<br>path = 共享目录路径<br>browseable = browseable用来指定该共享是否(yes/no)可以浏览。<br>writable = 用来指定该共享路径是否(yes/no)可写。<br>valid users = 用来指定允许访问该共享资源的用户。</p>
+<p>例如：valid users = bobyuan，@bob，@tech (多个用户或者组中间用逗号隔开，如果要加入一个组就用“@+组名”表示。)</p>
+<h6 id="配置文件正确性检查"><a href="#配置文件正确性检查" class="headerlink" title="配置文件正确性检查"></a>配置文件正确性检查</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># testparm -v</span></div></pre></td></tr></table></figure>
+<h5 id="重启服务"><a href="#重启服务" class="headerlink" title="重启服务"></a>重启服务</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service smb restart</span></div></pre></td></tr></table></figure>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>先在C服务上测试</p>
+<ol>
+<li>在File Explorer 中输入\192.168.1.100\test 回车</li>
+<li>输入共享文件服务的用户名密码，即可看到是否成功</li>
+</ol>
+<p>B服务器上测试</p>
+<ol>
+<li><p>首先要安装Smbclient </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install samba-client</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>访问文件服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># smbclient //192.168.1.100/test -U root </span></div><div class="line">Password:                                                                </div><div class="line">smb: \&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>输入密码后出现最后一行说明成功了</p>
+<h4 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h4><p>C服务器挂载</p>
+<ol>
+<li>打开This pc -&gt; Computer -&gt; Map Network Drive</li>
+<li>输入\192.168.1.100\test 点击确定</li>
+<li>输入用户名密码</li>
+</ol>
+<p><img src="/images/linux/map-network-drive.jpg" alt=""></p>
+<p>B服务器挂载</p>
+<ol>
+<li><p>安装cifs-utils</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install cifs-utils</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>直接手动挂载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mount -t cifs -o username=&lt;username&gt;,password=&lt;password&gt; //192.168.1.100/test /mnt/dir</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>写到/etc/fstab文件自动挂载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//192.168.1.100/<span class="built_in">test</span> /mnt/dir cifs defaults,credentials=/etc/samba/<span class="built_in">pwd</span> 0 0</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>/mnt/dir 为挂载点</p>
+<p>/etc/samba/pwd 文件里面保存的是用户名和密码，并授予400权限，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root</div><div class="line">123456</div></pre></td></tr></table></figure></p>
+<ol>
+<li>测试是否成功<br>查看/mut/dir 文件夹是否有文件</li>
+</ol>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://wiki.archlinux.org/index.php/Samba_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)" target="_blank" rel="external">Samba (简体中文)</a><br><a href="http://blog.csdn.net/younger_china/article/details/53442988" target="_blank" rel="external">Samba环境搭建</a><br><a href="http://jiangyapeng.blog.51cto.com/3491398/1561868" target="_blank" rel="external">linux下挂载</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Eclipse 中用Flex插件 BlazeDS 开发Flex web应用]]></title>
       <url>http://tungsing.cc/2017/01/18/flex/flex-web/</url>
       <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
