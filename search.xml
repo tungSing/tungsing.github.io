@@ -105,7 +105,8 @@
 </li>
 </ol>
 <p>/mnt/dir 为挂载点</p>
-<p>/etc/samba/pwd 文件里面保存的是用户名和密码，并授予400权限，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root</div><div class="line">123456</div></pre></td></tr></table></figure></p>
+<p>/etc/samba/pwd 文件里面保存的是用户名和密码，并授予400权限，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">username=root</div><div class="line">password=123456</div></pre></td></tr></table></figure></p>
+<p>执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mount -a</span></div></pre></td></tr></table></figure></p>
 <ol>
 <li>测试是否成功<br>查看/mut/dir 文件夹是否有文件</li>
 </ol>

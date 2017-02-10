@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tungsing.cc/"/>
-  <updated>2017-02-08T05:42:50.668Z</updated>
+  <updated>2017-02-10T02:54:54.977Z</updated>
   <id>http://tungsing.cc/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://tungsing.cc/2017/01/24/linux/linux-samba/"/>
     <id>http://tungsing.cc/2017/01/24/linux/linux-samba/</id>
     <published>2017-01-24T02:31:44.583Z</published>
-    <updated>2017-02-08T05:42:50.668Z</updated>
+    <updated>2017-02-10T02:54:54.977Z</updated>
     
     <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>为了tomcat集群部署的时，上传的文件不需要其他操作就可以集中管理，我们通过网络共享硬盘的方式来做，技术有NFS、Samba。用samba是考虑到可以和Windows系统进行文件共享、还有自身提供了安全认证方式。网络共享硬盘适合20-200台机器的小型项目用。</p>
@@ -121,7 +121,8 @@
 </li>
 </ol>
 <p>/mnt/dir 为挂载点</p>
-<p>/etc/samba/pwd 文件里面保存的是用户名和密码，并授予400权限，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root</div><div class="line">123456</div></pre></td></tr></table></figure></p>
+<p>/etc/samba/pwd 文件里面保存的是用户名和密码，并授予400权限，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">username=root</div><div class="line">password=123456</div></pre></td></tr></table></figure></p>
+<p>执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mount -a</span></div></pre></td></tr></table></figure></p>
 <ol>
 <li>测试是否成功<br>查看/mut/dir 文件夹是否有文件</li>
 </ol>
