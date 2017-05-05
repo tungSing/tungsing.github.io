@@ -99,7 +99,7 @@
 
 简介Samba 是 SMB/CIFS 网络协议的重新实现, 它作为 NFS 的补充使得在 Linux 和 Windows 系统中">
 <meta property="og:image" content="http://tungsing.cc/images/linux/map-network-drive.jpg">
-<meta property="og:updated_time" content="2017-02-10T02:54:54.977Z">
+<meta property="og:updated_time" content="2017-03-23T03:46:27.320Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用Samba搭建企业文件共享服务">
 <meta name="twitter:description" content="前言
@@ -475,6 +475,10 @@
 <ol>
 <li>测试是否成功<br>查看/mut/dir 文件夹是否有文件</li>
 </ol>
+<h5 id="配置SELinux"><a href="#配置SELinux" class="headerlink" title="配置SELinux"></a>配置SELinux</h5><p>如果selinux开启的话,注意配置,出现的情况是可以访问但无法操作的情况</p>
+<pre><code class="bash"><span class="comment">#getsebool -a|grep samba</span>
+<span class="comment">#setsebool -P samba_export_all_rw on</span>
+</code></pre>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://wiki.archlinux.org/index.php/Samba_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)" target="_blank" rel="external">Samba (简体中文)</a><br><a href="http://blog.csdn.net/younger_china/article/details/53442988" target="_blank" rel="external">Samba环境搭建</a><br><a href="http://jiangyapeng.blog.51cto.com/3491398/1561868" target="_blank" rel="external">linux下挂载</a></p>
 
       
@@ -521,6 +525,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/06/pm/pqm/" rel="prev" title="项目质量管理">
+                项目质量管理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -594,7 +602,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -612,7 +620,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -683,7 +691,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境准备"><span class="nav-number">3.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#服务启动"><span class="nav-number">5.1.</span> <span class="nav-text">服务启动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#设置开机启动项"><span class="nav-number">5.2.</span> <span class="nav-text">设置开机启动项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置Samba"><span class="nav-number">5.3.</span> <span class="nav-text">配置Samba</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#网络相关配置"><span class="nav-number">5.3.1.</span> <span class="nav-text">网络相关配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#日志配置"><span class="nav-number">5.3.2.</span> <span class="nav-text">日志配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#安全配置"><span class="nav-number">5.3.3.</span> <span class="nav-text">安全配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#共享设置"><span class="nav-number">5.3.4.</span> <span class="nav-text">共享设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#配置文件正确性检查"><span class="nav-number">5.3.5.</span> <span class="nav-text">配置文件正确性检查</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重启服务"><span class="nav-number">5.4.</span> <span class="nav-text">重启服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">6.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#挂载"><span class="nav-number">7.</span> <span class="nav-text">挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境准备"><span class="nav-number">3.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#服务启动"><span class="nav-number">5.1.</span> <span class="nav-text">服务启动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#设置开机启动项"><span class="nav-number">5.2.</span> <span class="nav-text">设置开机启动项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置Samba"><span class="nav-number">5.3.</span> <span class="nav-text">配置Samba</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#网络相关配置"><span class="nav-number">5.3.1.</span> <span class="nav-text">网络相关配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#日志配置"><span class="nav-number">5.3.2.</span> <span class="nav-text">日志配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#安全配置"><span class="nav-number">5.3.3.</span> <span class="nav-text">安全配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#共享设置"><span class="nav-number">5.3.4.</span> <span class="nav-text">共享设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#配置文件正确性检查"><span class="nav-number">5.3.5.</span> <span class="nav-text">配置文件正确性检查</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重启服务"><span class="nav-number">5.4.</span> <span class="nav-text">重启服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">6.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#挂载"><span class="nav-number">7.</span> <span class="nav-text">挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置SELinux"><span class="nav-number">7.1.</span> <span class="nav-text">配置SELinux</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
