@@ -4,6 +4,80 @@
   
     
     <entry>
+      <title><![CDATA[SonarQube与jenkins集成]]></title>
+      <url>http://tungsing.cc/2017/09/25/review/sonarqube-jenkins/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>使用 Jenkins 与 Sonar 集成对代码进行持续检测</p>
+</blockquote>
+<h4 id="jenkins-安装配置"><a href="#jenkins-安装配置" class="headerlink" title="jenkins 安装配置"></a>jenkins 安装配置</h4><p>jenkins安装配置比较简单，同样套路<a href="https://jenkins.io/download/" target="_blank" rel="external">官网</a>下载安装包，配置即可。</p>
+<h4 id="SonarQube与jenkins集成配置"><a href="#SonarQube与jenkins集成配置" class="headerlink" title="SonarQube与jenkins集成配置"></a>SonarQube与jenkins集成配置</h4><h5 id="在jenkins的插件管理里下载SonarQube插件"><a href="#在jenkins的插件管理里下载SonarQube插件" class="headerlink" title="在jenkins的插件管理里下载SonarQube插件"></a>在jenkins的插件管理里下载SonarQube插件</h5><p><img src="/images/sonarqube/13.jpg" alt=""></p>
+<a id="more"></a>
+<h5 id="在jenkins系统设置里配置SonarQube插件"><a href="#在jenkins系统设置里配置SonarQube插件" class="headerlink" title="在jenkins系统设置里配置SonarQube插件"></a>在jenkins系统设置里配置SonarQube插件</h5><p><img src="/images/sonarqube/14.jpg" alt=""></p>
+<h5 id="具体工程配置"><a href="#具体工程配置" class="headerlink" title="具体工程配置"></a>具体工程配置</h5><p><img src="/images/sonarqube/15.jpg" alt=""></p>
+<h5 id="具体properties配置"><a href="#具体properties配置" class="headerlink" title="具体properties配置"></a>具体properties配置</h5><p>此文件放置到工作代码中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#项目标识</span></div><div class="line">sonar.projectKey=id</div><div class="line"><span class="comment">#项目名称</span></div><div class="line">sonar.projectName=name</div><div class="line"><span class="comment">#版本</span></div><div class="line">sonar.projectVersion=1.0</div><div class="line"><span class="comment">#编码</span></div><div class="line">sonar.sourceEncoding=UTF-8</div><div class="line"><span class="comment">#目录代码根目录</span></div><div class="line">sonar.sources=.</div><div class="line"></div><div class="line"><span class="comment">#项目模块</span></div><div class="line">sonar.modules=common,web</div><div class="line"></div><div class="line">common.sonar.projectName=common</div><div class="line">common.sonar.sources=.</div><div class="line"><span class="comment">#模块的语言</span></div><div class="line">common.sonar.language=java</div><div class="line"></div><div class="line">web.sonar.projectName=web</div><div class="line">sonar.sources=src</div><div class="line">web.sonar.language=js</div></pre></td></tr></table></figure></p>
+<p>其他配置详见<a href="https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner" target="_blank" rel="external">官网</a></p>
+<h5 id="构建完成登陆SonarQube系统找到对应项目看到析的果"><a href="#构建完成登陆SonarQube系统找到对应项目看到析的果" class="headerlink" title="构建完成登陆SonarQube系统找到对应项目看到析的果"></a>构建完成登陆SonarQube系统找到对应项目看到析的果</h5><p><img src="/images/sonarqube/16.jpg" alt=""></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>SonarQube与jenkins集成就完成了，集成的方式不只这一种，还有别的方式。</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[SonarQube配置]]></title>
+      <url>http://tungsing.cc/2017/09/25/review/sonarqube-config/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>SonarQube我们已经安装好，接下来我们配置一下检查规则</p>
+</blockquote>
+<h4 id="SonarQube-配置"><a href="#SonarQube-配置" class="headerlink" title="SonarQube 配置"></a>SonarQube 配置</h4><h5 id="代码质量检查插件安装"><a href="#代码质量检查插件安装" class="headerlink" title="代码质量检查插件安装"></a>代码质量检查插件安装</h5><ol>
+<li><p>web检查插件安装<br><img src="/images/sonarqube/8.jpg" alt=""></p>
+</li>
+<li><p>findbugs插件安装<br><img src="/images/sonarqube/7.jpg" alt=""></p>
+</li>
+</ol>
+<p>其他插件可以搜索下载</p>
+<a id="more"></a>
+<h5 id="代码质量检查插件配置"><a href="#代码质量检查插件配置" class="headerlink" title="代码质量检查插件配置"></a>代码质量检查插件配置</h5><h6 id="JavaScript代码检查配置"><a href="#JavaScript代码检查配置" class="headerlink" title="JavaScript代码检查配置"></a>JavaScript代码检查配置</h6><ol>
+<li><p>创建自己的质量配置<br><img src="/images/sonarqube/9.jpg" alt=""></p>
+</li>
+<li><p>配置自己的检查规则<br><img src="/images/sonarqube/10.jpg" alt=""><br><img src="/images/sonarqube/11.jpg" alt=""></p>
+</li>
+</ol>
+<h6 id="findbugs代码检查配置"><a href="#findbugs代码检查配置" class="headerlink" title="findbugs代码检查配置"></a>findbugs代码检查配置</h6><ol>
+<li><p>创建自己的质量配置，Java可以上传自己的检查配置<br><img src="/images/sonarqube/12.jpg" alt=""></p>
+</li>
+<li><p>配置自己的检查规则，同JavaScript的</p>
+</li>
+</ol>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>使用SonarQube的配置完成后，接下来通过和jenkins集成实现定时检查。</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[SonarQube安装]]></title>
+      <url>http://tungsing.cc/2017/06/29/review/sonarqube-install/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>SonarQube（曾用名Sonar（声纳））是一个开源的代码质量管理系统。官网地址<a href="https://www.sonarqube.org/" target="_blank" rel="external">https://www.sonarqube.org/</a></p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Windows Server 2008 系统</li>
+<li>JDK</li>
+<li>Mysql</li>
+<li><a href="https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.3.1.zip" target="_blank" rel="external">sonarqube-6.3.1安装包</a></li>
+</ul>
+<h4 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h4><p>安装JDK就不在赘述，sonarqube6需要jdk8支持。</p>
+<a id="more"></a>
+<h4 id="安装Mysql"><a href="#安装Mysql" class="headerlink" title="安装Mysql"></a>安装Mysql</h4><p>SonarQube是自带了数据库的，可以不用安装mysql数据库，本文安装mysql数据库是为了获得更好的使用体验。</p>
+<h4 id="SonarQube-安装配置"><a href="#SonarQube-安装配置" class="headerlink" title="SonarQube 安装配置"></a>SonarQube 安装配置</h4><h5 id="解压缩文件到一个目录下"><a href="#解压缩文件到一个目录下" class="headerlink" title="解压缩文件到一个目录下"></a>解压缩文件到一个目录下</h5><p><img src="/images/sonarqube/1.jpg" alt=""></p>
+<h5 id="修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。"><a href="#修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。" class="headerlink" title="修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。"></a>修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。</h5><p><img src="/images/sonarqube/2.jpg" alt=""></p>
+<h5 id="配置数据库连接"><a href="#配置数据库连接" class="headerlink" title="配置数据库连接"></a>配置数据库连接</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sonar.jdbc.username=用户名</div><div class="line">sonar.jdbc.password=密码</div><div class="line">sonar.jdbc.url=jdbc:mysql://host:port/sonar?useUnicode=<span class="literal">true</span>&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=<span class="literal">true</span>&amp;useConfigs=maxPerformance</div></pre></td></tr></table></figure>
+<p><img src="/images/sonarqube/3.jpg" alt=""></p>
+<h5 id="点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面"><a href="#点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面" class="headerlink" title="点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面"></a>点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面</h5><p><img src="/images/sonarqube/4.jpg" alt=""></p>
+<h5 id="在浏览器中输入URL地址，测试是否安装成功"><a href="#在浏览器中输入URL地址，测试是否安装成功" class="headerlink" title="在浏览器中输入URL地址，测试是否安装成功"></a>在浏览器中输入URL地址，测试是否安装成功</h5><p><img src="/images/sonarqube/5.jpg" alt=""><br>看到这个页面表明已经安装成功</p>
+<h5 id="用管理登陆系统，可以安装中文插件"><a href="#用管理登陆系统，可以安装中文插件" class="headerlink" title="用管理登陆系统，可以安装中文插件"></a>用管理登陆系统，可以安装中文插件</h5><p><img src="/images/sonarqube/6.jpg" alt=""></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>使用SonarQube的第一步就完成了，接下来我们就可以配置检查规则来使用它了。</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Gulp项目工程构建说明]]></title>
       <url>http://tungsing.cc/2017/05/03/front/gulp-use/</url>
       <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
