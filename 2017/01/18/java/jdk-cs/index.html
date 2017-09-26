@@ -357,16 +357,6 @@ ps：keystore密码要和-keypass密码保持一致
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/01/18/java/jdk-cs/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/18/java/jdk-cs/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -481,12 +471,9 @@ ps：keystore密码要和-keypass密码保持一致
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/18/java/jdk-cs/"
-           data-title="用JDK自带的keytool工具生成安全证书" data-url="http://tungsing.cc/2017/01/18/java/jdk-cs/">
-      </div>
+      <div id="gitment_container"></div>
     
   </div>
-
 
         </div>
         
@@ -733,43 +720,55 @@ ps：keystore密码要和-keypass密码保持一致
 
   
 
-  
-    
-  
 
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tungsing"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
 
   
-    
-      
-      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
-    
-    
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
+
+
+
+
+	
+
+
+
+
+
   
 
 
 
 
 
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
 
 
 
 
-
+	
+		
+		
+		
+		<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+		<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+		<script>
+			var gitment = new Gitment({
+			  id: '',
+			  owner: 'tungsing',
+			  repo: 'http://tungsing.cc',
+			  oauth: {
+				client_id: '52a90bdfc66139c7ae8d',
+				client_secret: 'bd9b93942e8f3fb1e25ae0e47c7c31ba84c9f4a1'
+			  }
+			});
+			gitment.render('gitment_container');
+		</script>
+	
 
 
   
