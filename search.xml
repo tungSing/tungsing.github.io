@@ -4,6 +4,45 @@
   
     
     <entry>
+      <title><![CDATA[记录Linux CentOS 系统安装Mysql数据库]]></title>
+      <url>http://tungsing.cc/2017/11/28/mysql/mysql-install-linux/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>Linux CentOS6 操作系统</li>
+<li>Mysql5.6 安装包</li>
+</ul>
+<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://dev.mysql.com/downloads/mysql/5.6.html#downloads" target="_blank" rel="external">官网</a>下载社区版。本文安装的是mysql5.6。<br><img src="/images/mysql/17.jpg" alt=""></p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="确认系统是否已经安装mysql，如果安装卸载后再安装"><a href="#确认系统是否已经安装mysql，如果安装卸载后再安装" class="headerlink" title="确认系统是否已经安装mysql，如果安装卸载后再安装"></a>确认系统是否已经安装mysql，如果安装卸载后再安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -qa |grep -i mysql</span></div></pre></td></tr></table></figure>
+<p>如果安装mysql，卸载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure></p>
+<p>注意：如果卸载不掉可以加nodeps强制卸载，或用yum命令卸载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm --nodeps</span></div><div class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm --nodeps</span></div><div class="line"><span class="comment">#yum remove MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#yum remove MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure></p>
+<h5 id="解压安装包"><a href="#解压安装包" class="headerlink" title="解压安装包"></a>解压安装包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#tar -xvf MySQL-5.6.38-1.el6.x86_64.rpm-bundle.tar</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#yum -y install perl</span></div><div class="line"><span class="comment">#rpm -ivh numactl-2.0.9-2.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#rpm -ivh libaio-0.3.107-10.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
+<h5 id="安装Mysql-server"><a href="#安装Mysql-server" class="headerlink" title="安装Mysql-server"></a>安装Mysql-server</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ivh MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
+<h5 id="安装Mysql-client"><a href="#安装Mysql-client" class="headerlink" title="安装Mysql-client"></a>安装Mysql-client</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ivh MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
+<h5 id="自定义数据路径"><a href="#自定义数据路径" class="headerlink" title="自定义数据路径"></a>自定义数据路径</h5><p>根据自己的实际情况创建数据文件夹，例如<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mkdir /home/data</span></div></pre></td></tr></table></figure></p>
+<p>把默认的数据文件移动到刚刚创建的数据目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mv /var/lib/mysql /home/data</span></div></pre></td></tr></table></figure></p>
+<h5 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">datadir = /home/data/mysql</div><div class="line">port = 3306</div><div class="line">server_id = 1</div><div class="line">socket = /home/data/mysql/mysql.sock</div><div class="line">log_bin = mysql-bin</div><div class="line">binlog_format = mixed  </div><div class="line">expire_logs_days = 30</div><div class="line">log_error = /home/data/mysql/logs/mysql-error.log</div><div class="line">explicit_defaults_for_timestamp=1</div></pre></td></tr></table></figure>
+<p>注：此处重点是修改datadir和socket的路径</p>
+<h5 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#service mysql start</span></div><div class="line">Starting MySQL. SUCCESS!</div></pre></td></tr></table></figure>
+<h5 id="登陆mysql"><a href="#登陆mysql" class="headerlink" title="登陆mysql"></a>登陆mysql</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mysql -uroot -p</span></div></pre></td></tr></table></figure>
+<p>注：这个地方输入默认密码，默认密码在/root/.mysql_secret文件中。此处应该会报错，解决办法如下</p>
+<ol>
+<li><p>mysql 命令加参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mysql -h 127.0.0.1 -uroot -p</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>加软链接(快捷方式)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#ln -s /home/data/mysql/mysql.sock /var/lib/mysql</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置，但这个方法没有成功，网上很多资料成功了</p>
+</li>
+</ol>
+<p>登陆成功后，首先要设置密码<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#set password = password('此处为复杂度高的密码');</span></div></pre></td></tr></table></figure></p>
+<h5 id="mysql服务加入开机启动项"><a href="#mysql服务加入开机启动项" class="headerlink" title="mysql服务加入开机启动项"></a>mysql服务加入开机启动项</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#chkconfig mysql on</span></div></pre></td></tr></table></figure>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>到此就安装结束了，剩余工作就是优化、配置mysql，适用于自己的项目。</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[SonarQube与jenkins集成]]></title>
       <url>http://tungsing.cc/2017/09/25/review/sonarqube-jenkins/</url>
       <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
