@@ -1,0 +1,955 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mysql XtraBackup backup," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="环境
+Linux CentOS6 操作系统
+Mysql5.6 
+XtraBackup 2.4.8
+
+XtraBackup简介Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。
+下载mysql安装包在官网安装包。
+安装安装依赖包12345# rpm -ivh libev-4.15-1.e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XtraBackup搭建Mysql物理备份">
+<meta property="og:url" content="http://tungsing.cc/2017/11/28/mysql/mysql-bak/index.html">
+<meta property="og:site_name" content="TungSing's Blog">
+<meta property="og:description" content="环境
+Linux CentOS6 操作系统
+Mysql5.6 
+XtraBackup 2.4.8
+
+XtraBackup简介Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。
+下载mysql安装包在官网安装包。
+安装安装依赖包12345# rpm -ivh libev-4.15-1.e">
+<meta property="og:image" content="http://tungsing.cc/images/mysql/backup1.jpg">
+<meta property="og:updated_time" content="2017-11-28T09:16:34.907Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XtraBackup搭建Mysql物理备份">
+<meta name="twitter:description" content="环境
+Linux CentOS6 操作系统
+Mysql5.6 
+XtraBackup 2.4.8
+
+XtraBackup简介Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。
+下载mysql安装包在官网安装包。
+安装安装依赖包12345# rpm -ivh libev-4.15-1.e">
+<meta name="twitter:image" content="http://tungsing.cc/images/mysql/backup1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6376408023170024000',
+      author: 'tungSing'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tungsing.cc/2017/11/28/mysql/mysql-bak/"/>
+
+
+
+
+
+  <title> XtraBackup搭建Mysql物理备份 | TungSing's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">TungSing's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">用心记录一切！</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">关闭</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2017/11/28/mysql/mysql-bak/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="tungSing">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="TungSing's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="TungSing's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                XtraBackup搭建Mysql物理备份
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-28T06:30:11Z">
+                2017-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">Mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>Linux CentOS6 操作系统</li>
+<li>Mysql5.6 </li>
+<li>XtraBackup 2.4.8</li>
+</ul>
+<h4 id="XtraBackup简介"><a href="#XtraBackup简介" class="headerlink" title="XtraBackup简介"></a>XtraBackup简介</h4><p>Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。</p>
+<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://www.percona.com/downloads/XtraBackup/LATEST/" target="_blank" rel="external">官网</a>安装包。<br><img src="/images/mysql/backup1.jpg" alt=""></p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rpm -ivh libev-4.15-1.el6.rf.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh MySQL-shared-compat-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh perl-DBI-1.609-4.el6.x86_64.rpm </span></div><div class="line"><span class="comment"># rpm -ivh perl-DBD-MySQL-4.013-3.el6.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh rsync-3.0.6-12.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
+<h5 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rpm -ivh percona-xtrabackup-24-2.4.8-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h5 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 /home/databackup</span></div><div class="line">171128 14:51:16 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 14:51:17 completed OK!</div></pre></td></tr></table></figure>
+<p>备份数据存放在/home/databackup/下面，innobackupex会自动创建一个文件夹，是当前系统的时间戳。</p>
+<h5 id="增量备份"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份</h5><p>在进行增量备份时，首先要进行一次全量备份，第一次增量备份是基于全备的，之后的增量备份是基于上一次的增量备份，以此类推。</p>
+<ol>
+<li>全量备份</li>
+<li>在test库中创建表并增量备份<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE <span class="built_in">test</span>(  </div><div class="line">  `id` INT NOT NULL,</div><div class="line">  PRIMARY KEY (`id`)</div><div class="line">);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 --incremental /home/databackup/inc/ --incremental-basedir=/home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">171128 15:04:22 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 15:04:22 completed OK!</div></pre></td></tr></table></figure>
+<ol>
+<li>添加数据并增量备份<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mysql&gt; insert <span class="built_in">test</span> values(1);</div><div class="line">Query OK, 1 row affected (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; select * from <span class="built_in">test</span>;</div><div class="line">+----+</div><div class="line">| id |</div><div class="line">+----+</div><div class="line">|  1 |</div><div class="line">+----+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 --incremental /home/databackup/inc/ --incremental-basedir=/home/databackup/inc/2017-11-28_16-18-29/</span></div><div class="line">171128 15:04:22 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 15:04:22 completed OK!</div></pre></td></tr></table></figure>
+<h5 id="全量恢复"><a href="#全量恢复" class="headerlink" title="全量恢复"></a>全量恢复</h5><ol>
+<li><p>删除数据库(生产不要这么搞)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># drop database test;</span></div><div class="line">mysql&gt; show databases;</div><div class="line">+--------------------+</div><div class="line">| Database           |</div><div class="line">+--------------------+</div><div class="line">| information_schema |</div><div class="line">| logs               |</div><div class="line">| mysql              |</div><div class="line">| performance_schema |</div><div class="line">+--------------------+</div><div class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+</li>
+<li><p>恢复全备<br>恢复备份到mysql的数据文件目录，这一过程要先关闭mysql数据库，重命名或者删除原数据文件目录都可以，再创建一个新的数据文件目录，将备份数据复制到新的数据文件目录下，赋权，修改权限，启动数据库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log /opt/databackup/full/2017-11-28_14-57-31/ </span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1626152</div><div class="line">171128 15:24:34 completed OK!</div><div class="line"></div><div class="line"><span class="comment">#innobackupex --defaults-file=/var/my.cnf --copy-back --rsync /home/databackup/full/2017-11-28_14-57-31/</span></div><div class="line">171128 15:36:01 [01]        ...done</div><div class="line">171128 15:36:01 [01] Copying ./<span class="built_in">test</span>/db.opt to /home/data/mysql/<span class="built_in">test</span>/db.opt</div><div class="line">171128 15:36:01 [01]        ...done</div><div class="line">171128 15:36:01 completed OK!</div></pre></td></tr></table></figure>
+</li>
+<li><p>验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show databases;</div><div class="line">+--------------------+</div><div class="line">| Database           |</div><div class="line">+--------------------+</div><div class="line">| information_schema |</div><div class="line">| logs               |</div><div class="line">| mysql              |</div><div class="line">| performance_schema |</div><div class="line">| <span class="built_in">test</span>               |</div><div class="line">+--------------------+</div><div class="line">5 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="增量恢复"><a href="#增量恢复" class="headerlink" title="增量恢复"></a>增量恢复</h5><p>增量备份的恢复大体为3个步骤</p>
+<ol>
+<li><p>恢复完全备份<br>注意：这里一定要加–redo-only参数，该参数的意思是只应用xtrabackup日志中已提交的事务数据，不回滚还未提交的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log --redo-only /home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1626171</div><div class="line">InnoDB: Number of pools: 1</div><div class="line">171128 16:24:41 completed OK!</div></pre></td></tr></table></figure>
+</li>
+<li><p>恢复增量备份到完全备份<br>注意：开始恢复的增量备份要添加–redo-only参数，到最后一次增量备份去掉–redo-only参数<br>第1次：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log --redo-only /home/databackup/full/2017-11-28_16-08-17/ --incremental-dir=/home/databackup/inc/2017-11-28_16-18-29/</span></div><div class="line">171128 16:28:00 [00] Copying /home/databackup/inc/2017-11-28_16-18-29//xtrabackup_binlog_info to ./xtrabackup_binlog_info</div><div class="line">171128 16:28:00 [00]        ...done</div><div class="line">171128 16:28:00 [00] Copying /home/databackup/inc/2017-11-28_16-18-29//xtrabackup_info to ./xtrabackup_info</div><div class="line">171128 16:28:00 [00]        ...done</div><div class="line">171128 16:28:00 completed OK!</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>第…次，同第1次。</p>
+<p>最后一次<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log  /home/databackup/full/2017-11-28_16-08-17/ --incremental-dir=/home/databackup/inc/2017-11-28_16-20-46/</span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1636904</div><div class="line">171128 16:32:58 completed OK!</div></pre></td></tr></table></figure></p>
+<ol>
+<li>对整体的完全备份进行恢复，回滚那些未提交的数据<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log /home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">InnoDB: FTS optimize thread exiting.</div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1636942</div><div class="line">171128 16:36:41 completed OK!</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>把恢复完的备份复制到数据库目录文件中，和全量备份恢复一样。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --defaults-file=/var/my.cnf --copy-back --rsync /home/databackup/full/2017-11-28_14-57-31/</span></div><div class="line">171128 16:42:34 [01] Copying ./<span class="built_in">test</span>/test.ibd to /home/data/mysql/<span class="built_in">test</span>/test.ibd</div><div class="line">171128 16:42:34 [01]        ...done</div><div class="line">171128 16:42:34 [01] Copying ./<span class="built_in">test</span>/db.opt to /home/data/mysql/<span class="built_in">test</span>/db.opt</div><div class="line">171128 16:42:34 [01]        ...done</div><div class="line">171128 16:42:34 completed OK!</div></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from <span class="built_in">test</span>;</div><div class="line">+----+</div><div class="line">| id |</div><div class="line">+----+</div><div class="line">|  1 |</div><div class="line">+----+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>真实场景还需仔细学习对应功能，写成自动化的脚本去运行。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="http://www.cnblogs.com/gomysql/p/3650645.html" target="_blank" rel="external">xtrabackup 详解</a><br>2.<a href="https://wsgzao.github.io/post/xtrabackup/" target="_blank" rel="external">XtraBackup不停机不锁表搭建MySQL主从同步实践</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mysql-XtraBackup-backup/" rel="tag"># Mysql XtraBackup backup</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/28/mysql/mysql-install-linux/" rel="next" title="记录Linux CentOS 系统安装Mysql数据库">
+                <i class="fa fa-chevron-left"></i> 记录Linux CentOS 系统安装Mysql数据库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitment_container"></div>
+    
+  </div>
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="tungSing" />
+          <p class="site-author-name" itemprop="name">tungSing</p>
+          <p class="site-description motion-element" itemprop="description">多读书多看报</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/tungSing" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-google-plus"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/gao-dong-sheng-15/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XtraBackup简介"><span class="nav-number">2.</span> <span class="nav-text">XtraBackup简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下载mysql安装包"><span class="nav-number">3.</span> <span class="nav-text">下载mysql安装包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装依赖包"><span class="nav-number">4.1.</span> <span class="nav-text">安装依赖包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装-1"><span class="nav-number">4.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#全量备份"><span class="nav-number">4.3.</span> <span class="nav-text">全量备份</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#增量备份"><span class="nav-number">4.4.</span> <span class="nav-text">增量备份</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#全量恢复"><span class="nav-number">4.5.</span> <span class="nav-text">全量恢复</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#增量恢复"><span class="nav-number">4.6.</span> <span class="nav-text">增量恢复</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+	
+		
+		
+		
+		<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+		<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+		<script>
+			var gitment = new Gitment({
+			  id: '',
+			  owner: 'tungSing',
+			  repo: 'tungsing.github.io',
+			  oauth: {
+				client_id: '52a90bdfc66139c7ae8d',
+				client_secret: 'bd9b93942e8f3fb1e25ae0e47c7c31ba84c9f4a1'
+			  }
+			});
+			gitment.render('gitment_container');
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
