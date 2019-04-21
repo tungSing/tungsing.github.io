@@ -4,6 +4,1173 @@
   
     
     <entry>
+      <title><![CDATA[DataUtils工具类优化]]></title>
+      <url>http://tungsing.cc/2019/03/22/java/date-util/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>之前就看资料说SimpleDateFormat是线程不安全的，正好框架里面有自己的DataUtils类，正好优化并学习一下</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>jdk1.7</p>
+<a id="more"></a>
+<h4 id="测试框架中代码"><a href="#测试框架中代码" class="headerlink" title="测试框架中代码"></a>测试框架中代码</h4><p>开20个线程去格式日期<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    ExecutorService service = Executors.newFixedThreadPool(<span class="number">100</span>);</div><div class="line">    <span class="comment">// 开启20个线程</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">        service.execute(<span class="keyword">new</span> Runnable() &#123;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++) &#123;</div><div class="line">                    System.out.println(DateUtils.parseDate(<span class="string">"2019-03-22 10:03:25"</span>));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    service.shutdown();</div><div class="line">    service.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div></pre></td><td class="code"><pre><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Sun Mar 01 10:03:25 CST 1970</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">java.lang.NumberFormatException: For input string: &quot;33E&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:419)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)Thu Jan 01 00:03:25 CST 1970</div><div class="line"></div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line"></div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at java.lang.Thread.run(Thread.java:662)</div><div class="line"></div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;Tue Jan 01 00:03:25 CST 2019</div><div class="line"></div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)Thu Jan 22 10:03:25 CST 1970</div><div class="line"></div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Wed Dec 31 00:00:00 CST 1969</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">Tue Jan 01 00:03:25 CST 2019</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">Tue Jan 01 00:03:25 CST 2019</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)Thu Jan 22 00:00:25 CST 1970</div><div class="line"></div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">Tue Jan 01 00:00:25 CST 2019    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line"></div><div class="line">Thu Jan 01 00:44:40 CST 1970</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">Tue Jan 01 03:03:25 CST 2019</div><div class="line">nulljava.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line"></div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Thu Jan 01 00:00:25 CST 1970</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">java.lang.NumberFormatException: multiple pointsnull</div><div class="line"></div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1082)</div><div class="line">    at java.lang.Double.parseDouble(Double.java:510)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DigitList.getDouble(DigitList.java:151)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1302)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">Thu Jul 10 10:03:25 CST 5881580</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: multiple points</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1082)</div><div class="line"></div><div class="line">    at java.lang.Double.parseDouble(Double.java:510)</div><div class="line">    at java.text.DigitList.getDouble(DigitList.java:151)Fri Mar 22 10:03:25 CST 2019</div><div class="line"></div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1302)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line"></div><div class="line">......</div><div class="line"></div><div class="line">java.lang.NumberFormatException: For input string: &quot;1.01&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:419)</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div></pre></td></tr></table></figure></p>
+<p>分析错误日志有如下错误</p>
+<ul>
+<li>会出现日期不对的情况</li>
+<li>java.lang.NumberFormatException: For input string xxx</li>
+<li>java.lang.NumberFormatException: multiple points</li>
+</ul>
+<h4 id="错误原因分析"><a href="#错误原因分析" class="headerlink" title="错误原因分析"></a>错误原因分析</h4><p>首先看代码是如何写的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;DateFormat, SimpleDateFormat&gt; dateFormaters = <span class="keyword">new</span> HashMap&lt;DateFormat, SimpleDateFormat&gt;(<span class="number">3</span>, <span class="number">0.2f</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> SimpleDateFormat <span class="title">getDateFormater</span><span class="params">(DateFormat format)</span> </span>&#123;</div><div class="line">    SimpleDateFormat dateFormater = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ((dateFormater = dateFormaters.get(format)) == <span class="keyword">null</span>) &#123;</div><div class="line">        dateFormater = <span class="keyword">new</span> SimpleDateFormat(format.format);</div><div class="line">        dateFormaters.put(format, dateFormater);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> dateFormater;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> java.util.<span class="function">Date <span class="title">parseDate</span><span class="params">(String dateStr)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> getDateFormater(DateFormat.YMDHMS_HYPHEN).parse(</div><div class="line">                            dateStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>DateFormat</strong>是枚举，定义了各种日期格式<br>代码本质还是获取一个 <strong>静态</strong> 的 <strong>SimpleDateFormat</strong> 对象，引入Map是为了提高效率。<br>那么在多线程的情况下SimpleDateFormat对象实例就会 <strong>被多个线程共享</strong> ，通过看源码找原因<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line">public Date parse(String text, ParsePosition pos) &#123;</div><div class="line"></div><div class="line">    checkNegativeNumberExpression();</div><div class="line"></div><div class="line">    int start = pos.index;</div><div class="line">    int oldStart = start;</div><div class="line">    int textLength = text.length();</div><div class="line"></div><div class="line">    calendar.clear(); // Clears all the time fields</div><div class="line"></div><div class="line">    boolean[] ambiguousYear = &#123; false &#125;;</div><div class="line"></div><div class="line">    for (int i = 0; i &lt; compiledPattern.length;) &#123;</div><div class="line">        int tag = compiledPattern[i] &gt;&gt;&gt; 8;</div><div class="line">        int count = compiledPattern[i++] &amp; 0xff;</div><div class="line">        if (count == 255) &#123;</div><div class="line">            count = compiledPattern[i++] &lt;&lt; 16;</div><div class="line">            count |= compiledPattern[i++];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        switch (tag) &#123;</div><div class="line">        case TAG_QUOTE_ASCII_CHAR:</div><div class="line">            if (start &gt;= textLength || text.charAt(start) != (char) count) &#123;</div><div class="line">                pos.index = oldStart;</div><div class="line">                pos.errorIndex = start;</div><div class="line">                return null;</div><div class="line">            &#125;</div><div class="line">            start++;</div><div class="line">            break;</div><div class="line"></div><div class="line">        case TAG_QUOTE_CHARS:</div><div class="line">            while (count-- &gt; 0) &#123;</div><div class="line">                if (start &gt;= textLength || text.charAt(start) != compiledPattern[i++]) &#123;</div><div class="line">                    pos.index = oldStart;</div><div class="line">                    pos.errorIndex = start;</div><div class="line">                    return null;</div><div class="line">                &#125;</div><div class="line">                start++;</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line"></div><div class="line">        default:</div><div class="line">            boolean obeyCount = false;</div><div class="line">            boolean useFollowingMinusSignAsDelimiter = false;</div><div class="line"></div><div class="line">            if (i &lt; compiledPattern.length) &#123;</div><div class="line">                int nextTag = compiledPattern[i] &gt;&gt;&gt; 8;</div><div class="line">                if (!(nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) &#123;</div><div class="line">                    obeyCount = true;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                if (hasFollowingMinusSign &amp;&amp; (nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) &#123;</div><div class="line">                    int c;</div><div class="line">                    if (nextTag == TAG_QUOTE_ASCII_CHAR) &#123;</div><div class="line">                        c = compiledPattern[i] &amp; 0xff;</div><div class="line">                    &#125; else &#123;</div><div class="line">                        c = compiledPattern[i + 1];</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    if (c == minusSign) &#123;</div><div class="line">                        useFollowingMinusSignAsDelimiter = true;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            start = subParse(text, start, tag, count, obeyCount, ambiguousYear, pos, useFollowingMinusSignAsDelimiter);</div><div class="line">            if (start &lt; 0) &#123;</div><div class="line">                pos.index = oldStart;</div><div class="line">                return null;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    pos.index = start;</div><div class="line">    Date parsedDate;</div><div class="line">    try &#123;</div><div class="line">        if (ambiguousYear[0]) &#123;</div><div class="line">            Calendar savedCalendar = (Calendar) calendar.clone();</div><div class="line">            parsedDate = calendar.getTime();</div><div class="line">            if (parsedDate.before(defaultCenturyStart)) &#123;</div><div class="line">                savedCalendar.set(Calendar.YEAR, defaultCenturyStartYear + 100);</div><div class="line">                parsedDate = savedCalendar.getTime();</div><div class="line">            &#125;</div><div class="line">        &#125; else</div><div class="line">            parsedDate = calendar.getTime();</div><div class="line">    &#125; catch (IllegalArgumentException e) &#123;</div><div class="line">        pos.errorIndex = start;</div><div class="line">        pos.index = oldStart;</div><div class="line">        return null;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return parsedDate;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>重点关注 <strong>calendar.clear()</strong> , <strong>calendar.getTime()</strong> 方法，SimpleDateFormat的parse方法实际操作的就是 <strong>Calendar</strong> 。</p>
+<p>因为我们声明SimpleDateFormat为static变量，那么它的Calendar变量也就是一个共享变量，可以被多个线程访问。</p>
+<p>假设线程A执行完calendar.clear()方法，这时候被挂起，线程B获得CPU执行权。线程B执行到了calendar.getTime()方法就获取到空值了，而这就是引发问题的根源，出现时间不对，线程挂死等等。</p>
+<p><strong>其实SimpleDateFormat源码上作者也给过我们提示：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"> * &lt;h4&gt;&lt;a name=&quot;synchronization&quot;&gt;Synchronization&lt;/a&gt;&lt;/h4&gt;</div><div class="line"> *</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Date formats are not synchronized.</div><div class="line"> * 日期格式不同步。</div><div class="line"> * It is recommended to create separate format instances for each thread.</div><div class="line"> * 建议为每个线程创建单独的格式实例。</div><div class="line"> * If multiple threads access a format concurrently, it must be synchronized</div><div class="line"> * externally.</div><div class="line"> * 如果多个线程同时访问一种格式，则必须在外部同步该格式。</div><div class="line"> *</div><div class="line"> * @see          &lt;a href=&quot;http://java.sun.com/docs/books/tutorial/i18n/format/simpleDateFormat.html&quot;&gt;Java Tutorial&lt;/a&gt;</div><div class="line"> * @see          java.util.Calendar</div><div class="line"> * @see          java.util.TimeZone</div><div class="line"> * @see          DateFormat</div><div class="line"> * @see          DateFormatSymbols</div><div class="line"> * @version      %I%, %G% </div><div class="line"> * @author       Mark Davis, Chen-Lieh Huang, Alan Liu</div><div class="line"> */</div><div class="line">public class SimpleDateFormat extends DateFormat &#123;</div></pre></td></tr></table></figure></p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><ol>
+<li><p>只要在用的时候创建新实例，不用static修饰。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public static Date parse(String strDate) throws ParseException&#123;</div><div class="line">     SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    return sdf.parse(strDate);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 如上代码，仅在需要用到的地方创建一个新的实例，就没有线程安全问题，不过也加重了创建对象的负担，会频繁地创建和销毁对象，效率较低。</p>
+</li>
+<li><p>使用synchronized来SimpleDateFormat对象</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    </div><div class="line">public static Date parse(String strDate) throws ParseException&#123;</div><div class="line">    synchronized(sdf)&#123;</div><div class="line">        return sdf.parse(strDate);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 当线程较多时，当一个线程调用该方法时，其他想要调用此方法的线程就要block，多线程并发量大的时候会对性能有一定的影响。</p>
+</li>
+<li><p>使用ThreadLocal</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">private static ThreadLocal&lt;DateFormat&gt; threadLocal = new ThreadLocal&lt;DateFormat&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    protected DateFormat initialValue() &#123;</div><div class="line">        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">public static Date parse(String dateStr) throws ParseException &#123;</div><div class="line">    return threadLocal.get().parse(dateStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 使用ThreadLocal, 也是将共享变量变为独享，线程独享肯定能比方法独享在并发环境中能减少不少创建对象的开销。如果对性能要求比较高的情况下，一般推荐使用这种方法。</p>
+</li>
+</ol>
+<h4 id="优化框架代码"><a href="#优化框架代码" class="headerlink" title="优化框架代码"></a>优化框架代码</h4><p>作为框架代码必须要保证性能要求，用ThreadLocal来优化代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private static ThreadLocal&lt;java.text.DateFormat&gt; threadLocal = new ThreadLocal&lt;java.text.DateFormat&gt;();</div><div class="line"></div><div class="line">private static java.text.DateFormat getDateFormater(DateFormat format) &#123;</div><div class="line"></div><div class="line">    java.text.DateFormat dateFormater = threadLocal.get();</div><div class="line"></div><div class="line">    if (dateFormater == null) &#123;</div><div class="line">        dateFormater = new SimpleDateFormat(format.format);</div><div class="line">        threadLocal.set(dateFormater);</div><div class="line">    &#125;</div><div class="line">    return dateFormater;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>用同样的测试代码测试，结果如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">......</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div></pre></td></tr></table></figure></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>我们要站在巨人的肩膀上来做事，如果是jdk1.8 可以使用DateTimeFormatter对象来解析或格式化日期;或直接使用Joda-Time类库来处理时间相关问题。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NDQ3MjQxNA==&amp;mid=2247488579&amp;idx=1&amp;sn=938bf5c4060f5758d57bb38a3d273523&amp;chksm=e9c5edf2deb264e41895a296a71db6363a7c24d1574d1262b2a74d464c73871ab3dfb65920e6&amp;scene=0&amp;xtrack=1&amp;key=788e29d0e375da22ae1918949f053d336e5d7ab2e59ce890ecd71d5a145885fcf2722671187a039ed5b59af2d4c3850464f757906a2285995765793ba14984b93cca50a8ed3e4a4a13ecaf2a95d31b3b&amp;ascene=1&amp;uin=MTU2NTU1NTk1&amp;devicetype=Windows+10&amp;version=62060720&amp;lang=zh_CN&amp;pass_ticket=PfdkGv%2BC8N6NZrxvaV85VDtvqNFgqdfh6j143w0u0Go%3D" target="_blank" rel="external">还在使用SimpleDateFormat？你的项目崩没？</a><br><a href="http://www.cnblogs.com/peida/archive/2013/05/31/3070790.html" target="_blank" rel="external">深入理解Java：SimpleDateFormat安全的时间格式化</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Redhat7.5 安装 使用 GitLab]]></title>
+      <url>http://tungsing.cc/2019/02/28/git/gitlab_install/</url>
+      <content type="html"><![CDATA[<h4 id="版本选择"><a href="#版本选择" class="headerlink" title="版本选择"></a>版本选择</h4><p>如果想安装指定版本，需要在下面的网站中下载指定版本。</p>
+<ol>
+<li><a href="https://packages.gitlab.com/gitlab/" target="_blank" rel="external">GitLab资源库</a></li>
+<li><a href="https://packages.gitlab.com/gitlab/gitlab-ce" target="_blank" rel="external">GitLab资源库社区版</a></li>
+<li><a href="https://packages.gitlab.com/gitlab/gitlab-ee" target="_blank" rel="external">GitLab资源库企业版</a></li>
+</ol>
+<a id="more"></a>
+<h4 id="安装社区版"><a href="#安装社区版" class="headerlink" title="安装社区版"></a>安装社区版</h4><p><a href="https://about.gitlab.com/install/?version=ce" target="_blank" rel="external">官方安装文档</a></p>
+<ol>
+<li><p>安装并配置依赖(必要)</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># sudo yum install -y curl policycoreutils-python openssh-server</div><div class="line"># sudo systemctl enable sshd</div><div class="line"># sudo systemctl start sshd</div><div class="line"> </div><div class="line"># sudo firewall-cmd --permanent --add-service=http</div><div class="line"># sudo systemctl reload firewalld</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装Postfix(用来发送通知电子邮件)</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># sudo yum -y install postfix</div><div class="line"># sudo systemctl enable postfix</div><div class="line"># sudo systemctl start postfix</div></pre></td></tr></table></figure>
+</li>
+<li><p>添加GitLab包存储库</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装GitLab包(将<a href="http://gitlab.resoft.css.com.cn作为您要访问GitLab的域名。安装过程将自动配置并启动该域名的GitLab" target="_blank" rel="external">http://gitlab.resoft.css.com.cn作为您要访问GitLab的域名。安装过程将自动配置并启动该域名的GitLab</a>)</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># EXTERNAL_URL=&quot;http://gitlab.resoft.css.com.cn&quot; yum install -y gitlab-ce</div></pre></td></tr></table></figure>
+</li>
+<li><p>相关命令</p>
+<ul>
+<li><p>查看运行状态</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># sudo gitlab-ctl status</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># sudo gitlab-ctl start</div></pre></td></tr></table></figure>
+</li>
+<li><p>停止</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># sudo gitlab-ctl stop</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># sudo gitlab-ctl restart</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看版本</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cat /opt/gitlab/embedded/service/gitlab-rails/VERSION</div><div class="line">11.4.3-ee</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="配置并使用"><a href="#配置并使用" class="headerlink" title="配置并使用"></a>配置并使用</h4><ol>
+<li>浏览域名(<a href="http://gitlab.resoft.css.com.cn)并登陆" target="_blank" rel="external">http://gitlab.resoft.css.com.cn)并登陆</a><br> 首次访问时，您将被重定向到密码重置页面。设置初始管理员帐户的密码。使用默认帐户的用户名root登录。<br> <img src="/images/git/login.png" alt=""></li>
+<li>配置语言<br> 选择用户头像-&gt;点Setting-&gt;选择Profile，将Preferred Language改成简体中文后保存即可<br> <img src="/images/git/language.png" alt=""></li>
+</ol>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://blog.csdn.net/qq_32596527/article/details/83617638" target="_blank" rel="external">在CentOS 7 1804 中 安装 使用 GitLab</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Sonatype Nexus Repository Manager私服搭建]]></title>
+      <url>http://tungsing.cc/2019/02/28/nexus/nexus/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>在使用java开发用maven来管理工程常常会从远程仓库下载jar包，由于网络原因有时候会下载很慢；还有公司内部产品开发的代码又不能上传到中央仓库；故需要搭建一个maven的私有仓库。选择Sonatype Nexus来作为maven的私有仓库，Sonatype Nexus还可以做docker、npm等等的私有仓库。</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>Redhat 7.5 操作系统</li>
+<li>Sonatype Nexus Repository Manager 3.15</li>
+<li>jdk1.8</li>
+</ul>
+<a id="more"></a>
+<h4 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h4><ol>
+<li>下载jdk安装包</li>
+<li><a href="https://help.sonatype.com/repomanager3/download/download-archives---repository-manager-3" target="_blank" rel="external">官网</a>下载Sonatype Nexus Repository Manager安装包<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># wget http://download.sonatype.com/nexus/3/nexus-3.15.2-01-unix.tar.gz</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ol>
+<li><p>修改最大文件打开数<br> nexus要求最大文件打开数不小于65536，默认1024<br> 打开文件/etc/security/limits.conf在文件末尾添加配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">* soft nofile 204800  </div><div class="line">* hard nofile 204800  </div><div class="line">* soft nproc 204800  </div><div class="line">* hard nproc 204800</div></pre></td></tr></table></figure>
+<p> * 代表针对所有用户<br> noproc     是代表最大进程数<br> nofile     是代表最大文件打开数</p>
+</li>
+<li><p>创建用户组及用户并设置密码<br> Sonatype Nexus 不推荐root</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">groupadd nexus</div><div class="line">useradd -g nexus nexus</div><div class="line">passwd xxx</div></pre></td></tr></table></figure>
+<p> xxx:你的密码</p>
+</li>
+</ol>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>解压到/opt/nexus目录<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># tar -zvxf nexus-3.15.2-01-unix.tar.gz</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><ol>
+<li><p>配置jdk</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus</div></pre></td></tr></table></figure>
+<p> 找到INSTALL4J_JAVA_HOME_OVERRIDE添加java home目录</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">INSTALL4J_JAVA_HOME_OVERRIDE=/opt/java/jdk1.8.0_131</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置启动用户</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus.rc</div></pre></td></tr></table></figure>
+<p> 默认为nexus用户修改root用户</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">run_as_user=&quot;root&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置WEB端口为80。默认为8081，如何不修改默认端口，启动用户无需配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/nexus/nexus-3.15.2-01/etc/nexus-default.properties</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置开机启动<br> 在目录/etc/systemd/system/添加nexus.service文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /etc/systemd/system/nexus.service</div></pre></td></tr></table></figure>
+<p> 添加如下内容</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=nexus service</div><div class="line">After=network.target</div><div class="line">  </div><div class="line">[Service]</div><div class="line">Type=forking</div><div class="line">LimitNOFILE=65536</div><div class="line">ExecStart=/opt/nexus/nexus-3.15.2-01/bin/nexus start</div><div class="line">ExecStop=/opt/nexus/nexus-3.15.2-01/bin/nexus stop</div><div class="line">User=root</div><div class="line">Restart=on-abort</div><div class="line">  </div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p> 激活服务并添加开机启动</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># systemctl daemon-reload</div><div class="line"># systemctl enable nexus.service</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># systemctl start nexus.service</div></pre></td></tr></table></figure>
+<p>查看日志，监控是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># tail -f /opt/nexus/sonatype-work/nexus3/log/nexus.log</div></pre></td></tr></table></figure></p>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>我想用80端口，所以用root用户启动。用nexus用户启动无法用80端口，会报一个错误，没找到解决办法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">jvm 1    | 2017-04-28 11:20:10,040+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED InstrumentedSelectChannelCon</div><div class="line">nector@0.0.0.0:80: java.net.SocketException: Permission denied</div><div class="line">jvm 1    | java.net.SocketException: Permission denied</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2014</div><div class="line">0903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2</div><div class="line">0140903]</div><div class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.InstrumentedSelectChannelConnector.doStart(InstrumentedSelectChannelConnector.java:85) ~[nexus-bootstra</div><div class="line">p-2.12.0-01.jar:2.12.0-01]</div><div class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.Server.doStart(Server.java:293) [jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.JettyServer$JettyMainThread.run(JettyServer.java:247) [nexus-bootstrap-2.12.0-01.jar:2.12.0-01]</div><div class="line">jvm 1    | 2017-04-28 11:20:10,041+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@7fafc8f3: java.net.SocketException: Permission denied</div><div class="line">jvm 1    | java.net.SocketException: Permission denied</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</div><div class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</div></pre></td></tr></table></figure></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://help.sonatype.com/repomanager3/installation/run-as-a-service#RunasaService-systemd" target="_blank" rel="external">centos7 开机启动</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Redhat7.5 替换免费的yum]]></title>
+      <url>http://tungsing.cc/2019/02/28/linux/linux-yum/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>在没有激活的机器上使用yum命令无法使用，临时替换免费版。推荐使用正版！</p>
+</blockquote>
+<p><img src="/images/linux/redhat_yum.jpg" alt=""></p>
+<a id="more"></a>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ol>
+<li><p>检查已经安装yum包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># rpm -qa | grep yum</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除已安装的yum包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># rpm -qa | grep yum|xargs rpm -e --nodeps</div></pre></td></tr></table></figure>
+</li>
+<li><p>下载yum相关包<br>浏览器打开<a href="https://opsx.alibaba.com/mirror" target="_blank" rel="external">阿里镜像站</a>,网址可能会变</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># wget https://mirrors.aliyun.com/centos/7.6.1810/os/x86_64/Packages/yum-3.4.3-161.el7.centos.noarch.rpm</div><div class="line"># wegt https://mirrors.aliyun.com/centos/7.6.1810/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm</div><div class="line"># wget https://mirrors.aliyun.com/centos/7.6.1810/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-50.el7.noarch.rpm</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装yum</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># rpm -ivh yum-*</div></pre></td></tr></table></figure>
+</li>
+<li><p>下载源地址文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd /etc/yum.repos.d</div><div class="line"># wget http://mirrors.aliyun.com/repo/Centos-7.repo</div></pre></td></tr></table></figure>
+</li>
+<li><p>备份原源地址文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># mv /etc/yum.repos.d/redhat.repo /etc/yum.repos.d/redhat.repo.bak</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改阿里源地址文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># sed -i &quot;s;\$releasever;7.6.1810;g&quot; /etc/yum.repos.d/Centos-7.repo</div></pre></td></tr></table></figure>
+<p> 7.6.1810为版本号</p>
+</li>
+<li><p>清理缓存和重新生成缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># yum clean all</div><div class="line"># yum makecache</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://blog.csdn.net/qq_32368213/article/details/80446688" target="_blank" rel="external">RedHat 7替换yum为免费版 CentOS7 yum</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[OpenSSL 生成自定义证书]]></title>
+      <url>http://tungsing.cc/2019/01/06/web/container/ssl_cert/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>本文用来记录通过OpenSSL生成自定义证书并在浏览器设置可信任</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS7 系统</li>
+<li>nginx 1.12.2</li>
+<li>Windows 10</li>
+<li>IE 11</li>
+<li>chrome 71</li>
+</ul>
+<a id="more"></a>
+<h4 id="OpenSSL配置"><a href="#OpenSSL配置" class="headerlink" title="OpenSSL配置"></a>OpenSSL配置</h4><p>在linux系统中修改OpenSSL配置是为了,让chrome浏览器对为网站可信任<br><img src="/images/web/container/sslcert.jpg" alt=""></p>
+<ol>
+<li><p>拷贝OpenSSL配置文件准备修改</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd /etc/pki/tls/</div><div class="line"># cp openssl.cnf openssl_m.cnf</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改openssl_m.cnf文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /etc/pki/tls/openssl_m.cnf</div></pre></td></tr></table></figure>
+<p> a. 找到[ req ] 段落，添加req_extentions  = v3_req配置：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">####################################################################</div><div class="line">[ req ]</div><div class="line">default_bits        = 2048</div><div class="line">default_md      = sha256</div><div class="line">default_keyfile     = privkey.pem</div><div class="line">distinguished_name  = req_distinguished_name</div><div class="line">attributes      = req_attributes</div><div class="line">x509_extensions = v3_ca # The extentions to add to the self signed cert</div><div class="line">#需要添加的配置</div><div class="line">req_extentions  = v3_req</div></pre></td></tr></table></figure>
+<p> b. 添加v3_req配置信息</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[ v3_req ]</div><div class="line"></div><div class="line"># Extensions to add to a certificate request</div><div class="line"></div><div class="line">basicConstraints = CA:FALSE</div><div class="line">keyUsage = nonRepudiation, digitalSignature, keyEncipherment</div><div class="line">#需要添加的配置</div><div class="line">subjectAltName = @alt_names</div></pre></td></tr></table></figure>
+<p> c. 添加alt_names配置信息,可以添加多个</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[ alt_names ]</div><div class="line">DNS.1 = www.test.com</div></pre></td></tr></table></figure>
+<p> 注：这里填入的即为Subject Alternative Names的域名名称</p>
+</li>
+</ol>
+<h4 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h4><p>直接用脚本生成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line"></div><div class="line"># create self-signed server certificate:</div><div class="line"></div><div class="line">read -p &quot;Enter your domain [www.example.com]: &quot; DOMAIN</div><div class="line"></div><div class="line">echo &quot;Create server key...&quot;</div><div class="line"></div><div class="line">openssl genrsa -des3 -out $DOMAIN.key 2048</div><div class="line"></div><div class="line">echo &quot;Create server certificate signing request...&quot;</div><div class="line"></div><div class="line">SUBJECT=&quot;/C=US/ST=Mars/L=iTranswarp/O=iTranswarp/OU=iTranswarp/CN=$DOMAIN&quot;</div><div class="line"></div><div class="line">#openssl req -new  -subj $SUBJECT -key $DOMAIN.key -out $DOMAIN.csr -extensions v3_req</div><div class="line">openssl req -new -subj $SUBJECT  -key $DOMAIN.key -out $DOMAIN.csr</div><div class="line"></div><div class="line"></div><div class="line">echo &quot;Remove password...&quot;</div><div class="line"></div><div class="line">mv $DOMAIN.key $DOMAIN.origin.key</div><div class="line">openssl rsa -in $DOMAIN.origin.key -out $DOMAIN.key</div><div class="line"></div><div class="line">echo &quot;Sign SSL certificate...&quot;</div><div class="line"></div><div class="line">openssl x509 -req -days 3650 -extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req   -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt</div><div class="line"></div><div class="line">echo &quot;TODO:&quot;</div><div class="line">echo &quot;Copy $DOMAIN.crt to /etc/nginx/ssl/$DOMAIN.crt&quot;</div><div class="line">echo &quot;Copy $DOMAIN.key to /etc/nginx/ssl/$DOMAIN.key&quot;</div><div class="line">echo &quot;Add configuration in nginx:&quot;</div><div class="line">echo &quot;server &#123;&quot;</div><div class="line">echo &quot;    ...&quot;</div><div class="line">echo &quot;    listen 443 ssl;&quot;</div><div class="line">echo &quot;    ssl_certificate     /etc/nginx/ssl/$DOMAIN.crt;&quot;</div><div class="line">echo &quot;    ssl_certificate_key /etc/nginx/ssl/$DOMAIN.key;&quot;</div><div class="line">echo &quot;&#125;&quot;</div></pre></td></tr></table></figure></p>
+<p>关键点就是：-extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req给证书添加上扩展属性<br><img src="/images/web/container/certext.jpg" alt=""></p>
+<h4 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h4><ol>
+<li>把生成的xxx.crt 和xxx.key 拷贝到/etc/nginx/ssl/</li>
+<li><p>修改nginx.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    ssl on;</div><div class="line">    ssl_certificate     /etc/nginx/ssl/www.test.com.crt;</div><div class="line">    ssl_certificate_key /etc/nginx/ssl/www.test.com.key;</div><div class="line">    listen       443 default_server;</div><div class="line">    listen       [::]:443 default_server;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启nginx服务</p>
+</li>
+</ol>
+<h4 id="导入证书"><a href="#导入证书" class="headerlink" title="导入证书"></a>导入证书</h4><ol>
+<li>把www.test.com.crt拷贝到windows系统中</li>
+<li>双击www.test.com.crt文件打开</li>
+<li>点击“Install Certificate”<br><img src="/images/web/container/install_cert.jpg" alt=""></li>
+<li>选择“Local Machine” 点击“Next”<br><img src="/images/web/container/install_cert2.jpg" alt=""></li>
+<li>选择“Place all certificates in the following store” 点击“Browser”</li>
+<li>选择“Trusted Root Certification Authorities” 点击“OK”<br><img src="/images/web/container/install_cert3.jpg" alt=""></li>
+<li>点击“Next” 点击“Finish”</li>
+</ol>
+<h4 id="再次访问网站"><a href="#再次访问网站" class="headerlink" title="再次访问网站"></a>再次访问网站</h4><p><img src="/images/web/container/sslcert_chrome.jpg" alt=""></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="https://blog.csdn.net/zssai2015/article/details/85049905" target="_blank" rel="external">OpenSSL创建的自签名证书在chrome端无法信任</a></li>
+<li><a href="https://www.linuxidc.com/Linux/2016-12/138670.htm" target="_blank" rel="external">OpenSSL生成v3证书方法及配置文件</a></li>
+<li><a href="https://www.liaoxuefeng.com/article/0014189023237367e8d42829de24b6eaf893ca47df4fb5e000" target="_blank" rel="external">给Nginx配置一个自签名的SSL证书</a></li>
+<li><a href="https://github.com/michaelliao/itranswarp.js/blob/master/conf/ssl/gencert.sh" target="_blank" rel="external">脚本</a></li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nginx+keepalived 主从搭建]]></title>
+      <url>http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/</url>
+      <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>本文用来记录nginx加keepalived实现高可用，避免出现单点故障。</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS7 系统</li>
+<li>nginx 1.12.2</li>
+<li>keepalived 1.3.5</li>
+</ul>
+<a id="more"></a>
+<h4 id="规划图"><a href="#规划图" class="headerlink" title="规划图"></a>规划图</h4><p><img src="/images/web/container/nginx_keepalived.png" alt=""></p>
+<table>
+<thead>
+<tr>
+<th>虚拟IP</th>
+<th>真实IP</th>
+<th>hostname</th>
+<th>nginx端口</th>
+<th>主从</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10.200.1.200</td>
+<td>10.200.1.5</td>
+<td>nginx_master</td>
+<td>80</td>
+<td>Master</td>
+</tr>
+<tr>
+<td>10.200.1.200</td>
+<td>10.200.1.6</td>
+<td>nginx_backup</td>
+<td>80</td>
+<td>Backup</td>
+</tr>
+</tbody>
+</table>
+<h4 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h4><p>把搭建过程中的坑写的前边，避免下次再遇到</p>
+<ol>
+<li>机器的hostname一定要修改，不能出现相同的，相同会导致VIP不漂移</li>
+<li>防火墙开放80端口</li>
+<li>selinux对keepalived的影响，我遇到的是在执行监控脚本无法调用系统服务命令(systemctl stop keepalived),解决办法有3<ul>
+<li>不调用系统服务命令来启动或关闭应用，只用kill杀死进程</li>
+<li>关闭selinux</li>
+<li>找到selinux具体是什么权限导致在监控脚本无法调用系统服务命令(我没找到)</li>
+</ul>
+</li>
+</ol>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>在VirtualBox下安装CentOS7操作系统，配置IP地址和hostname</li>
+<li><p>通过yum命令来安装epel-release、nginx、keepalived</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># yum install epel-release -y</div><div class="line"># yum install nginx -y</div><div class="line"># yum install keepalived -y</div></pre></td></tr></table></figure>
+</li>
+<li><p>复制第一步安装好的系统，配置IP地址和hostname</p>
+</li>
+</ol>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="Master配置"><a href="#Master配置" class="headerlink" title="Master配置"></a>Master配置</h5><ol>
+<li><p>keepalived 配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi etc/keepalived/keepalived.conf</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line">#全局配置</div><div class="line">global_defs &#123;</div><div class="line">    #运行keepalived的机器的一个标识</div><div class="line">    router_id LVS_DEVEL_MASTER</div><div class="line">&#125;</div><div class="line"></div><div class="line">#VRRPD配置</div><div class="line">vrrp_script check_nginx &#123;</div><div class="line">  #脚本监测</div><div class="line">  script &quot;/opt/check_nginx.sh&quot;</div><div class="line">  #脚本执行间隔，每2s检测一次</div><div class="line">  interval 2</div><div class="line">  #脚本结果导致的优先级变更，检测失败（脚本返回非0）则优先级 -20</div><div class="line">  weight -20</div><div class="line">&#125;</div><div class="line"></div><div class="line">#定义vrrp实例</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #指定keepalived的角色，MASTER表示此主机是主服务器，BACKUP表示此主机是备用服务器</div><div class="line">    state MASTER</div><div class="line">    #指定HA监测网络的接口。与本机 IP 地址所在的网络接口相同</div><div class="line">    interface enp0s3</div><div class="line">    #虚拟路由标识，这个标识是一个数字，同一个vrrp实例使用唯一的标识。即同一vrrp_instance下，MASTER和BACKUP必须是一致的  </div><div class="line">    virtual_router_id 51</div><div class="line">    #定义优先级，数字越大，优先级越高</div><div class="line">    priority 100</div><div class="line">    #设定MASTER与BACKUP负载均衡器之间同步检查的时间间隔，单位是秒</div><div class="line">    advert_int 1</div><div class="line">    #设置验证类型和密码。主从必须一样</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    #VRRP HA 虚拟地址 如果有多个VIP，继续换行填写 </div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.200.1.200</div><div class="line">    &#125;</div><div class="line">    #执行nginx检测脚本。注意这个设置不能紧挨着写在vrrp_script配置块的后面（实验中碰过的坑），否则nginx监控失效！！</div><div class="line">    track_script &#123;</div><div class="line">       check_nginx</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>监测脚本编写</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">#检查nginx进程是否存在</div><div class="line">counter=$(ps -C nginx --no-heading|wc -l)</div><div class="line">pids=$(pidof keepalived)</div><div class="line">if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; ]; then</div><div class="line">     #尝试启动一次nginx，停止5秒后再次检测</div><div class="line">     #/usr/bin/systemctl start nginx</div><div class="line">    sleep 2</div><div class="line">    counter=$(ps -C nginx --no-heading|wc -l)</div><div class="line">    if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; -a &quot;$&#123;pids&#125;&quot; != &quot;&quot; ]; then</div><div class="line">        #如果启动没成功，就杀掉keepalive触发主备切换</div><div class="line">        #/usr/bin/systemctl stop keepalived</div><div class="line">        #如果关闭了selinux可以只用上边的命令，如果没有直接用kill</div><div class="line">        #kill -9 $pids</div><div class="line">    fi</div><div class="line">fi</div></pre></td></tr></table></figure>
+</li>
+<li><p>监测脚本授权</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># chmod +x /opt/check_nginx.sh</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="Backup配置"><a href="#Backup配置" class="headerlink" title="Backup配置"></a>Backup配置</h5><ol>
+<li><p>keepalived 配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /etc/keepalived/keepalived.conf</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line"></div><div class="line">global_defs &#123;</div><div class="line">    #和Master不同的地方</div><div class="line">    router_id LVS_DEVEL_BACKUP</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_script check_nginx &#123;</div><div class="line">  script &quot;sh /opt/check_nginx.sh&quot; </div><div class="line">  interval 2 </div><div class="line">  weight -20</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #和Master不同的地方</div><div class="line">    state BACKUP</div><div class="line">    interface enp0s3</div><div class="line">    virtual_router_id 51</div><div class="line">    #和Master不同的地方</div><div class="line">    priority 90</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.200.1.200</div><div class="line">    &#125;</div><div class="line">    track_script &#123;</div><div class="line">       check_nginx</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>直接把Master的脚本拷贝过来</p>
+</li>
+</ol>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><ol>
+<li><p>关闭master的nginx服务，测试nginx是否会被重启<br> <img src="/images/web/container/nk_master_1.jpg" alt=""><br> 检查页面是否正常</p>
+</li>
+<li><p>测试VIP是否会漂移</p>
+<ul>
+<li>注释检测脚本启动nginx服务的命令</li>
+<li>查看页面<br><img src="/images/web/container/nk_master_2.jpg" alt=""></li>
+<li>执行systemctl stop nginx命令，查看页面<br><img src="/images/web/container/nk_backup_1.jpg" alt=""></li>
+</ul>
+</li>
+</ol>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>本记录只记录了核心的部分，如果是生成环境用，还有在熟悉其他的配置，比如发邮件配置等</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="https://juejin.im/entry/5b21c4c55188257d7541c860" target="_blank" rel="external">nginx笔记</a></li>
+<li><a href="https://blog.csdn.net/u010391029/article/details/48311699" target="_blank" rel="external">Keepalived原理与实战精讲–VRRP协议</a></li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[redis info 命令]]></title>
+      <url>http://tungsing.cc/2018/12/10/cache/redis/redis-info/</url>
+      <content type="html"><![CDATA[<p>收集了info命令的中文解释</p>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>中文解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server</td>
+<td>服务信息</td>
+</tr>
+<tr>
+<td>redis_version</td>
+<td>Redis 服务器版本</td>
+</tr>
+<tr>
+<td>redis_git_sha1</td>
+<td>Git SHA1</td>
+</tr>
+<tr>
+<td>redis_git_dirty</td>
+<td>Git dirty flag</td>
+</tr>
+<tr>
+<td>redis_build_id</td>
+<td>redis build id</td>
+</tr>
+<tr>
+<td>redis_mode</td>
+<td>运行模式，单机或者集群</td>
+</tr>
+<tr>
+<td>os</td>
+<td>Redis 服务器的宿主操作系统</td>
+</tr>
+<tr>
+<td>arch_bits</td>
+<td>架构（32 或 64 位）</td>
+</tr>
+<tr>
+<td>multiplexing_api</td>
+<td>Redis 所使用的事件处理机制</td>
+</tr>
+<tr>
+<td>process_id</td>
+<td>服务器进程的 PID</td>
+</tr>
+<tr>
+<td>run_id</td>
+<td>Redis 服务器的随机标识符（用于 Sentinel 和集群）</td>
+</tr>
+<tr>
+<td>tcp_port</td>
+<td>TCP/IP 监听端口</td>
+</tr>
+<tr>
+<td>uptime_in_seconds</td>
+<td>自 Redis 服务器启动以来，经过的秒数</td>
+</tr>
+<tr>
+<td>uptime_in_days</td>
+<td>自 Redis 服务器启动以来，经过的天数</td>
+</tr>
+<tr>
+<td>hz</td>
+<td>redis内部调度（进行关闭timeout的客户端，删除过期key等等）频率，程序规定serverCron每秒运行10次</td>
+</tr>
+<tr>
+<td>lru_clock</td>
+<td>以分钟为单位进行自增的时钟，用于 LRU 管理</td>
+</tr>
+<tr>
+<td>executable</td>
+<td></td>
+</tr>
+<tr>
+<td>config_file</td>
+<td>配置文件路径</td>
+</tr>
+<tr>
+<td>Clients</td>
+<td>客户端信息</td>
+</tr>
+<tr>
+<td>connected_clients</td>
+<td>已连接客户端的数量（不包括通过从属服务器连接的客户端）</td>
+</tr>
+<tr>
+<td>client_longest_output_list</td>
+<td>当前连接的客户端当中，最长的输出列表</td>
+</tr>
+<tr>
+<td>client_biggest_input_buf</td>
+<td>当前连接的客户端当中，最大输入缓存</td>
+</tr>
+<tr>
+<td>blocked_clients</td>
+<td>正在等待阻塞命令(BLPOP、BRPOP、BRPOPLPUSH)的客户端的数量</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>内存信息</td>
+</tr>
+<tr>
+<td>used_memory</td>
+<td>由 Redis 分配器分配的内存总量，以字节(byte)为单位</td>
+</tr>
+<tr>
+<td>used_memory_human</td>
+<td>以人类可读的格式返回 Redis 分配的内存总量</td>
+</tr>
+<tr>
+<td>used_memory_rss</td>
+<td>从操作系统的角度，返回 Redis 已分配的内存总量（俗称常驻集大小）。这个值和 top 、 ps 等命令的输出一致。</td>
+</tr>
+<tr>
+<td>used_memory_rss_human</td>
+<td>以人类可读的格式返回Redis已分配的内存总量</td>
+</tr>
+<tr>
+<td>used_memory_peak</td>
+<td>Redis 的内存消耗峰值（以字节为单位）</td>
+</tr>
+<tr>
+<td>used_memory_peak_human</td>
+<td>以人类可读的格式返回 Redis 的内存消耗峰值</td>
+</tr>
+<tr>
+<td>total_system_memory</td>
+<td></td>
+</tr>
+<tr>
+<td>total_system_memory_human</td>
+<td></td>
+</tr>
+<tr>
+<td>used_memory_lua</td>
+<td>lua引擎所使用的内存大小(以字节为单位)</td>
+</tr>
+<tr>
+<td>used_memory_lua_human</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory_human</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory_policy</td>
+<td>内存淘汰机制，当内存使用达到阈值的时候，所有引起申请内存的命令会报错</td>
+</tr>
+<tr>
+<td>mem_fragmentation_ratio</td>
+<td>used_memory_rss和used_memory之间的比率，小于1表示使用了swap，大于1表示碎片比较多</td>
+</tr>
+<tr>
+<td>mem_allocator</td>
+<td>在编译时指定的redis所使用的内存分配器。可以是libc、jemalloc或者tcmalloc</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>持久化信息</td>
+</tr>
+<tr>
+<td>loading</td>
+<td>服务器是否正在载入持久化文件</td>
+</tr>
+<tr>
+<td>rdb_changes_since_last_save</td>
+<td>离最近一次成功生成rdb文件，写入命令的个数，即有多少个写入命令没有持久化</td>
+</tr>
+<tr>
+<td>rdb_bgsave_in_progress</td>
+<td>服务器是否正在创建rdb文件</td>
+</tr>
+<tr>
+<td>rdb_last_save_time</td>
+<td>离最近一次成功创建rdb文件的时间戳。当前时间戳 - rdb_last_save_time=多少秒未成功生成rdb文件</td>
+</tr>
+<tr>
+<td>rdb_last_bgsave_status</td>
+<td>最近一次rdb持久化是否成功</td>
+</tr>
+<tr>
+<td>rdb_last_bgsave_time_sec</td>
+<td>最近一次成功生成rdb文件耗时秒数</td>
+</tr>
+<tr>
+<td>rdb_current_bgsave_time_sec</td>
+<td>如果服务器正在创建rdb文件，那么这个域记录的就是当前的创建操作已经耗费的秒数</td>
+</tr>
+<tr>
+<td>aof_enabled</td>
+<td>是否开启了aof</td>
+</tr>
+<tr>
+<td>aof_rewrite_in_progress</td>
+<td>标识aof的rewrite操作是否在进行中</td>
+</tr>
+<tr>
+<td>aof_rewrite_scheduled</td>
+<td>rewrite任务计划，当客户端发送bgrewriteaof指令，如果当前rewrite子进程正在执行，那么将客户端请求的bgrewriteaof变为计划任务，待aof子进程结束后执行rewrite</td>
+</tr>
+<tr>
+<td>aof_last_rewrite_time_sec</td>
+<td>最近一次aof rewrite耗费的时长</td>
+</tr>
+<tr>
+<td>aof_current_rewrite_time_sec</td>
+<td>如果rewrite操作正在进行，则记录所使用的时间，单位秒</td>
+</tr>
+<tr>
+<td>aof_last_bgrewrite_status</td>
+<td>上次bgrewriteaof操作的状态</td>
+</tr>
+<tr>
+<td>aof_last_write_status</td>
+<td>上次aof写入状态</td>
+</tr>
+<tr>
+<td>Stats</td>
+<td>一般统计信息</td>
+</tr>
+<tr>
+<td>total_connections_received</td>
+<td>新创建连接个数,如果新创建连接过多，过度地创建和销毁连接对性能有影响，说明短连接严重或连接池使用有问题，需调研代码的连接设置</td>
+</tr>
+<tr>
+<td>total_commands_processed</td>
+<td>redis处理的命令数</td>
+</tr>
+<tr>
+<td>instantaneous_ops_per_sec</td>
+<td>redis当前的qps，redis内部较实时的每秒执行的命令数</td>
+</tr>
+<tr>
+<td>total_net_input_bytes</td>
+<td>redis网络入口流量字节数</td>
+</tr>
+<tr>
+<td>total_net_output_bytes</td>
+<td>redis网络出口流量字节数</td>
+</tr>
+<tr>
+<td>instantaneous_input_kbps</td>
+<td>redis网络入口kps</td>
+</tr>
+<tr>
+<td>instantaneous_output_kbps</td>
+<td>redis网络出口kps</td>
+</tr>
+<tr>
+<td>rejected_connections</td>
+<td>拒绝的连接个数，redis连接个数达到maxclients限制，拒绝新连接的个数</td>
+</tr>
+<tr>
+<td>sync_full</td>
+<td>主从完全同步成功次数</td>
+</tr>
+<tr>
+<td>sync_partial_ok</td>
+<td>主从部分同步成功次数</td>
+</tr>
+<tr>
+<td>sync_partial_err</td>
+<td>主从部分同步失败次数</td>
+</tr>
+<tr>
+<td>expired_keys</td>
+<td>运行以来过期的key的数量</td>
+</tr>
+<tr>
+<td>evicted_keys</td>
+<td>运行以来剔除(超过了maxmemory后)的key的数量</td>
+</tr>
+<tr>
+<td>keyspace_hits</td>
+<td>命中次数</td>
+</tr>
+<tr>
+<td>keyspace_misses</td>
+<td>没命中次数</td>
+</tr>
+<tr>
+<td>pubsub_channels</td>
+<td>当前使用中的频道数量</td>
+</tr>
+<tr>
+<td>pubsub_patterns</td>
+<td>当前使用的模式的数量</td>
+</tr>
+<tr>
+<td>latest_fork_usec</td>
+<td>最近一次fork操作阻塞redis进程的耗时数，单位微秒</td>
+</tr>
+<tr>
+<td>migrate_cached_sockets</td>
+<td></td>
+</tr>
+<tr>
+<td>Replication</td>
+<td>主从信息</td>
+</tr>
+<tr>
+<td>role</td>
+<td>实例的角色，是master or slave</td>
+</tr>
+<tr>
+<td>connected_slaves</td>
+<td>连接的slave实例个数</td>
+</tr>
+<tr>
+<td>master_repl_offset</td>
+<td>主从同步偏移量,此值如果和上面的offset相同说明主从一致没延迟</td>
+</tr>
+<tr>
+<td>repl_backlog_active</td>
+<td>复制积压缓冲区是否开启</td>
+</tr>
+<tr>
+<td>repl_backlog_size</td>
+<td>复制积压缓冲大小</td>
+</tr>
+<tr>
+<td>repl_backlog_first_byte_offset</td>
+<td>复制缓冲区里偏移量的大小</td>
+</tr>
+<tr>
+<td>repl_backlog_histlen</td>
+<td>此值等于 master_repl_offset-repl_backlog_first_byte_offset,该值不会超过repl_backlog_size的大小</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>CPU信息</td>
+</tr>
+<tr>
+<td>used_cpu_sys</td>
+<td>将所有redis主进程在核心态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_user</td>
+<td>将所有redis主进程在用户态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_sys_children</td>
+<td>将后台进程在核心态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_user_children</td>
+<td>将后台进程在用户态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>Cluster</td>
+<td>集群信息</td>
+</tr>
+<tr>
+<td>cluster_enabled</td>
+<td>实例是否启用集群模式</td>
+</tr>
+<tr>
+<td>Keyspace</td>
+<td>数据库相关的统计信息</td>
+</tr>
+<tr>
+<td>db0</td>
+<td>db0的key的数量,以及带有生存期的key的数,平均存活时间</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a></p>
+<ol>
+<li><a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[redis集群搭建]]></title>
+      <url>http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>CentOS7 操作系统</li>
+<li>已安装好的Redis，具体安装看上一篇</li>
+</ul>
+<a id="more"></a>
+<h4 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h4><h5 id="同台机器集群搭建"><a href="#同台机器集群搭建" class="headerlink" title="同台机器集群搭建"></a>同台机器集群搭建</h5><ol>
+<li><p>创建文件夹<br>我们设计集群中 Redis 节点的端口号为 9000-9005，端口号即集群下各实例文件夹。数据存放在 端口号/data 文件夹中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># mkdir /opt/redis_cluster</div><div class="line"># cd /opt/redis_cluster</div><div class="line"># mkdir -p 9000/data 9001/data 9002/data 9003/data 9004/data 9005/data</div></pre></td></tr></table></figure>
+</li>
+<li><p>复制一个redis.conf文件到9000目录下，并修改<br>从源码包中复制配置文件并修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cp /opt/redis-4.0.11/redis.conf /opt/redis_cluster/9000</div><div class="line"># vi /opt/redis_cluster/9000/redis.conf</div></pre></td></tr></table></figure>
+<p>重点修改以下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">port 9000（每个节点的端口号）</div><div class="line">daemonize yes</div><div class="line">#bind 127.0.0.1(绑定当前机器 IP,可以不配置)</div><div class="line">dir /opt/redis_cluster/9000/data/（数据文件存放位置）</div><div class="line">pidfile /var/run/redis_9000.pid（pid 9000和port要对应）</div><div class="line">cluster-enabled yes（启动集群模式）</div><div class="line">cluster-config-file nodes9000.conf（9001和port要对应）</div><div class="line">cluster-node-timeout 15000</div><div class="line">appendonly yes</div><div class="line">protected-mode no(保护模式设置为no，如果启用了，则只能够通过lookback ip(127.0.0.1)访问Redis cache)</div></pre></td></tr></table></figure>
+</li>
+<li><p>把配置好的复制5份</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9001</div><div class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9002</div><div class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9003</div><div class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9004</div><div class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9005</div></pre></td></tr></table></figure>
+</li>
+<li><p>挨个修改实例的配置文件<br>通过搜索会发现其实只有四个点需要修改，我们全局替换下吧，进入相应的节点文件夹，做替换就好了，不放心再手工检查下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># vi /opt/redis_cluster/9001/redis.conf</div><div class="line">:%s/9001/9002</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9000/redis.conf</div><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9001/redis.conf</div><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9002/redis.conf</div><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9003/redis.conf</div><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9004/redis.conf</div><div class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9005/redis.conf</div></pre></td></tr></table></figure>
+</li>
+<li><p>检查是否启动成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># ps -ef |grep redis</div><div class="line"># /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</div></pre></td></tr></table></figure>
+<p>连接成功，set值会报(error) CLUSTERDOWN Hash slot not served错误，原因是实例之间无法相互发现，我们继续</p>
+</li>
+<li><p>安装集群所需软件<br>由于 Redis 集群是用ruby实现的集群管理，所以安装ruby相关软件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># yum install ruby</div><div class="line"># yum install rubygems</div><div class="line"># gem install redis</div></pre></td></tr></table></figure>
+<p>此处需要安装大于等于2.2的ruby版本</p>
+</li>
+<li><p>配置集群<br>通过redis-trib.rb命令创建集群，如果/usr/local/bin/目录没有，从源码包拷贝一个即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /usr/local/bin/redis-trib.rb create --replicas 1 127.0.0.1:9000 127.0.0.1:9001 127.0.0.1:9002 127.0.0.1:9003 127.0.0.1:9004 127.0.0.1:9005</div></pre></td></tr></table></figure>
+<p>交互过程中输入yes，同意即可，–replicas 1表示主从复制比例为 1:1，即一个主节点对应一个从节点</p>
+</li>
+<li><p>验证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">  # /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</div><div class="line">127.0.0.1:9000&gt; cluster info</div><div class="line">cluster_state:ok</div><div class="line">cluster_slots_assigned:16384</div><div class="line">cluster_slots_ok:16384</div><div class="line">cluster_slots_pfail:0</div><div class="line">cluster_slots_fail:0</div><div class="line">cluster_known_nodes:6</div><div class="line">cluster_size:3</div><div class="line">cluster_current_epoch:6</div><div class="line">cluster_my_epoch:1</div><div class="line">cluster_stats_messages_ping_sent:1122</div><div class="line">cluster_stats_messages_pong_sent:1060</div><div class="line">cluster_stats_messages_sent:2182</div><div class="line">cluster_stats_messages_ping_received:1060</div><div class="line">cluster_stats_messages_pong_received:1102</div><div class="line">cluster_stats_messages_received:2162</div><div class="line">127.0.0.1:9000&gt; cluster nodes</div><div class="line">4f8c920acc559c11153c5aaf856820ca39c443cb 10.200.1.11:9000@19000 myself,master - 0 1544424469000 1 connected 0-5460</div><div class="line">ec2af1f981c08bf01131545369c0600b91c5172c 10.200.1.11:9004@19004 slave 4f8c920acc559c11153c5aaf856820ca39c443cb 0 1544424468000 5 connected</div><div class="line">bcc85b3502c107f18557d11889739a2b6f0ed896 10.200.1.11:9003@19003 slave aadb89ee25e9849e758529c477f9af6ede99850a 0 1544424467000 4 connected</div><div class="line">923d1b67ee012927bf4de345143d5f93670c97b5 10.200.1.11:9001@19001 master - 0 1544424468909 2 connected 5461-10922</div><div class="line">aadb89ee25e9849e758529c477f9af6ede99850a 10.200.1.11:9002@19002 master - 0 1544424469920 3 connected 10923-16383</div><div class="line">70fad7237c2e8bb308167f7e8b7a7b670d333564 10.200.1.11:9005@19005 slave 923d1b67ee012927bf4de345143d5f93670c97b5 0 1544424468000 6 connected</div><div class="line">127.0.0.1:9000&gt;</div></pre></td></tr></table></figure>
+<p>通过命令，可以详细的看出集群信息和各个节点状态，主从信息以及连接数、槽信息等</p>
+</li>
+<li><p>测试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># /usr/local/bin/redis-cli -c -h 10.200.1.11 -p 9000</div><div class="line">10.200.1.11:9000&gt; set name test</div><div class="line">-&gt; Redirected to slot [5798] located at 10.200.1.11:9001</div><div class="line">OK</div><div class="line">10.200.1.11:9001&gt; get name</div><div class="line">&quot;test&quot;</div><div class="line">10.200.1.11:9001&gt; keys *</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;cache:test3&quot;</div><div class="line">10.200.1.11:9001&gt;</div></pre></td></tr></table></figure>
+<p>-c 表示集群模式</p>
+</li>
+</ol>
+<h5 id="不同机器的集群搭建"><a href="#不同机器的集群搭建" class="headerlink" title="不同机器的集群搭建"></a>不同机器的集群搭建</h5><p>和同一台机器搭建唯一的区别是通过redis-trib.rb命令创建集群，随便在一个实例上执行即可</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://www.cnblogs.com/mafly/p/redis_cluster.html" target="_blank" rel="external">Redis 集群搭建详细指南</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Linux下安装redis]]></title>
+      <url>http://tungsing.cc/2018/12/10/cache/redis/redis-install-linux/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>CentOS7 操作系统</li>
+<li>Redis4 安装包</li>
+</ul>
+<a id="more"></a>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="yum方式"><a href="#yum方式" class="headerlink" title="yum方式"></a>yum方式</h5><ol>
+<li><p>添加常用源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># yum install epel-release</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># yum install redis -y</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># systemctl start redis.service</div></pre></td></tr></table></figure>
+</li>
+<li><p>把redis服务作为开机启动项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># systemctl enable redis.service</div></pre></td></tr></table></figure>
+</li>
+<li><p>测试是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># redis-cli</div></pre></td></tr></table></figure>
+<p>测试结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name test</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">&quot;test&quot;</div><div class="line">127.0.0.1:6379&gt; keys *</div><div class="line">1) &quot;name&quot;</div><div class="line">127.0.0.1:6379&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="源码方式"><a href="#源码方式" class="headerlink" title="源码方式"></a>源码方式</h5><ol>
+<li><p><a href="https://redis.io/download" target="_blank" rel="external">官网</a>下载所需源码安装包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</div></pre></td></tr></table></figure>
+</li>
+<li><p>解压源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># tar -zxvf redis-4.0.11.tar.gz</div></pre></td></tr></table></figure>
+</li>
+<li><p>打开解压目录执行安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># cd /opt/redis-4.0.11/src</div><div class="line"># make</div><div class="line"># make install</div></pre></td></tr></table></figure>
+<p>安装过程中如果出现少依赖包，安装好依赖包后再执行此命令，<br>默认安装到/usr/local/bin/目录，也可以通过–prefix=/path自定义安装目录</p>
+</li>
+<li><p>检查是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># cd /usr/local/bin/</div><div class="line"># ls</div><div class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置并启动<br>拷贝/opt/redis-4.0.11/redis.conf文件到一个目录或不拷贝直接用,然后启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /usr/local/bin/redis-server /opt/redis-4.0.11/redis.conf</div></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /usr/local/bin/redis-cli</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>开始Redis之旅吧！</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Windows下安装redis]]></title>
+      <url>http://tungsing.cc/2018/12/10/cache/redis/redis-install/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>Windows10 操作系统</li>
+<li>Redis 安装包</li>
+</ul>
+<h4 id="下载redis安装包"><a href="#下载redis安装包" class="headerlink" title="下载redis安装包"></a>下载redis安装包</h4><p>在<a href="https://github.com/MicrosoftArchive/redis/releases" target="_blank" rel="external">github</a>下载Redis-x64-3.2.100.zip包</p>
+<a id="more"></a>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="命令方式"><a href="#命令方式" class="headerlink" title="命令方式"></a>命令方式</h5><ol>
+<li>解压Redis-x64-3.2.100.zip</li>
+<li><p>在解压后文件夹中的CMD命令窗口运行下面命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># redis-server.exe redis.windows.conf</div></pre></td></tr></table></figure>
+<p> 结果如图：<br> <img src="/images/redis/win_redis.jpg" alt=""></p>
+</li>
+</ol>
+<h5 id="服务方式"><a href="#服务方式" class="headerlink" title="服务方式"></a>服务方式</h5><ol>
+<li>解压Redis-x64-3.2.100.zip</li>
+<li><p>在解压后文件夹中的CMD命令窗口运行下面命令，把redis部署为windows服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># redis-server.exe --service-install redis.windows.conf</div></pre></td></tr></table></figure>
+<p> 结果如图：<br> <img src="/images/redis/win_redis_service.jpg" alt=""></p>
+</li>
+<li>启动redis服务<ul>
+<li>用redis-server –service-start命令启动<br><img src="/images/redis/win_redis_service_start.jpg" alt=""></li>
+<li>或在控制面板–管理工具–服务中启动<br><img src="/images/redis/win_service_start.jpg" alt=""></li>
+</ul>
+</li>
+</ol>
+<h5 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h5><p>在解压后文件夹中的CMD命令窗口运行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># redis-cli.exe</div></pre></td></tr></table></figure></p>
+<p><img src="/images/redis/win_redis_test.jpg" alt=""></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>开始Redis之旅吧！</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[初识redis]]></title>
+      <url>http://tungsing.cc/2018/12/06/cache/redis/redis/</url>
+      <content type="html"><![CDATA[<h4 id="Redis-介绍"><a href="#Redis-介绍" class="headerlink" title="Redis 介绍"></a>Redis 介绍</h4><p>Redis 是一款开源的，基于 BSD 许可的，高级键值 (key-value) 缓存 (cache) 和存储 (store) 系统。由于 Redis 的键包括 string，hash，list，set，sorted set，bitmap 和 hyperloglog，所以常常被称为数据结构服务器。你可以在这些类型上面运行原子操作，例如，追加字符串，增加哈希中的值，加入一个元素到列表，计算集合的交集、并集和差集，或者是从有序集合中获取最高排名的元素。</p>
+<a id="more"></a>
+<p>为了满足高性能，Redis 采用内存 (in-memory) 数据集 (dataset)。根据你的使用场景，你可以通过每隔一段时间转储数据集到磁盘，或者追加每条命令到日志来持久化。持久化也可以被禁用，如果你只是需要一个功能丰富，网络化的内存缓存。<br>Redis 还支持主从异步复制，非常快的非阻塞初次同步、网络断开时自动重连局部重同步。 其他特性包括：</p>
+<ul>
+<li>事务</li>
+<li>订阅/发布</li>
+<li>Lua 脚本</li>
+<li>带 TTL 的键</li>
+<li>LRU 回收健</li>
+<li>自动故障转移 (failover)</li>
+</ul>
+<p>你可以通过多种语言来使用 Redis。</p>
+<p>Redis 是由 ANSI C 语言编写的，在无需额外依赖下，运行于大多数 POSIX 系统，如 Linux、*BSD、OS X。Redis 是在 Linux 和 OS X 两款操作系统下开发和充分测试的，我们推荐 Linux 为部署环境。Redis 也可以运行在 Solaris 派生系统上，如 SmartOS，但是支持有待加强。没有官方支持的 Windows 构建版本，但是微软开发和维护了一个 64 位 Windows 的版本。</p>
+<h4 id="与Memcache比较"><a href="#与Memcache比较" class="headerlink" title="与Memcache比较"></a>与Memcache比较</h4><table>
+<thead>
+<tr>
+<th>比较点</th>
+<th>memcache</th>
+<th>redis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>网站</td>
+<td><a href="www.memcached.org">www.memcached.org</a></td>
+<td><a href="https://redis.io/" target="_blank" rel="external">redis.io</a></td>
+</tr>
+<tr>
+<td>初始版本</td>
+<td>2003</td>
+<td>2009</td>
+</tr>
+<tr>
+<td>服务器端脚本</td>
+<td>没有</td>
+<td>LUA脚本</td>
+</tr>
+<tr>
+<td>分区</td>
+<td>没有</td>
+<td>Sharding</td>
+</tr>
+<tr>
+<td>复制</td>
+<td>没有</td>
+<td>主从复制和多主复制</td>
+</tr>
+<tr>
+<td>访问控制</td>
+<td>SASL(简单认证与安全层)</td>
+<td>简单的基于密码的控制</td>
+</tr>
+<tr>
+<td>数据持久化</td>
+<td>没有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>事务</td>
+<td>没有</td>
+<td>乐观锁、命令块和脚本的原子执行</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a></p>
+<ol>
+<li><a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Weblogic 静默安装]]></title>
+      <url>http://tungsing.cc/2018/09/14/web/container/weblogic-install/</url>
+      <content type="html"><![CDATA[<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS6.9 系统</li>
+<li>Weblogic 12c</li>
+<li>JDK 1.8</li>
+</ul>
+<h4 id="下载Weblogic-Server"><a href="#下载Weblogic-Server" class="headerlink" title="下载Weblogic Server"></a>下载Weblogic Server</h4><p>直接去<a href="http://www.oracle.com/technetwork/middleware/weblogic/downloads/wls-main-097127.html" target="_blank" rel="external">官网</a>下载,下载需要用户名和密码，如果没有注册一个即可</p>
+<a id="more"></a>
+<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5><p>解压获得到fmw_12.2.1.0.0_wls.jar文件</p>
+<h4 id="安装Weblogic-Server"><a href="#安装Weblogic-Server" class="headerlink" title="安装Weblogic Server"></a>安装Weblogic Server</h4><h5 id="准备-1"><a href="#准备-1" class="headerlink" title="准备"></a>准备</h5><ol>
+<li>如果没有安装JDK，需要安装，保证环境变量正确</li>
+<li><p>新建用户组weblogic</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#groupadd weblogic</div></pre></td></tr></table></figure>
+</li>
+<li><p>新建用户weblogic 并修改用户密码<br>添加用户，并用-g参数来制定 web用户组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#useradd -g weblogic weblogic</div><div class="line">#passwd 密码</div></pre></td></tr></table></figure>
+</li>
+<li><p>切换到weblogic用户</p>
+</li>
+<li>准备安装目录 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/opt/weblogic</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><ol>
+<li><p>创建响应文件wls.rsp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">[ENGINE]</div><div class="line"></div><div class="line">#DO NOT CHANGE THIS.</div><div class="line">Response File Version=1.0.0.0.0</div><div class="line"></div><div class="line">[GENERIC]</div><div class="line">#The oracle home location. This can be an existing Oracle Home or a new Oracle Home</div><div class="line"></div><div class="line">ORACLE_HOME=/opt/weblogic/middleware</div><div class="line"></div><div class="line">#Set this variable value to the Installation Type selected. e.g. WebLogic Server, Coherence, Complete with Examples.</div><div class="line"></div><div class="line">INSTALL_TYPE=WebLogic Server</div><div class="line"></div><div class="line">#Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.</div><div class="line"></div><div class="line">MYORACLESUPPORT_USERNAME=</div><div class="line"></div><div class="line">#Provide the My Oracle Support Password</div><div class="line"></div><div class="line">MYORACLESUPPORT_PASSWORD=&lt;SECURE VALUE&gt;</div><div class="line"></div><div class="line">#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager co</div><div class="line">nfiguration</div><div class="line"></div><div class="line">DECLINE_SECURITY_UPDATES=true</div><div class="line"></div><div class="line">#Set this to true if My Oracle Support Password is specified</div><div class="line"></div><div class="line">SECURITY_UPDATES_VIA_MYORACLESUPPORT=false</div><div class="line"></div><div class="line">#Provide the Proxy Host</div><div class="line"></div><div class="line">PROXY_HOST=</div><div class="line"></div><div class="line">#Provide the Proxy Port</div><div class="line"></div><div class="line">PROXY_PORT=</div><div class="line"></div><div class="line">#Provide the Proxy Username</div><div class="line"></div><div class="line">PROXY_USER=</div><div class="line"></div><div class="line">#Provide the Proxy Password</div><div class="line"></div><div class="line">PROXY_PWD=&lt;SECURE VALUE&gt;</div><div class="line"></div><div class="line">#Type String (URL format) Indicates the OCM Repeater URL which should be of the format [scheme[Http/Https]]://[repeater host]:[repeater port]</div><div class="line"></div><div class="line">COLLECTOR_SUPPORTHUB_URL=</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建Loc文件 oraInst.loc</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># vi /opt/weblogic/oraInst.loc</div><div class="line"></div><div class="line">inventory_loc=/opt/weblogic/oraInventory</div><div class="line">inst_group=weblogic</div></pre></td></tr></table></figure>
+</li>
+<li><p>保证所需要得目录weblogic用户要用读写权限</p>
+</li>
+<li>安装, wls.rsp，oraInst.loc必须指定绝对路径<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># java -jar fmw_12.2.1.0.0_wls.jar  -silent  -responseFile  /opt/weblogic/wls.rsp  -invPtrLoc /opt/weblogic/oraInst.loc</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">启动程序日志文件为/tmp/OraInstall2018-10-02_11-25-44AM/launcher2018-10-02_11-25-44AM.log。</div><div class="line">正在提取文件......................</div><div class="line">......................................</div><div class="line"></div><div class="line">已启用此会话的验证。</div><div class="line">正在验证数据</div><div class="line">复制文件</div><div class="line">完成百分比: 10</div><div class="line">完成百分比: 20</div><div class="line">完成百分比: 30</div><div class="line">完成百分比: 40</div><div class="line">完成百分比: 50</div><div class="line">完成百分比: 60</div><div class="line">完成百分比: 70</div><div class="line">完成百分比: 80</div><div class="line">完成百分比: 90</div><div class="line">完成百分比: 100</div><div class="line">Oracle Fusion Middleware 12c WebLogic Server 和 Coherence 12.2.1.0.0 的 安装 已成功完成。</div><div class="line">日志已成功复制到/opt/weblogic/oraInventory/logs。</div></pre></td></tr></table></figure>
+<p>看到上面的日志表示安装成功</p>
+<h5 id="创建domain"><a href="#创建domain" class="headerlink" title="创建domain"></a>创建domain</h5><ol>
+<li><p>准备脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd /opt/weblogic/middleware/wlserver/common/templates/scripts/wlst/</div><div class="line"># cp basicWLSDomain.py create_domain.py</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改create_domain.py脚本</p>
+<ul>
+<li><p>设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">找到</div><div class="line"># Please set password here before using this script, e.g. cmo.setPassword(&apos;value&apos;)</div><div class="line">添加</div><div class="line">cmo.setPassword(&apos;密码&apos;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除其他暂时用不到的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># Create a JMS Server.</div><div class="line">到</div><div class="line"># Write the domain and close the domain template.</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>执行脚本</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/weblogic/middleware/oracle_common/common/bin/wlst.sh  /opt/weblogic/middleware/wlserver/common/templates/scripts/wlst/create_domain.py</div></pre></td></tr></table></figure>
+<p>等待成功…</p>
+<h5 id="启动server"><a href="#启动server" class="headerlink" title="启动server"></a>启动server</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/weblogic/middleware/user_projects/domains/basicWLSDomain/bin/startWebLogic.sh</div></pre></td></tr></table></figure>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>在创建domain和启动server特别慢的时候，需要修改或添加环境配置</p>
+<p>修改JAVA_HOME/lib/security目录下java.security<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">securerandom.source=file:/dev/random</div><div class="line">改为</div><div class="line">securerandom.source=file:/dev/./random</div></pre></td></tr></table></figure></p>
+<p>或添加环境变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># export CONFIG_JVM_ARGS=&apos;-Djava.security.egd=file:/dev/./urandom&apos;</div></pre></td></tr></table></figure></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>安装好weblogic才是第一步，后续还有很多要学习的</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="https://blog.csdn.net/mfanoffice2012/article/details/79560886" target="_blank" rel="external">Weblogic 12C 静默安装</a></li>
+<li><a href="https://docs.oracle.com/middleware/12213/wls/index.html" target="_blank" rel="external">官方文档</a></li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[WebSphere 安装]]></title>
+      <url>http://tungsing.cc/2018/09/14/web/container/was-install/</url>
+      <content type="html"><![CDATA[<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS6.9 系统</li>
+<li>WebSphere 8.5</li>
+</ul>
+<h4 id="安装IBM-Installation-Manager"><a href="#安装IBM-Installation-Manager" class="headerlink" title="安装IBM Installation Manager"></a>安装IBM Installation Manager</h4><h5 id="下载IBM-Installation-Manager"><a href="#下载IBM-Installation-Manager" class="headerlink" title="下载IBM Installation Manager"></a>下载IBM Installation Manager</h5><p>基于<a href="https://www-945.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Rational&amp;product=ibm/Rational/IBM+Installation+Manager&amp;function=all" target="_blank" rel="external">IBM Installation Manager</a>安装WebSphere，故下载</p>
+<p><img src="/images/web/container/was1.jpg" alt=""><br>需要登录才可以下载，注册一个IBM ID就行<br><img src="/images/web/container/was2.jpg" alt=""></p>
+<a id="more"></a>
+<h5 id="解压并安装"><a href="#解压并安装" class="headerlink" title="解压并安装"></a>解压并安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ unzip agent.installer.linux.gtk.x86_64_1.8.9000.20180313_1417.zip</div></pre></td></tr></table></figure>
+<p>在解压目录中执行如下命令,默认安装目录为/opt/IBM/InstallationManager<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./installc -log log_file -acceptLicense</div></pre></td></tr></table></figure></p>
+<p><a href="https://www.ibm.com/support/knowledgecenter/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/t_silent_installIM_IMinst.html" target="_blank" rel="external">installc命令的用法详见官方文档)</a></p>
+<h4 id="安装WAS"><a href="#安装WAS" class="headerlink" title="安装WAS"></a>安装WAS</h4><h4 id="安装WAS-1"><a href="#安装WAS-1" class="headerlink" title="安装WAS"></a>安装WAS</h4><h5 id="下载WAS安装包"><a href="#下载WAS安装包" class="headerlink" title="下载WAS安装包"></a>下载WAS安装包</h5><p>到<a href="http://www-01.ibm.com/support/docview.wss?uid=swg27038624#linux" target="_blank" rel="external">官方地址</a>按步骤下载Linux版本的WAS。需要使用绑定了site number的IBM ID登录 <a href="https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/blueid/Entitlement?jadeAction=DISPLAY_SELF_NOMINATION" target="_blank" rel="external">IBM Passport Advantage Online website</a>，检索Part number找到相应的文件进行下载。以WAS ND 8.5.5为例， “CIK2HML,CIK2IML,CIK2JML”对应三个文件。<br><img src="/images/web/container/was3.jpg" alt=""></p>
+<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[记录Linux(Red Hat) 系统安装Oracle数据库]]></title>
+      <url>http://tungsing.cc/2018/05/16/oracle/oracle-install/</url>
+      <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>Red Hat 6.5 操作系统</li>
+<li>Oracle11g 安装包</li>
+</ul>
+<h4 id="下载Oracle11g安装包"><a href="#下载Oracle11g安装包" class="headerlink" title="下载Oracle11g安装包"></a>下载Oracle11g安装包</h4><p>在<a href="http://www.oracle.com/technetwork/database/enterprise-edition/downloads/112010-linx8664soft-100572.html" target="_blank" rel="external">官网</a>。本文安装的是Oracle 11gR2。<br><img src="/images/oracle/1.jpg" alt=""></p>
+<h4 id="安装准备-root用户下"><a href="#安装准备-root用户下" class="headerlink" title="安装准备(root用户下)"></a>安装准备(root用户下)</h4><h5 id="检查软件依赖包是否安装"><a href="#检查软件依赖包是否安装" class="headerlink" title="检查软件依赖包是否安装"></a>检查软件依赖包是否安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpm -q binutils compat-libstdc++-33 elfutils-libelf elfutils-libelf-devel gcc gcc-c++ glibc glibc-common glibc-devel glibc-headers kernel-headers ksh libaio libaio-devel libgcc libgomp libstdc++ libstdc++-devel make numactl-devel sysstat unixODBC unixODBC-devel</div></pre></td></tr></table></figure>
+<p>上面哪个包显示XXX is not installed,就使用下面的命令安装必要的RPM包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y XXX</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>或者你如果嫌麻烦，可以直接执行如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y binutils compat-libstdc++-33 elfutils-libelf elfutils-libelf-devel gcc gcc-c++ glibc glibc-common glibc-devel glibc-headers kernel-headers ksh libaio libaio-devel libgcc libgomp libstdc++ libstdc++-devel make numactl-devel sysstat unixODBC unixODBC-devel</div></pre></td></tr></table></figure></p>
+<h5 id="创建用户组及用户，设置oracle密码"><a href="#创建用户组及用户，设置oracle密码" class="headerlink" title="创建用户组及用户，设置oracle密码"></a>创建用户组及用户，设置oracle密码</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">groupadd oinstall &amp;&amp; groupadd dba</div><div class="line">useradd -g oinstall -G dba oracle</div><div class="line">passwd oracle</div></pre></td></tr></table></figure>
+<h5 id="修改hosts文件"><a href="#修改hosts文件" class="headerlink" title="修改hosts文件"></a>修改hosts文件</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi /etc/hosts</div></pre></td></tr></table></figure>
+<p>在 127.0.0.1 行后面 添加你的主机名称（例如我的主机名为oracle）<br>在 ::1 行后面 添加你的主机名称（例如我的主机名为oracle）</p>
+<h5 id="设置内核参数"><a href="#设置内核参数" class="headerlink" title="设置内核参数"></a>设置内核参数</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/sysctl.conf</div></pre></td></tr></table></figure>
+<p>在打开的文件底部添加下面内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">fs.aio-max-nr = 1048576</div><div class="line">fs.file-max = 6815744</div><div class="line">kernel.shmall = 2097152</div><div class="line">kernel.shmmax = 536870912</div><div class="line">kernel.shmmni = 4096</div><div class="line">kernel.sem = 250 32000 100 128</div><div class="line">net.ipv4.ip_local_port_range = 9000 65500</div><div class="line">net.core.rmem_default = 262144</div><div class="line">net.core.rmem_max = 4194304</div><div class="line">net.core.wmem_default = 262144</div><div class="line">net.core.wmem_max = 1048586</div></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysctl -p</div></pre></td></tr></table></figure>
+<h5 id="设置PAM资源限制"><a href="#设置PAM资源限制" class="headerlink" title="设置PAM资源限制"></a>设置PAM资源限制</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/security/limits.conf</div></pre></td></tr></table></figure>
+<p>在打开的文件底部添加下面内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">oracle soft nproc 10240</div><div class="line">oracle hard nproc 65535</div><div class="line">oracle soft nofile 10240</div><div class="line">oracle hard nofile 65536</div><div class="line">oracle soft stack 10240</div></pre></td></tr></table></figure></p>
+<h5 id="创建oracle11g安装目录"><a href="#创建oracle11g安装目录" class="headerlink" title="创建oracle11g安装目录"></a>创建oracle11g安装目录</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mkdir -p /home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1/</div><div class="line">chown -R oracle:oinstall /home/oracle/oracle_11g/app/</div><div class="line">chmod -R 775 /home/oracle/oracle_11g/app/</div><div class="line">mkdir -p /home/oracle/oracle_11g/oraInventory/</div><div class="line">chown -R oracle:oinstall /home/oracle/oracle_11g/oraInventory/</div><div class="line">chmod -R 775 /home/oracle/oracle_11g/oraInventory/</div></pre></td></tr></table></figure>
+<h5 id="修改用户环境变量"><a href="#修改用户环境变量" class="headerlink" title="修改用户环境变量"></a>修改用户环境变量</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /home/oracle/.bash_profile</div></pre></td></tr></table></figure>
+<p>在打开的文件中添加下面内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">umask</span> 022</div><div class="line"><span class="built_in">export</span> ORACLE_BASE=/home/oracle/oracle_11g/app</div><div class="line"><span class="built_in">export</span> ORACLE_HOME=<span class="variable">$ORACLE_BASE</span>/oracle/product/11.2.0/dbhome_1</div><div class="line"><span class="built_in">export</span> ORACLE_SID=orcl </div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:HOME/bin:<span class="variable">$ORACLE_HOME</span>/bin</div><div class="line"><span class="built_in">export</span> ORACLE_HOME_LISTENER</div><div class="line"><span class="built_in">export</span> ORACLE_UNQNAME=<span class="variable">$ORACLE_SID</span></div></pre></td></tr></table></figure></p>
+<p>ps:ORACLE_SID=orcl 这里是用户自己定义的数据库名称，后面配置需要用到，设置后就不能再改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">source</span> /home/oracle/.bash_profile</div></pre></td></tr></table></figure>
+<h5 id="修改用户验证选项"><a href="#修改用户验证选项" class="headerlink" title="修改用户验证选项"></a>修改用户验证选项</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/pam.d/login</div></pre></td></tr></table></figure>
+<p>在打开的文件中添加下面内容(root用户)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">session required /lib64/security/pam_limits.so</div><div class="line">session required pam_limits.so</div></pre></td></tr></table></figure></p>
+<h5 id="解压oracle软件"><a href="#解压oracle软件" class="headerlink" title="解压oracle软件"></a>解压oracle软件</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /home/oracle/oracle_11g/app</div><div class="line">unzip linux.x64_11gR2_database_1of2.zip </div><div class="line">unzip linux.x64_11gR2_database_2of2.zip </div><div class="line">chown -R oracle:oinstall /home/oracle/oracle_11g/app/database</div></pre></td></tr></table></figure>
+<h4 id="配置安装-oracle用户下"><a href="#配置安装-oracle用户下" class="headerlink" title="配置安装(oracle用户下)"></a>配置安装(oracle用户下)</h4><h5 id="切换用户"><a href="#切换用户" class="headerlink" title="切换用户"></a>切换用户</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">su oracle</div></pre></td></tr></table></figure>
+<p>#####备份应答文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /home/oracle/oracle_11g/app/database/response</div><div class="line">mkdir rsp_bak</div><div class="line">ls</div><div class="line">dbca.rsp db_install.rsp netca.rsp rsp_bak</div><div class="line">cp *.rsp ./rsp_bak/</div></pre></td></tr></table></figure></p>
+<h5 id="删除应答文件中的以-开头的注释行和空行"><a href="#删除应答文件中的以-开头的注释行和空行" class="headerlink" title="删除应答文件中的以#开头的注释行和空行"></a>删除应答文件中的以#开头的注释行和空行</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -i <span class="string">'s/^#.*$//g'</span> *.rsp &amp;&amp; sed -i <span class="string">'/^$/d'</span> *.rsp</div></pre></td></tr></table></figure>
+<h5 id="配置db-install-rsp"><a href="#配置db-install-rsp" class="headerlink" title="配置db_install.rsp"></a>配置db_install.rsp</h5><p>将以下配置添加到db_install.rsp文件中(下面的注释是对其上面参数的解释，拷贝时候一定要去掉里面的汉字注释，否则可能无法正常安装)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line">oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v11_2_0</div><div class="line"><span class="comment">#默认即可</span></div><div class="line">oracle.install.option=INSTALL_DB_SWONLY</div><div class="line"><span class="comment">#安装类型</span></div><div class="line">ORACLE_HOSTNAME=oracle</div><div class="line"><span class="comment">#主机名称(hostname查询，这里要注意，主机名要在 /etc/hosts 文件中配置好ip对应关系，否则安装会报错)</span></div><div class="line">UNIX_GROUP_NAME=oinstall</div><div class="line"><span class="comment">#安装组</span></div><div class="line">INVENTORY_LOCATION=/home/oracle/oracle_11g/oraInventory</div><div class="line"><span class="comment">#INVENTORY目录位置，需填写成自己创建的目录位置</span></div><div class="line">SELECTED_LANGUAGES=en,zh_CN</div><div class="line"><span class="comment">#选择支持语言</span></div><div class="line">ORACLE_HOME=/home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1</div><div class="line"><span class="comment">#数据库目录地址</span></div><div class="line">ORACLE_BASE=/home/oracle/oracle_11g/app</div><div class="line"><span class="comment">#BASE目录地址</span></div><div class="line">oracle.install.db.InstallEdition=EE</div><div class="line"><span class="comment">#指定oracle版本</span></div><div class="line">oracle.install.db.isCustomInstall=<span class="literal">false</span></div><div class="line"><span class="comment">#是否自定义安装，false表示使用默认组件</span></div><div class="line">oracle.install.db.customComponents=oracle.server:11.2.0.1.0,oracle.sysman.ccr:10.2.7.0.0,oracle.xdk:11.2.0.1.0,oracle.rdbms.oci:11.2.0.1.0,oracle.network:11.2.0.1.0,oracle.network.listener:11.2.0.1.0,oracle.rdbms:11.2.0.1.0,oracle.options:11.2.0.1.0,oracle.rdbms.partitioning:11.2.0.1.0,oracle.oraolap:11.2.0.1.0,oracle.rdbms.dm:11.2.0.1.0,oracle.rdbms.dv:11.2.0.1.0,orcle.rdbms.lbac:11.2.0.1.0,oracle.rdbms.rat:11.2.0.1.0</div><div class="line">oracle.install.db.DBA_GROUP=dba</div><div class="line"><span class="comment">#dba用户组</span></div><div class="line">oracle.install.db.OPER_GROUP=oinstall</div><div class="line"><span class="comment">#oper用户组</span></div><div class="line">oracle.install.db.CLUSTER_NODES=</div><div class="line">oracle.install.db.config.starterdb.type=GENERAL_PURPOSE</div><div class="line"><span class="comment">#数据库类型</span></div><div class="line">oracle.install.db.config.starterdb.globalDBName=orcl  </div><div class="line"><span class="comment">#globalDBName（这里要和第8步配置的sid一致）</span></div><div class="line">oracle.install.db.config.starterdb.SID=orcl</div><div class="line"><span class="comment">#SID（这里要和第8步配置的sid一致）</span></div><div class="line">oracle.install.db.config.starterdb.characterSet=AL32UTF8</div><div class="line"><span class="comment">#使用的编码格式</span></div><div class="line">oracle.install.db.config.starterdb.memoryOption=<span class="literal">true</span></div><div class="line">oracle.install.db.config.starterdb.memoryLimit=1024</div><div class="line"><span class="comment">#自动管理的内存大小(M)</span></div><div class="line">oracle.install.db.config.starterdb.installExampleSchemas=<span class="literal">false</span></div><div class="line">oracle.install.db.config.starterdb.enableSecuritySettings=<span class="literal">true</span></div><div class="line">oracle.install.db.config.starterdb.password.ALL=123456</div><div class="line"><span class="comment">#设定所有数据库用户使用同一个密码</span></div><div class="line">oracle.install.db.config.starterdb.password.SYS=</div><div class="line">oracle.install.db.config.starterdb.password.SYSTEM=</div><div class="line">oracle.install.db.config.starterdb.password.SYSMAN=</div><div class="line">oracle.install.db.config.starterdb.password.DBSNMP=</div><div class="line">oracle.install.db.config.starterdb.control=DB_CONTROL</div><div class="line">oracle.install.db.config.starterdb.gridcontrol.gridControlServiceURL=</div><div class="line">oracle.install.db.config.starterdb.dbcontrol.enableEmailNotification=<span class="literal">false</span></div><div class="line">oracle.install.db.config.starterdb.dbcontrol.emailAddress=</div><div class="line">oracle.install.db.config.starterdb.dbcontrol.SMTPServer=</div><div class="line">oracle.install.db.config.starterdb.automatedBackup.enable=<span class="literal">false</span></div><div class="line">oracle.install.db.config.starterdb.automatedBackup.osuid=</div><div class="line">oracle.install.db.config.starterdb.automatedBackup.ospwd=</div><div class="line">oracle.install.db.config.starterdb.storageType=</div><div class="line">oracle.install.db.config.starterdb.fileSystemStorage.dataLocation=</div><div class="line">oracle.install.db.config.starterdb.fileSystemStorage.recoveryLocation=</div><div class="line">oracle.install.db.config.asm.diskGroup=</div><div class="line">oracle.install.db.config.asm.ASMSNMPPassword=</div><div class="line">MYORACLESUPPORT_USERNAME=</div><div class="line">MYORACLESUPPORT_PASSWORD=</div><div class="line">SECURITY_UPDATES_VIA_MYORACLESUPPORT=</div><div class="line">DECLINE_SECURITY_UPDATES=<span class="literal">true</span></div><div class="line"><span class="comment">#设置安全更新(貌似是有bug，这个一定要选true，否则会无限提醒邮件地址有问题，终止安装。PS：不管地址对不对)</span></div><div class="line">PROXY_HOST=</div><div class="line">PROXY_PORT=</div><div class="line">PROXY_USER=</div><div class="line">PROXY_PWD=</div></pre></td></tr></table></figure></p>
+<h5 id="执行安装"><a href="#执行安装" class="headerlink" title="执行安装"></a>执行安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /home/oracle/oracle_11g/app/database</div><div class="line">./runInstaller -silent -force -noconfig -responseFile /home/oracle/oracle_11g/app/database/response/db_install.rsp</div></pre></td></tr></table></figure>
+<p>silent:对于无提示模式下的操作, 输入内容可以是一个响应文件, 也可以是命令行变量值对的列表。<br>force:允许在非空目录中进行无提示模式的安装。<br>noconfig:不执行配置工具<br>responseFile:指定要使用的响应文件和路径</p>
+<p>此处遇到2个错误<br>1.could not initialize class sun.awt. x11.xtoolkit<br>解决：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">su root</div><div class="line"><span class="built_in">export</span> DISPLAY=:0.0</div><div class="line">xhost +</div><div class="line">access control disabled, clients can connect from any host</div></pre></td></tr></table></figure></p>
+<p>如果xhost命令无法执行，安装对应软件即可</p>
+<p>2.[FATAL] [INS-13013] 目标环境不满足一些必需要求<br>   对应日志文件仔细检查不满足项，发现是pdksh包不对<br>原因：Red Hat 中redhat-release已经被redhat-release-server包所取代，所以安装软件会无法识别Linux的版本。这时OUI会默认的使用Linux4的前置条件来检查现有的操作系统情况。<br>解决：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /home/oracle/oracle_11g/app/database/stage/cvu/cv/admin/cvu_config</div></pre></td></tr></table></figure></p>
+<p>CV_ASSUME_DISTID=OEL4修改为CV_ASSUME_DISTID=OEL6</p>
+<p>控制台直到出现以下提示则表示安装完成:<br><img src="/images/oracle/2.jpg" alt=""></p>
+<h4 id="配置权限和安装库-root用户下"><a href="#配置权限和安装库-root用户下" class="headerlink" title="配置权限和安装库()root用户下"></a>配置权限和安装库()root用户下</h4><h5 id="运行orainstRoot-sh"><a href="#运行orainstRoot-sh" class="headerlink" title="运行orainstRoot.sh"></a>运行orainstRoot.sh</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">su - root </div><div class="line">/home/oracle/oracle_11g/oraInventory/orainstRoot.sh</div></pre></td></tr></table></figure>
+<p>脚本执行后主要进行的操作：<br>更改权限/home/oracle/oracle_11g/oraInventory.<br>添加组的读取和写入权限。<br>删除全局的读取, 写入和执行权限。<br>更改组名/home/oracle/oracle_11g/oraInventory 到 oinstall.</p>
+<h5 id="运行root-sh"><a href="#运行root-sh" class="headerlink" title="运行root.sh"></a>运行root.sh</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1/root.sh</div></pre></td></tr></table></figure>
+<p>Check /home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1/install/root_m22p135_2017-08-07_16-39-28.log for the output of root script</p>
+<h5 id="添加oracle环境变量"><a href="#添加oracle环境变量" class="headerlink" title="添加oracle环境变量"></a>添加oracle环境变量</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">vim /home/oracle/.bash_profile</div><div class="line"></div><div class="line"><span class="built_in">export</span> TNS_ADMIN=<span class="variable">$ORACLE_HOME</span>/network/admin</div><div class="line"><span class="built_in">export</span> PATH=.:<span class="variable">$&#123;PATH&#125;</span>:<span class="variable">$HOME</span>/bin:<span class="variable">$ORACLE_HOME</span>/bin</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$&#123;PATH&#125;</span>:/usr/bin:/bin:/usr/bin/X11:/usr/<span class="built_in">local</span>/bin</div><div class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$&#123;LD_LIBRARY_PATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/lib</div><div class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$&#123;LD_LIBRARY_PATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/oracm/lib</div><div class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$&#123;LD_LIBRARY_PATH&#125;</span>:/lib:/usr/lib:/usr/<span class="built_in">local</span>/lib</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/JRE</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/JRE/lib</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/jlib</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/rdbms/jlib</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/network/jlib</div><div class="line"><span class="built_in">export</span> LIBPATH=<span class="variable">$&#123;CLASSPATH&#125;</span>:<span class="variable">$ORACLE_HOME</span>/lib:<span class="variable">$ORACLE_HOME</span>/ctx/lib</div><div class="line"><span class="built_in">export</span> ORACLE_OWNER=oracle</div><div class="line"><span class="built_in">export</span> SPFILE_PATH=<span class="variable">$ORACLE_HOME</span>/dbs</div><div class="line"><span class="built_in">export</span> ORA_NLS10=<span class="variable">$ORACLE_HOME</span>/nls/data</div><div class="line"></div><div class="line"><span class="built_in">source</span> /home/oracle/.bash_profile</div></pre></td></tr></table></figure>
+<h5 id="静默配置监听"><a href="#静默配置监听" class="headerlink" title="静默配置监听"></a>静默配置监听</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1/bin/netca -silent -responseFile /home/oracle/oracle_11g/app/database/response/netca.rsp</div></pre></td></tr></table></figure>
+<p><em>**</em>DISPLAY environment variable not set!<br>    Oracle Net Configuration Assistant is a GUI tool<br>    which requires that DISPLAY specify a location<br>    where GUI tools can display.<br>    Set and export DISPLAY, then re-run.</p>
+<p>解决方法：切换root下</p>
+<pre><code>export DISPLAY=127.0.0.1:1.0 
+</code></pre><h5 id="静默安装数据库"><a href="#静默安装数据库" class="headerlink" title="静默安装数据库"></a>静默安装数据库</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span>&gt; /home/oracle/oracle_11g/app/database/response/dbca.rsp</div><div class="line">vim /home/oracle/oracle_11g/app/database/response/dbca.rsp </div><div class="line"></div><div class="line">[GENERAL]</div><div class="line">RESPONSEFILE_VERSION = <span class="string">"11.2.0"</span></div><div class="line">OPERATION_TYPE = <span class="string">"createDatabase"</span></div><div class="line">[CREATEDATABASE]</div><div class="line">GDBNAME = <span class="string">"orcl"</span></div><div class="line">SID = <span class="string">"orcl"</span></div><div class="line">TEMPLATENAME = <span class="string">"General_Purpose.dbc"</span></div><div class="line">CHARACTERSET=<span class="string">"AL32UTF8"</span></div><div class="line">NATIONALCHARACTERSET=<span class="string">"UTF8"</span></div><div class="line">SYSPASSWORD=<span class="string">"123456"</span></div><div class="line">SYSTEMPASSWORD=<span class="string">"123456"</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/home/oracle/oracle_11g/app/oracle/product/11.2.0/dbhome_1//bin/dbca -silent -responseFile /home/oracle/oracle_11g/app/database/response/dbca.rsp</div></pre></td></tr></table></figure>
+<p>控制台输出：<br><img src="/images/oracle/3.jpg" alt=""></p>
+<h5 id="测试数据库"><a href="#测试数据库" class="headerlink" title="测试数据库"></a>测试数据库</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sqlplus / as sysdba</div></pre></td></tr></table></figure>
+<p>连接成功后，输入sql语句测试<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SQL&gt;show parameter;</div></pre></td></tr></table></figure></p>
+<h5 id="监听检查"><a href="#监听检查" class="headerlink" title="监听检查"></a>监听检查</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lsnrctl status</div></pre></td></tr></table></figure>
+<p><img src="/images/oracle/4.jpg" alt=""></p>
+<p>启动监听：lsnrctl start<br>查看监听：lsnrctl status<br>停止监听：lsnrctl stop</p>
+<p>实例应该被动态注册到监听程序了. 到此oracle安装建库完毕!，在oracle用户下使用sqlplus登录数据库查看数据库是否安装成功！</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="http://www.jiagoumi.com/work/1210.html" target="_blank" rel="external">Centos下静默(命令行)方式安装Oracle 11g</a><br>2.<a href="http://www.xwood.net/_site_domain_/_root/5870/5874/t_c265366.html" target="_blank" rel="external">在Centos安装oracle.x64_11gR2</a><br>3.<a href="https://blog.csdn.net/renfengjun/article/details/72831344" target="_blank" rel="external">OracleDatabase安装在Linux上报错pdksh的问题</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Thread类]]></title>
+      <url>http://tungsing.cc/2018/02/09/java/thread/chapter03/</url>
+      <content type="html"><![CDATA[<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h4 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h4><ol>
+<li><p>start方法：启动线程，调用start方法后，系统才会开启一个新的线程来执行用户定义的子任务，同时，会为线程分配资源。</p>
+</li>
+<li><p>run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。</p>
+</li>
+<li><p>sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。</p>
+</li>
+<li><p>yield方法：该线程就会把CPU时间让掉，让其他或者自己的线程执行（也就是谁先抢到谁执行）。但是yield不能控制具体的交出CPU的时间，只能让相同优先级的线程获取CPU执行时间的机会。<br>　　注意，调用yield方法并不会让线程进入阻塞状态，而是让线程重回就绪状态，它只需要等待重新获取CPU执行时间，这一点是和sleep方法不一样的。</p>
+</li>
+<li><p>join方法:让“主线程”等待“子线程”结束之后才能继续运行。实际上，调用join方法是调用了Object的wait方法，wait方法会让线程进入阻塞状态，并且会释放线程占有的锁，并交出CPU执行权限，所以join方法同样会让线程释放对一个对象持有的锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">10</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (i == <span class="number">3</span>) &#123;</div><div class="line">                SubThread st = <span class="keyword">new</span> SubThread();</div><div class="line">                st.start();</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    st.join();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完毕"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行---&gt;&gt;&gt;"</span>);</div><div class="line">        <span class="comment">// 延时操作</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">            System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行中---&gt;&gt;&gt;"</span>);</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完成"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        MainThread mt = <span class="keyword">new</span> MainThread();</div><div class="line">        mt.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 输出结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Thread-<span class="number">0</span>开始执行</div><div class="line">Thread-<span class="number">1</span>开始执行---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行完成</div><div class="line">Thread-<span class="number">0</span>执行完毕</div></pre></td></tr></table></figure>
+<p> 说明：MainThread线程中启动了SubThread线程，等待SubThread执行完，主线程MainThread继续执行</p>
+</li>
+</ol>
+<ol>
+<li>interrupt方法：中断；<br>一、可以中断一个正处于阻塞状态的线程；<br>二、通过组合interrupt方法和isInterrupted()方法可停止正在运行的线程。</li>
+</ol>
+<a id="more"></a>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[创建线程]]></title>
+      <url>http://tungsing.cc/2018/02/09/java/thread/chapter02/</url>
+      <content type="html"><![CDATA[<h4 id="常用创建线程方式"><a href="#常用创建线程方式" class="headerlink" title="常用创建线程方式"></a>常用创建线程方式</h4><p>方式一：继承Thread类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"运行中---&gt;&gt;&gt;"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>方式二：实现Runnable接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"运行中---&gt;&gt;&gt;"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h4 id="Thread和Runnable的不同点"><a href="#Thread和Runnable的不同点" class="headerlink" title="Thread和Runnable的不同点"></a>Thread和Runnable的不同点</h4><ol>
+<li><p>Thread 是类，而Runnable是接口；<br>Thread本身是实现了Runnable接口的类。我们知道“一个类只能有一个父类，但是却能实现多个接口”，因此Runnable具有更好的扩展性。</p>
+</li>
+<li><p>Runnable还可以用于“资源的共享”。<br>多个线程都是基于某一个Runnable对象建立的，它们会共享Runnable对象上的资源。</p>
+</li>
+</ol>
+<p>Thread多线程例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.ticket &gt; <span class="number">0</span>) &#123;</div><div class="line">                System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" 卖票：ticket"</span> + <span class="keyword">this</span>.ticket--);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SimpleThread st1 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        SimpleThread st2 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        SimpleThread st3 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        st1.start();</div><div class="line">        st2.start();</div><div class="line">        st3.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">Thread-2 卖票：ticket10</div><div class="line">Thread-1 卖票：ticket10</div><div class="line">Thread-0 卖票：ticket10</div><div class="line">Thread-0 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket9</div><div class="line">Thread-2 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket8</div><div class="line">Thread-0 卖票：ticket8</div><div class="line">Thread-1 卖票：ticket7</div><div class="line">Thread-2 卖票：ticket8</div><div class="line">Thread-1 卖票：ticket6</div><div class="line">Thread-0 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket5</div><div class="line">Thread-2 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket4</div><div class="line">Thread-0 卖票：ticket6</div><div class="line">Thread-1 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket6</div><div class="line">Thread-1 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket5</div><div class="line">Thread-1 卖票：ticket1</div><div class="line">Thread-2 卖票：ticket5</div><div class="line">Thread-0 卖票：ticket4</div><div class="line">Thread-2 卖票：ticket4</div><div class="line">Thread-0 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket3</div><div class="line">Thread-0 卖票：ticket2</div><div class="line">Thread-2 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket1</div><div class="line">Thread-2 卖票：ticket1</div></pre></td></tr></table></figure></p>
+<p>结果表明：</p>
+<ol>
+<li>每个SimpleThread线程都会卖出10张票</li>
+<li>主线程main创建并启动3个SimpleThread子线程。每个子线程都各自卖出了10张票。</li>
+</ol>
+<p>Runnable多线程例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.ticket &gt; <span class="number">0</span>) &#123;</div><div class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">" 卖票：ticket"</span> + <span class="keyword">this</span>.ticket--);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SimpleRunnable sr = <span class="keyword">new</span> SimpleRunnable();</div><div class="line">        <span class="comment">// 启动3个线程t1,t2,t3(它们共用一个Runnable对象)，这3个线程一共卖10张票！</span></div><div class="line">        Thread t1 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        Thread t2 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        Thread t3 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        t1.start();</div><div class="line">        t2.start();</div><div class="line">        t3.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread-0 卖票：ticket10</div><div class="line">Thread-1 卖票：ticket8</div><div class="line">Thread-2 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket6</div><div class="line">Thread-0 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket4</div><div class="line">Thread-2 卖票：ticket5</div><div class="line">Thread-1 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket1</div></pre></td></tr></table></figure></p>
+<p>结果表明：</p>
+<ol>
+<li>SimpleThread线程也是卖10张票，不同的是它实现了Runnable接口，而不是继承Thread类</li>
+<li><p>主线程main创建并启动3个子线程，而且这3个子线程都是基于“sr这个Runnable对象”而创建的。运行结果是这3个子线程一共卖出了10张票。这说明它们是共享了SimpleThread接口的。</p>
+<h4 id="其他创建方式"><a href="#其他创建方式" class="headerlink" title="其他创建方式"></a>其他创建方式</h4><p>//todo</p>
+</li>
+</ol>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[认识线程]]></title>
+      <url>http://tungsing.cc/2018/02/09/java/thread/chapter01/</url>
+      <content type="html"><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>进程：正在执行中的程序，其实是应用程序在内存中运行的那片空间。<br>线程：进程中的一个执行单元，负责进程中的程序的运行，一个进程中至少要有一个线程。一个进程中可以有多个线程的，这个应用程序也可以称之为多线程程序。</p>
+<h4 id="线程分类"><a href="#线程分类" class="headerlink" title="线程分类"></a>线程分类</h4><ol>
+<li>用户线程<br>Java虚拟机在它所有非守护线程已经离开后自动离开。</li>
+<li>守护线程(Daemon)<br>守护线程则是用来服务用户线程的，如果没有其他用户线程在运行，那么就没有可服务对象，也就没有理由继续下去。</li>
+</ol>
+<h4 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h4><p>线程的优先级从1到10，1是最不重要的，10是最重要的。如果没有给线程设置优先级，那么线程的优先级将是默认值5。</p>
+<a id="more"></a>
+<h4 id="线程的内存模型"><a href="#线程的内存模型" class="headerlink" title="线程的内存模型"></a>线程的内存模型</h4><p>//todo</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://my.oschina.net/langxSpirit/blog/825290" target="_blank" rel="external">https://my.oschina.net/langxSpirit/blog/825290</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[XtraBackup搭建Mysql物理备份]]></title>
       <url>http://tungsing.cc/2017/11/28/mysql/mysql-bak/</url>
       <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>

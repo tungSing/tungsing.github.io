@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext"/>
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言
+之前就看资料说SimpleDateFormat是线程不安全的，正好框架里面有自己的DataUtils类，正好优化并学习一下
+
+环境jdk1.7">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DataUtils工具类优化">
+<meta property="og:url" content="http://tungsing.cc/2019/03/22/java/date-util/index.html">
+<meta property="og:site_name" content="TungSing's Blog">
+<meta property="og:description" content="前言
+之前就看资料说SimpleDateFormat是线程不安全的，正好框架里面有自己的DataUtils类，正好优化并学习一下
+
+环境jdk1.7">
+<meta property="og:updated_time" content="2019-03-22T06:07:36.604Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DataUtils工具类优化">
+<meta name="twitter:description" content="前言
+之前就看资料说SimpleDateFormat是线程不安全的，正好框架里面有自己的DataUtils类，正好优化并学习一下
+
+环境jdk1.7">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml"/>
+
+
+
+  
+  
+  <link rel="canonical" href="http://tungsing.cc/2019/03/22/java/date-util/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>DataUtils工具类优化 | TungSing's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TungSing's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">用心记录一切！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/03/22/java/date-util/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DataUtils工具类优化
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-22 02:25:45 / 修改时间：06:07:36" itemprop="dateCreated datePublished" datetime="2019-03-22T02:25:45Z">2019-03-22</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/03/22/java/date-util/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/22/java/date-util/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>之前就看资料说SimpleDateFormat是线程不安全的，正好框架里面有自己的DataUtils类，正好优化并学习一下</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>jdk1.7</p>
+<a id="more"></a>
+<h4 id="测试框架中代码"><a href="#测试框架中代码" class="headerlink" title="测试框架中代码"></a>测试框架中代码</h4><p>开20个线程去格式日期<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    ExecutorService service = Executors.newFixedThreadPool(<span class="number">100</span>);</div><div class="line">    <span class="comment">// 开启20个线程</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">        service.execute(<span class="keyword">new</span> Runnable() &#123;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++) &#123;</div><div class="line">                    System.out.println(DateUtils.parseDate(<span class="string">"2019-03-22 10:03:25"</span>));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    service.shutdown();</div><div class="line">    service.awaitTermination(<span class="number">1</span>, TimeUnit.DAYS);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div></pre></td><td class="code"><pre><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Sun Mar 01 10:03:25 CST 1970</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">java.lang.NumberFormatException: For input string: &quot;33E&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:419)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)Thu Jan 01 00:03:25 CST 1970</div><div class="line"></div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line"></div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at java.lang.Thread.run(Thread.java:662)</div><div class="line"></div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;Tue Jan 01 00:03:25 CST 2019</div><div class="line"></div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)Thu Jan 22 10:03:25 CST 1970</div><div class="line"></div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Wed Dec 31 00:00:00 CST 1969</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">Tue Jan 01 00:03:25 CST 2019</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">Tue Jan 01 00:03:25 CST 2019</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)Thu Jan 22 00:00:25 CST 1970</div><div class="line"></div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">Tue Jan 01 00:00:25 CST 2019    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line"></div><div class="line">Thu Jan 01 00:44:40 CST 1970</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">Tue Jan 01 03:03:25 CST 2019</div><div class="line">nulljava.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line"></div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Thu Jan 01 00:00:25 CST 1970</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">java.lang.NumberFormatException: multiple pointsnull</div><div class="line"></div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1082)</div><div class="line">    at java.lang.Double.parseDouble(Double.java:510)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DigitList.getDouble(DigitList.java:151)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1302)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">Thu Jul 10 10:03:25 CST 5881580</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: multiple points</div><div class="line">Fri Mar 22 10:03:25 CST 2019    at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1082)</div><div class="line"></div><div class="line">    at java.lang.Double.parseDouble(Double.java:510)</div><div class="line">    at java.text.DigitList.getDouble(DigitList.java:151)Fri Mar 22 10:03:25 CST 2019</div><div class="line"></div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1302)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line"></div><div class="line">......</div><div class="line"></div><div class="line">java.lang.NumberFormatException: For input string: &quot;1.01&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:419)</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1934)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">java.lang.NumberFormatException: For input string: &quot;&quot;</div><div class="line">    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)</div><div class="line">    at java.lang.Long.parseLong(Long.java:431)</div><div class="line">    at java.lang.Long.parseLong(Long.java:468)</div><div class="line">    at java.text.DigitList.getLong(DigitList.java:177)</div><div class="line">    at java.text.DecimalFormat.parse(DecimalFormat.java:1297)</div><div class="line">    at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1589)</div><div class="line">    at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)</div><div class="line">    at java.text.DateFormat.parse(DateFormat.java:335)</div><div class="line">    at com.resoft.original.framework.common.OriginalDateUtils.parseDate(OriginalDateUtils.java:275)</div><div class="line">    at com.resoft.original.framework.common.Test$1.run(Test.java:35)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)</div><div class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)</div><div class="line">    at java.lang.Thread.run(Thread.java:662)</div><div class="line">null</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div></pre></td></tr></table></figure></p>
+<p>分析错误日志有如下错误</p>
+<ul>
+<li>会出现日期不对的情况</li>
+<li>java.lang.NumberFormatException: For input string xxx</li>
+<li>java.lang.NumberFormatException: multiple points</li>
+</ul>
+<h4 id="错误原因分析"><a href="#错误原因分析" class="headerlink" title="错误原因分析"></a>错误原因分析</h4><p>首先看代码是如何写的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;DateFormat, SimpleDateFormat&gt; dateFormaters = <span class="keyword">new</span> HashMap&lt;DateFormat, SimpleDateFormat&gt;(<span class="number">3</span>, <span class="number">0.2f</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> SimpleDateFormat <span class="title">getDateFormater</span><span class="params">(DateFormat format)</span> </span>&#123;</div><div class="line">    SimpleDateFormat dateFormater = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ((dateFormater = dateFormaters.get(format)) == <span class="keyword">null</span>) &#123;</div><div class="line">        dateFormater = <span class="keyword">new</span> SimpleDateFormat(format.format);</div><div class="line">        dateFormaters.put(format, dateFormater);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> dateFormater;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> java.util.<span class="function">Date <span class="title">parseDate</span><span class="params">(String dateStr)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> getDateFormater(DateFormat.YMDHMS_HYPHEN).parse(</div><div class="line">                            dateStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>DateFormat</strong>是枚举，定义了各种日期格式<br>代码本质还是获取一个 <strong>静态</strong> 的 <strong>SimpleDateFormat</strong> 对象，引入Map是为了提高效率。<br>那么在多线程的情况下SimpleDateFormat对象实例就会 <strong>被多个线程共享</strong> ，通过看源码找原因<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line">public Date parse(String text, ParsePosition pos) &#123;</div><div class="line"></div><div class="line">    checkNegativeNumberExpression();</div><div class="line"></div><div class="line">    int start = pos.index;</div><div class="line">    int oldStart = start;</div><div class="line">    int textLength = text.length();</div><div class="line"></div><div class="line">    calendar.clear(); // Clears all the time fields</div><div class="line"></div><div class="line">    boolean[] ambiguousYear = &#123; false &#125;;</div><div class="line"></div><div class="line">    for (int i = 0; i &lt; compiledPattern.length;) &#123;</div><div class="line">        int tag = compiledPattern[i] &gt;&gt;&gt; 8;</div><div class="line">        int count = compiledPattern[i++] &amp; 0xff;</div><div class="line">        if (count == 255) &#123;</div><div class="line">            count = compiledPattern[i++] &lt;&lt; 16;</div><div class="line">            count |= compiledPattern[i++];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        switch (tag) &#123;</div><div class="line">        case TAG_QUOTE_ASCII_CHAR:</div><div class="line">            if (start &gt;= textLength || text.charAt(start) != (char) count) &#123;</div><div class="line">                pos.index = oldStart;</div><div class="line">                pos.errorIndex = start;</div><div class="line">                return null;</div><div class="line">            &#125;</div><div class="line">            start++;</div><div class="line">            break;</div><div class="line"></div><div class="line">        case TAG_QUOTE_CHARS:</div><div class="line">            while (count-- &gt; 0) &#123;</div><div class="line">                if (start &gt;= textLength || text.charAt(start) != compiledPattern[i++]) &#123;</div><div class="line">                    pos.index = oldStart;</div><div class="line">                    pos.errorIndex = start;</div><div class="line">                    return null;</div><div class="line">                &#125;</div><div class="line">                start++;</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line"></div><div class="line">        default:</div><div class="line">            boolean obeyCount = false;</div><div class="line">            boolean useFollowingMinusSignAsDelimiter = false;</div><div class="line"></div><div class="line">            if (i &lt; compiledPattern.length) &#123;</div><div class="line">                int nextTag = compiledPattern[i] &gt;&gt;&gt; 8;</div><div class="line">                if (!(nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) &#123;</div><div class="line">                    obeyCount = true;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                if (hasFollowingMinusSign &amp;&amp; (nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) &#123;</div><div class="line">                    int c;</div><div class="line">                    if (nextTag == TAG_QUOTE_ASCII_CHAR) &#123;</div><div class="line">                        c = compiledPattern[i] &amp; 0xff;</div><div class="line">                    &#125; else &#123;</div><div class="line">                        c = compiledPattern[i + 1];</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    if (c == minusSign) &#123;</div><div class="line">                        useFollowingMinusSignAsDelimiter = true;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            start = subParse(text, start, tag, count, obeyCount, ambiguousYear, pos, useFollowingMinusSignAsDelimiter);</div><div class="line">            if (start &lt; 0) &#123;</div><div class="line">                pos.index = oldStart;</div><div class="line">                return null;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    pos.index = start;</div><div class="line">    Date parsedDate;</div><div class="line">    try &#123;</div><div class="line">        if (ambiguousYear[0]) &#123;</div><div class="line">            Calendar savedCalendar = (Calendar) calendar.clone();</div><div class="line">            parsedDate = calendar.getTime();</div><div class="line">            if (parsedDate.before(defaultCenturyStart)) &#123;</div><div class="line">                savedCalendar.set(Calendar.YEAR, defaultCenturyStartYear + 100);</div><div class="line">                parsedDate = savedCalendar.getTime();</div><div class="line">            &#125;</div><div class="line">        &#125; else</div><div class="line">            parsedDate = calendar.getTime();</div><div class="line">    &#125; catch (IllegalArgumentException e) &#123;</div><div class="line">        pos.errorIndex = start;</div><div class="line">        pos.index = oldStart;</div><div class="line">        return null;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return parsedDate;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>重点关注 <strong>calendar.clear()</strong> , <strong>calendar.getTime()</strong> 方法，SimpleDateFormat的parse方法实际操作的就是 <strong>Calendar</strong> 。</p>
+<p>因为我们声明SimpleDateFormat为static变量，那么它的Calendar变量也就是一个共享变量，可以被多个线程访问。</p>
+<p>假设线程A执行完calendar.clear()方法，这时候被挂起，线程B获得CPU执行权。线程B执行到了calendar.getTime()方法就获取到空值了，而这就是引发问题的根源，出现时间不对，线程挂死等等。</p>
+<p><strong>其实SimpleDateFormat源码上作者也给过我们提示：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"> * &lt;h4&gt;&lt;a name=&quot;synchronization&quot;&gt;Synchronization&lt;/a&gt;&lt;/h4&gt;</div><div class="line"> *</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Date formats are not synchronized.</div><div class="line"> * 日期格式不同步。</div><div class="line"> * It is recommended to create separate format instances for each thread.</div><div class="line"> * 建议为每个线程创建单独的格式实例。</div><div class="line"> * If multiple threads access a format concurrently, it must be synchronized</div><div class="line"> * externally.</div><div class="line"> * 如果多个线程同时访问一种格式，则必须在外部同步该格式。</div><div class="line"> *</div><div class="line"> * @see          &lt;a href=&quot;http://java.sun.com/docs/books/tutorial/i18n/format/simpleDateFormat.html&quot;&gt;Java Tutorial&lt;/a&gt;</div><div class="line"> * @see          java.util.Calendar</div><div class="line"> * @see          java.util.TimeZone</div><div class="line"> * @see          DateFormat</div><div class="line"> * @see          DateFormatSymbols</div><div class="line"> * @version      %I%, %G% </div><div class="line"> * @author       Mark Davis, Chen-Lieh Huang, Alan Liu</div><div class="line"> */</div><div class="line">public class SimpleDateFormat extends DateFormat &#123;</div></pre></td></tr></table></figure></p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><ol>
+<li><p>只要在用的时候创建新实例，不用static修饰。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public static Date parse(String strDate) throws ParseException&#123;</div><div class="line">     SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    return sdf.parse(strDate);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 如上代码，仅在需要用到的地方创建一个新的实例，就没有线程安全问题，不过也加重了创建对象的负担，会频繁地创建和销毁对象，效率较低。</p>
+</li>
+<li><p>使用synchronized来SimpleDateFormat对象</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">private static SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    </div><div class="line">public static Date parse(String strDate) throws ParseException&#123;</div><div class="line">    synchronized(sdf)&#123;</div><div class="line">        return sdf.parse(strDate);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 当线程较多时，当一个线程调用该方法时，其他想要调用此方法的线程就要block，多线程并发量大的时候会对性能有一定的影响。</p>
+</li>
+<li><p>使用ThreadLocal</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">private static ThreadLocal&lt;DateFormat&gt; threadLocal = new ThreadLocal&lt;DateFormat&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    protected DateFormat initialValue() &#123;</div><div class="line">        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">public static Date parse(String dateStr) throws ParseException &#123;</div><div class="line">    return threadLocal.get().parse(dateStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 使用ThreadLocal, 也是将共享变量变为独享，线程独享肯定能比方法独享在并发环境中能减少不少创建对象的开销。如果对性能要求比较高的情况下，一般推荐使用这种方法。</p>
+</li>
+</ol>
+<h4 id="优化框架代码"><a href="#优化框架代码" class="headerlink" title="优化框架代码"></a>优化框架代码</h4><p>作为框架代码必须要保证性能要求，用ThreadLocal来优化代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private static ThreadLocal&lt;java.text.DateFormat&gt; threadLocal = new ThreadLocal&lt;java.text.DateFormat&gt;();</div><div class="line"></div><div class="line">private static java.text.DateFormat getDateFormater(DateFormat format) &#123;</div><div class="line"></div><div class="line">    java.text.DateFormat dateFormater = threadLocal.get();</div><div class="line"></div><div class="line">    if (dateFormater == null) &#123;</div><div class="line">        dateFormater = new SimpleDateFormat(format.format);</div><div class="line">        threadLocal.set(dateFormater);</div><div class="line">    &#125;</div><div class="line">    return dateFormater;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>用同样的测试代码测试，结果如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div><div class="line">......</div><div class="line">Fri Mar 22 10:03:25 CST 2019</div></pre></td></tr></table></figure></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>我们要站在巨人的肩膀上来做事，如果是jdk1.8 可以使用DateTimeFormatter对象来解析或格式化日期;或直接使用Joda-Time类库来处理时间相关问题。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NDQ3MjQxNA==&amp;mid=2247488579&amp;idx=1&amp;sn=938bf5c4060f5758d57bb38a3d273523&amp;chksm=e9c5edf2deb264e41895a296a71db6363a7c24d1574d1262b2a74d464c73871ab3dfb65920e6&amp;scene=0&amp;xtrack=1&amp;key=788e29d0e375da22ae1918949f053d336e5d7ab2e59ce890ecd71d5a145885fcf2722671187a039ed5b59af2d4c3850464f757906a2285995765793ba14984b93cca50a8ed3e4a4a13ecaf2a95d31b3b&amp;ascene=1&amp;uin=MTU2NTU1NTk1&amp;devicetype=Windows+10&amp;version=62060720&amp;lang=zh_CN&amp;pass_ticket=PfdkGv%2BC8N6NZrxvaV85VDtvqNFgqdfh6j143w0u0Go%3D" target="_blank" rel="external">还在使用SimpleDateFormat？你的项目崩没？</a><br><a href="http://www.cnblogs.com/peida/archive/2013/05/31/3070790.html" target="_blank" rel="external">深入理解Java：SimpleDateFormat安全的时间格式化</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/SimpleDateFormat/" rel="tag"># SimpleDateFormat</a>
+          
+            <a href="/tags/thread/" rel="tag"># thread</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/28/git/gitlab_install/" rel="next" title="Redhat7.5 安装 使用 GitLab">
+                <i class="fa fa-chevron-left"></i> Redhat7.5 安装 使用 GitLab
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">tungSing</p>
+              <div class="site-description motion-element" itemprop="description">多读书多看报</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">51</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/tungsing" title="GitHub &rarr; https://github.com/tungsing" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/dongsheng__gao" title="Twitter &rarr; https://twitter.com/dongsheng__gao" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试框架中代码"><span class="nav-number">3.</span> <span class="nav-text">测试框架中代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#错误原因分析"><span class="nav-number">4.</span> <span class="nav-text">错误原因分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法"><span class="nav-number">5.</span> <span class="nav-text">解决办法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优化框架代码"><span class="nav-number">6.</span> <span class="nav-text">优化框架代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结语"><span class="nav-number">7.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+  
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/valine/1.3.4/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '7xvWVUBfJAFbTF3jhUrO92Dm-gzGzoHsz',
+    appKey: 'ueXNamYBTvNS3lsHscv0SEb0',
+    placeholder: '评论一下',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
