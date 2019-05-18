@@ -40,7 +40,9 @@
 
   
   
-  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css"/>
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.css"/>
 
 
 
@@ -119,7 +121,7 @@
     back2top_sidebar: false,
     fancybox: true,
     fastclick: false,
-    lazyload: false,
+    lazyload: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     algolia: {
@@ -338,6 +340,23 @@
     <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>关于</a>
 
   </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-photos">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos/" rel="section"><i class="menu-item-icon fa fa-fw fa-image"></i> <br/>相册</a>
+
+  </li>
 
       
       
@@ -402,6 +421,1211 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/05/17/cache/local_cache/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/17/cache/local_cache/" class="post-title-link" itemprop="url">自己实现本地缓存</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-17 14:27:00" itemprop="dateCreated datePublished" datetime="2019-05-17T14:27:00Z">2019-05-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-18 08:35:05" itemprop="dateModified" datetime="2019-05-18T08:35:05Z">2019-05-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/cache/" itemprop="url" rel="index"><span itemprop="name">cache</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/cache/jave/" itemprop="url" rel="index"><span itemprop="name">jave</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/cache/jave/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/05/17/cache/local_cache/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/17/cache/local_cache/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>在扩展框架中的缓存组件相关功能时浏览了本地缓存的实现，其核心是LUR算法，记录下LUR的相关内容加深记忆和理解</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>windows 10</li>
+<li>jdk7</li>
+</ul>
+<h4 id="LUR"><a href="#LUR" class="headerlink" title="LUR"></a>LUR</h4><p>LRU全称是Least Recently Used，即<strong>最近最久未使用</strong>的意思。 LRU算法的设计原则是：如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小。也就是说，当限定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/05/17/cache/local_cache/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/05/11/golang/golang-leaning/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/11/golang/golang-leaning/" class="post-title-link" itemprop="url">golang 学习</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-11 14:03:57" itemprop="dateCreated datePublished" datetime="2019-05-11T14:03:57Z">2019-05-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-18 09:55:10" itemprop="dateModified" datetime="2019-05-18T09:55:10Z">2019-05-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/05/11/golang/golang-leaning/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/11/golang/golang-leaning/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>为了看懂某站的源代码,就学了一下golang,记录一下学习过程慢慢积累</p>
+</blockquote>
+<h4 id="学习记录"><a href="#学习记录" class="headerlink" title="学习记录"></a>学习记录</h4><p>代码记录在<a href="https://github.com/tungSing/golang-learning">github</a>上面,下面列举一下文件夹的内容，以防忘记<br>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/05/11/golang/golang-leaning/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/04/25/golang/golang-import/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/04/25/golang/golang-import/" class="post-title-link" itemprop="url">golang import 理解</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-25 03:09:58" itemprop="dateCreated datePublished" datetime="2019-04-25T03:09:58Z">2019-04-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-18 09:55:16" itemprop="dateModified" datetime="2019-05-18T09:55:16Z">2019-05-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/25/golang/golang-import/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/25/golang/golang-import/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="包的理解"><a href="#包的理解" class="headerlink" title="包的理解"></a>包的理解</h4><p>Golang中有package的概念。在go源码文件的第一行就是先声明包名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">package xxx</div></pre></td></tr></table></figure></p>
+<p>这里的包名相当于一个标签，不是字符串。和所在文件夹没有关系，比如:上述源码在GOPATH/golang-learning/chapter06/文件夹下，它的包名就是<strong>xxx</strong></p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/04/25/golang/golang-import/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/04/25/golang/golang-project/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/04/25/golang/golang-project/" class="post-title-link" itemprop="url">golang 项目组织</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-25 02:59:17" itemprop="dateCreated datePublished" datetime="2019-04-25T02:59:17Z">2019-04-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-12 01:47:20" itemprop="dateModified" datetime="2019-05-12T01:47:20Z">2019-05-12</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/25/golang/golang-project/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/25/golang/golang-project/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>项目目录结构如何组织，一般语言都是没有规定。但Go语言这方面做了规定，这样可以保持一致性</p>
+</blockquote>
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><ol>
+<li>GOROOT就是Go被安装的地方</li>
+<li>GOPATH指向你的工作区,这就是如何让Go找到你的代码</li>
+<li>其他环境变量,一般情况不需要设置，要查看所有Go环境变量，请输入:go env<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">C:\Users\tungS&gt;go env</div><div class="line">set GOARCH=amd64</div><div class="line">set GOBIN=</div><div class="line">set GOCACHE=C:\Users\tungS\AppData\Local\go-build</div><div class="line">set GOEXE=.exe</div><div class="line">set GOFLAGS=</div><div class="line">set GOHOSTARCH=amd64</div><div class="line">set GOHOSTOS=windows</div><div class="line">.....</div></pre></td></tr></table></figure>
+</li>
+</ol>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/04/25/golang/golang-project/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/04/25/golang/golang-ide/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/04/25/golang/golang-ide/" class="post-title-link" itemprop="url">golang IDE 选择</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-25 02:54:18 / 修改时间：02:57:55" itemprop="dateCreated datePublished" datetime="2019-04-25T02:54:18Z">2019-04-25</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/25/golang/golang-ide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/25/golang/golang-ide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>IDE有事半功倍效果，所以选择一个，但IDE对原理理解有影响</p>
+</blockquote>
+<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>据说JetBrains家的IDE比较好用所以直接选择<a href="https://www.jetbrains.com/go/" target="_blank" rel="external">GoLand</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/04/21/golang/golang-install/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/04/21/golang/golang-install/" class="post-title-link" itemprop="url">golang 环境搭建</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-21 14:12:29" itemprop="dateCreated datePublished" datetime="2019-04-21T14:12:29Z">2019-04-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-11 14:41:47" itemprop="dateModified" datetime="2019-05-11T14:41:47Z">2019-05-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/golang/" itemprop="url" rel="index"><span itemprop="name">golang</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/21/golang/golang-install/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/21/golang/golang-install/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>开始学习golang</p>
+</blockquote>
+<h4 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h4><p>centos7</p>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
+<li><a href="https://golang.org/dl/">go官网</a>下载安装包</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/04/21/golang/golang-install/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -628,12 +1852,24 @@
                 
               
 
-              <time title="创建时间：2019-02-28 08:00:10 / 修改时间：08:35:13" itemprop="dateCreated datePublished" datetime="2019-02-28T08:00:10Z">2019-02-28</time>
+              <time title="创建时间：2019-02-28 08:00:10" itemprop="dateCreated datePublished" datetime="2019-02-28T08:00:10Z">2019-02-28</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-18 08:36:00" itemprop="dateModified" datetime="2019-05-18T08:36:00Z">2019-05-18</time>
               
             
           </span>
@@ -1069,1460 +2305,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/01/06/web/container/ssl_cert/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/06/web/container/ssl_cert/" class="post-title-link" itemprop="url">OpenSSL 生成自定义证书</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-06 07:29:37 / 修改时间：08:49:11" itemprop="dateCreated datePublished" datetime="2019-01-06T07:29:37Z">2019-01-06</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/01/06/web/container/ssl_cert/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/06/web/container/ssl_cert/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>本文用来记录通过OpenSSL生成自定义证书并在浏览器设置可信任</p>
-</blockquote>
-<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
-<li>Linux CentOS7 系统</li>
-<li>nginx 1.12.2</li>
-<li>Windows 10</li>
-<li>IE 11</li>
-<li>chrome 71</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/06/web/container/ssl_cert/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/04/web/container/nginx_keepalived/" class="post-title-link" itemprop="url">nginx+keepalived 主从搭建</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-04 06:01:22" itemprop="dateCreated datePublished" datetime="2019-01-04T06:01:22Z">2019-01-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 07:52:01" itemprop="dateModified" datetime="2019-01-06T07:52:01Z">2019-01-06</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/01/04/web/container/nginx_keepalived/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/04/web/container/nginx_keepalived/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>本文用来记录nginx加keepalived实现高可用，避免出现单点故障。</p>
-</blockquote>
-<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
-<li>Linux CentOS7 系统</li>
-<li>nginx 1.12.2</li>
-<li>keepalived 1.3.5</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/04/web/container/nginx_keepalived/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-info/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/10/cache/redis/redis-info/" class="post-title-link" itemprop="url">redis info 命令</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-10 07:11:59 / 修改时间：07:31:21" itemprop="dateCreated datePublished" datetime="2018-12-10T07:11:59Z">2018-12-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cache/" itemprop="url" rel="index"><span itemprop="name">Cache</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/12/10/cache/redis/redis-info/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/10/cache/redis/redis-info/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>收集了info命令的中文解释</p>
-<table>
-<thead>
-<tr>
-<th>信息</th>
-<th>中文解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Server</td>
-<td>服务信息</td>
-</tr>
-<tr>
-<td>redis_version</td>
-<td>Redis 服务器版本</td>
-</tr>
-<tr>
-<td>redis_git_sha1</td>
-<td>Git SHA1</td>
-</tr>
-<tr>
-<td>redis_git_dirty</td>
-<td>Git dirty flag</td>
-</tr>
-<tr>
-<td>redis_build_id</td>
-<td>redis build id</td>
-</tr>
-<tr>
-<td>redis_mode</td>
-<td>运行模式，单机或者集群</td>
-</tr>
-<tr>
-<td>os</td>
-<td>Redis 服务器的宿主操作系统</td>
-</tr>
-<tr>
-<td>arch_bits</td>
-<td>架构（32 或 64 位）</td>
-</tr>
-<tr>
-<td>multiplexing_api</td>
-<td>Redis 所使用的事件处理机制</td>
-</tr>
-<tr>
-<td>process_id</td>
-<td>服务器进程的 PID</td>
-</tr>
-<tr>
-<td>run_id</td>
-<td>Redis 服务器的随机标识符（用于 Sentinel 和集群）</td>
-</tr>
-<tr>
-<td>tcp_port</td>
-<td>TCP/IP 监听端口</td>
-</tr>
-<tr>
-<td>uptime_in_seconds</td>
-<td>自 Redis 服务器启动以来，经过的秒数</td>
-</tr>
-<tr>
-<td>uptime_in_days</td>
-<td>自 Redis 服务器启动以来，经过的天数</td>
-</tr>
-<tr>
-<td>hz</td>
-<td>redis内部调度（进行关闭timeout的客户端，删除过期key等等）频率，程序规定serverCron每秒运行10次</td>
-</tr>
-<tr>
-<td>lru_clock</td>
-<td>以分钟为单位进行自增的时钟，用于 LRU 管理</td>
-</tr>
-<tr>
-<td>executable</td>
-<td></td>
-</tr>
-<tr>
-<td>config_file</td>
-<td>配置文件路径</td>
-</tr>
-<tr>
-<td>Clients</td>
-<td>客户端信息</td>
-</tr>
-<tr>
-<td>connected_clients</td>
-<td>已连接客户端的数量（不包括通过从属服务器连接的客户端）</td>
-</tr>
-<tr>
-<td>client_longest_output_list</td>
-<td>当前连接的客户端当中，最长的输出列表</td>
-</tr>
-<tr>
-<td>client_biggest_input_buf</td>
-<td>当前连接的客户端当中，最大输入缓存</td>
-</tr>
-<tr>
-<td>blocked_clients</td>
-<td>正在等待阻塞命令(BLPOP、BRPOP、BRPOPLPUSH)的客户端的数量</td>
-</tr>
-<tr>
-<td>Memory</td>
-<td>内存信息</td>
-</tr>
-<tr>
-<td>used_memory</td>
-<td>由 Redis 分配器分配的内存总量，以字节(byte)为单位</td>
-</tr>
-<tr>
-<td>used_memory_human</td>
-<td>以人类可读的格式返回 Redis 分配的内存总量</td>
-</tr>
-<tr>
-<td>used_memory_rss</td>
-<td>从操作系统的角度，返回 Redis 已分配的内存总量（俗称常驻集大小）。这个值和 top 、 ps 等命令的输出一致。</td>
-</tr>
-<tr>
-<td>used_memory_rss_human</td>
-<td>以人类可读的格式返回Redis已分配的内存总量</td>
-</tr>
-<tr>
-<td>used_memory_peak</td>
-<td>Redis 的内存消耗峰值（以字节为单位）</td>
-</tr>
-<tr>
-<td>used_memory_peak_human</td>
-<td>以人类可读的格式返回 Redis 的内存消耗峰值</td>
-</tr>
-<tr>
-<td>total_system_memory</td>
-<td></td>
-</tr>
-<tr>
-<td>total_system_memory_human</td>
-<td></td>
-</tr>
-<tr>
-<td>used_memory_lua</td>
-<td>lua引擎所使用的内存大小(以字节为单位)</td>
-</tr>
-<tr>
-<td>used_memory_lua_human</td>
-<td></td>
-</tr>
-<tr>
-<td>maxmemory</td>
-<td></td>
-</tr>
-<tr>
-<td>maxmemory_human</td>
-<td></td>
-</tr>
-<tr>
-<td>maxmemory_policy</td>
-<td>内存淘汰机制，当内存使用达到阈值的时候，所有引起申请内存的命令会报错</td>
-</tr>
-<tr>
-<td>mem_fragmentation_ratio</td>
-<td>used_memory_rss和used_memory之间的比率，小于1表示使用了swap，大于1表示碎片比较多</td>
-</tr>
-<tr>
-<td>mem_allocator</td>
-<td>在编译时指定的redis所使用的内存分配器。可以是libc、jemalloc或者tcmalloc</td>
-</tr>
-<tr>
-<td>Persistence</td>
-<td>持久化信息</td>
-</tr>
-<tr>
-<td>loading</td>
-<td>服务器是否正在载入持久化文件</td>
-</tr>
-<tr>
-<td>rdb_changes_since_last_save</td>
-<td>离最近一次成功生成rdb文件，写入命令的个数，即有多少个写入命令没有持久化</td>
-</tr>
-<tr>
-<td>rdb_bgsave_in_progress</td>
-<td>服务器是否正在创建rdb文件</td>
-</tr>
-<tr>
-<td>rdb_last_save_time</td>
-<td>离最近一次成功创建rdb文件的时间戳。当前时间戳 - rdb_last_save_time=多少秒未成功生成rdb文件</td>
-</tr>
-<tr>
-<td>rdb_last_bgsave_status</td>
-<td>最近一次rdb持久化是否成功</td>
-</tr>
-<tr>
-<td>rdb_last_bgsave_time_sec</td>
-<td>最近一次成功生成rdb文件耗时秒数</td>
-</tr>
-<tr>
-<td>rdb_current_bgsave_time_sec</td>
-<td>如果服务器正在创建rdb文件，那么这个域记录的就是当前的创建操作已经耗费的秒数</td>
-</tr>
-<tr>
-<td>aof_enabled</td>
-<td>是否开启了aof</td>
-</tr>
-<tr>
-<td>aof_rewrite_in_progress</td>
-<td>标识aof的rewrite操作是否在进行中</td>
-</tr>
-<tr>
-<td>aof_rewrite_scheduled</td>
-<td>rewrite任务计划，当客户端发送bgrewriteaof指令，如果当前rewrite子进程正在执行，那么将客户端请求的bgrewriteaof变为计划任务，待aof子进程结束后执行rewrite</td>
-</tr>
-<tr>
-<td>aof_last_rewrite_time_sec</td>
-<td>最近一次aof rewrite耗费的时长</td>
-</tr>
-<tr>
-<td>aof_current_rewrite_time_sec</td>
-<td>如果rewrite操作正在进行，则记录所使用的时间，单位秒</td>
-</tr>
-<tr>
-<td>aof_last_bgrewrite_status</td>
-<td>上次bgrewriteaof操作的状态</td>
-</tr>
-<tr>
-<td>aof_last_write_status</td>
-<td>上次aof写入状态</td>
-</tr>
-<tr>
-<td>Stats</td>
-<td>一般统计信息</td>
-</tr>
-<tr>
-<td>total_connections_received</td>
-<td>新创建连接个数,如果新创建连接过多，过度地创建和销毁连接对性能有影响，说明短连接严重或连接池使用有问题，需调研代码的连接设置</td>
-</tr>
-<tr>
-<td>total_commands_processed</td>
-<td>redis处理的命令数</td>
-</tr>
-<tr>
-<td>instantaneous_ops_per_sec</td>
-<td>redis当前的qps，redis内部较实时的每秒执行的命令数</td>
-</tr>
-<tr>
-<td>total_net_input_bytes</td>
-<td>redis网络入口流量字节数</td>
-</tr>
-<tr>
-<td>total_net_output_bytes</td>
-<td>redis网络出口流量字节数</td>
-</tr>
-<tr>
-<td>instantaneous_input_kbps</td>
-<td>redis网络入口kps</td>
-</tr>
-<tr>
-<td>instantaneous_output_kbps</td>
-<td>redis网络出口kps</td>
-</tr>
-<tr>
-<td>rejected_connections</td>
-<td>拒绝的连接个数，redis连接个数达到maxclients限制，拒绝新连接的个数</td>
-</tr>
-<tr>
-<td>sync_full</td>
-<td>主从完全同步成功次数</td>
-</tr>
-<tr>
-<td>sync_partial_ok</td>
-<td>主从部分同步成功次数</td>
-</tr>
-<tr>
-<td>sync_partial_err</td>
-<td>主从部分同步失败次数</td>
-</tr>
-<tr>
-<td>expired_keys</td>
-<td>运行以来过期的key的数量</td>
-</tr>
-<tr>
-<td>evicted_keys</td>
-<td>运行以来剔除(超过了maxmemory后)的key的数量</td>
-</tr>
-<tr>
-<td>keyspace_hits</td>
-<td>命中次数</td>
-</tr>
-<tr>
-<td>keyspace_misses</td>
-<td>没命中次数</td>
-</tr>
-<tr>
-<td>pubsub_channels</td>
-<td>当前使用中的频道数量</td>
-</tr>
-<tr>
-<td>pubsub_patterns</td>
-<td>当前使用的模式的数量</td>
-</tr>
-<tr>
-<td>latest_fork_usec</td>
-<td>最近一次fork操作阻塞redis进程的耗时数，单位微秒</td>
-</tr>
-<tr>
-<td>migrate_cached_sockets</td>
-<td></td>
-</tr>
-<tr>
-<td>Replication</td>
-<td>主从信息</td>
-</tr>
-<tr>
-<td>role</td>
-<td>实例的角色，是master or slave</td>
-</tr>
-<tr>
-<td>connected_slaves</td>
-<td>连接的slave实例个数</td>
-</tr>
-<tr>
-<td>master_repl_offset</td>
-<td>主从同步偏移量,此值如果和上面的offset相同说明主从一致没延迟</td>
-</tr>
-<tr>
-<td>repl_backlog_active</td>
-<td>复制积压缓冲区是否开启</td>
-</tr>
-<tr>
-<td>repl_backlog_size</td>
-<td>复制积压缓冲大小</td>
-</tr>
-<tr>
-<td>repl_backlog_first_byte_offset</td>
-<td>复制缓冲区里偏移量的大小</td>
-</tr>
-<tr>
-<td>repl_backlog_histlen</td>
-<td>此值等于 master_repl_offset-repl_backlog_first_byte_offset,该值不会超过repl_backlog_size的大小</td>
-</tr>
-<tr>
-<td>CPU</td>
-<td>CPU信息</td>
-</tr>
-<tr>
-<td>used_cpu_sys</td>
-<td>将所有redis主进程在核心态所占用的CPU时求和累计起来</td>
-</tr>
-<tr>
-<td>used_cpu_user</td>
-<td>将所有redis主进程在用户态所占用的CPU时求和累计起来</td>
-</tr>
-<tr>
-<td>used_cpu_sys_children</td>
-<td>将后台进程在核心态所占用的CPU时求和累计起来</td>
-</tr>
-<tr>
-<td>used_cpu_user_children</td>
-<td>将后台进程在用户态所占用的CPU时求和累计起来</td>
-</tr>
-<tr>
-<td>Cluster</td>
-<td>集群信息</td>
-</tr>
-<tr>
-<td>cluster_enabled</td>
-<td>实例是否启用集群模式</td>
-</tr>
-<tr>
-<td>Keyspace</td>
-<td>数据库相关的统计信息</td>
-</tr>
-<tr>
-<td>db0</td>
-<td>db0的key的数量,以及带有生存期的key的数,平均存活时间</td>
-</tr>
-</tbody>
-</table>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a></p>
-<ol>
-<li><a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/10/cache/redis/redis-cluster/" class="post-title-link" itemprop="url">redis集群搭建</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-10 05:54:54 / 修改时间：07:12:34" itemprop="dateCreated datePublished" datetime="2018-12-10T05:54:54Z">2018-12-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cache/" itemprop="url" rel="index"><span itemprop="name">Cache</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/12/10/cache/redis/redis-cluster/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/10/cache/redis/redis-cluster/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>CentOS7 操作系统</li>
-<li>已安装好的Redis，具体安装看上一篇</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/12/10/cache/redis/redis-cluster/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-install-linux/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/10/cache/redis/redis-install-linux/" class="post-title-link" itemprop="url">Linux下安装redis</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-10 02:53:59 / 修改时间：07:12:38" itemprop="dateCreated datePublished" datetime="2018-12-10T02:53:59Z">2018-12-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cache/" itemprop="url" rel="index"><span itemprop="name">Cache</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/12/10/cache/redis/redis-install-linux/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/10/cache/redis/redis-install-linux/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>CentOS7 操作系统</li>
-<li>Redis4 安装包</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/12/10/cache/redis/redis-install-linux/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-install/"/>
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tungSing"/>
-      <meta itemprop="description" content="多读书多看报"/>
-      <meta itemprop="image" content="/images/avatar.gif"/>
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TungSing's Blog"/>
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/10/cache/redis/redis-install/" class="post-title-link" itemprop="url">Windows下安装redis</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-10 02:03:49 / 修改时间：07:12:41" itemprop="dateCreated datePublished" datetime="2018-12-10T02:03:49Z">2018-12-10</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cache/" itemprop="url" rel="index"><span itemprop="name">Cache</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2018/12/10/cache/redis/redis-install/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/12/10/cache/redis/redis-install/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>Windows10 操作系统</li>
-<li>Redis 安装包</li>
-</ul>
-<h4 id="下载redis安装包"><a href="#下载redis安装包" class="headerlink" title="下载redis安装包"></a>下载redis安装包</h4><p>在<a href="https://github.com/MicrosoftArchive/redis/releases">github</a>下载Redis-x64-3.2.100.zip包</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/12/10/cache/redis/redis-install/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2569,7 +2351,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-count">38</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2594,7 +2376,23 @@
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2713,7 +2511,29 @@
                     
                       
                     
-                    <span class="site-state-item-count">51</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">53</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -2848,12 +2668,17 @@
 
 
 
+  
+
 
 
 
 
 
   
+
+
+
 
 
 
@@ -2873,13 +2698,16 @@
   <script src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
+  <script src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
   
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   
-  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.js"></script>
 
 
   
@@ -2944,7 +2772,7 @@
     meta: guest,
     pageSize: '10' || 10,
     visitor: false,
-    lang: 'zh-cn' || 'zh-cn'
+    lang: 'en, zh-cn' || 'zh-cn'
   });
 </script>
 
@@ -3300,6 +3128,38 @@
   
 
   
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
 
   
 

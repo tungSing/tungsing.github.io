@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tungsing.cc/"/>
-  <updated>2019-03-22T06:07:36.604Z</updated>
+  <updated>2019-05-18T08:35:05.323Z</updated>
   <id>http://tungsing.cc/</id>
   
   <author>
@@ -14,6 +14,400 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>自己实现本地缓存</title>
+    <link href="http://tungsing.cc/2019/05/17/cache/local_cache/"/>
+    <id>http://tungsing.cc/2019/05/17/cache/local_cache/</id>
+    <published>2019-05-17T14:27:00.174Z</published>
+    <updated>2019-05-18T08:35:05.323Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>在扩展框架中的缓存组件相关功能时浏览了本地缓存的实现，其核心是LUR算法，记录下LUR的相关内容加深记忆和理解</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>windows 10</li>
+<li>jdk7</li>
+</ul>
+<h4 id="LUR"><a href="#LUR" class="headerlink" title="LUR"></a>LUR</h4><p>LRU全称是Least Recently Used，即<strong>最近最久未使用</strong>的意思。 LRU算法的设计原则是：如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小。也就是说，当限定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。</p>
+<a id="more"></a>
+<h4 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h4><p>对cache的基本操作有：插入(insert)、替换(replace)、查找(lookup)<br>为了能够快速删除最久没有访问的数据项和插入最新的数据项，我们使用<strong>双向链表</strong>连接Cache中的数据项，并且保证链表维持数据项从最近访问到最旧访问的顺序。</p>
+<ul>
+<li>插入：当Cache未满时，新的数据项只需插到双链表头部即可。时间复杂度为O(1).</li>
+<li>替换：当Cache已满时，将新的数据项插到双链表头部，并删除双链表的尾结点即可。时间复杂度为O(1).</li>
+<li>查找：每次数据项被查询到时，都将此数据项移动到链表头部。</li>
+</ul>
+<p>经过分析，我们知道使用双向链表可以保证插入和替换的时间复杂度是O(1)，但查询的时间复杂度是O(n)，因为需要对双链表进行遍历。为了让查找效率也达到O(1)，很自然的会想到使用 hash table 。</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><p>从上述分析可知，我们需要使用两种数据结构：</p>
+<ol>
+<li>双向链表(Doubly Linked List)</li>
+<li>哈希表(Hash Table)</li>
+</ol>
+<p>Java中的LinkedHashMap正好满足这两种数据结构，直接用LinkedHashMap来实现(框架代码就是基于LinkedHashMap实现的)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">LinkedHashMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">1456882507664137630L</span>;</div><div class="line"></div><div class="line">    <span class="comment">//缓存的最大容量</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_CACHE_SIZE;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> cacheSize)</span> </span>&#123;</div><div class="line">        <span class="comment">// true:按访问排序</span></div><div class="line">        <span class="comment">// 初始值必须是2 的N次方，最大容量2 的30次方</span></div><div class="line">        <span class="comment">// 初始值16</span></div><div class="line">        <span class="keyword">super</span>(<span class="number">1</span> &lt;&lt; <span class="number">4</span>, <span class="number">0.75F</span>, <span class="keyword">true</span>);</div><div class="line">        MAX_CACHE_SIZE = cacheSize;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Entry&lt;K, V&gt; eldest)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> size() &gt; MAX_CACHE_SIZE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>核心实现只需要继承LinkedHashMap，扩展它的removeEldestEntry方法即可，在多线程环境使用时使用 Collections.synchronizedMap()方法实现线程安全操作。框架中的细节代码就很多了。</p>
+<h4 id="简单测试"><a href="#简单测试" class="headerlink" title="简单测试"></a>简单测试</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">    LRUCache&lt;Object, Object&gt; cache = <span class="keyword">new</span> LRUCache&lt;Object, Object&gt;(<span class="number">8</span>);</div><div class="line">    cache.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</div><div class="line">    cache.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</div><div class="line">    cache.put(<span class="string">"2"</span>, <span class="string">"2"</span>);</div><div class="line">    cache.put(<span class="string">"3"</span>, <span class="string">"3"</span>);</div><div class="line">    cache.put(<span class="string">"4"</span>, <span class="string">"4"</span>);</div><div class="line">    cache.put(<span class="string">"5"</span>, <span class="string">"5"</span>);</div><div class="line">    cache.put(<span class="string">"6"</span>, <span class="string">"6"</span>);</div><div class="line">    cache.put(<span class="string">"7"</span>, <span class="string">"7"</span>);</div><div class="line"></div><div class="line">    cache.get(<span class="string">"6"</span>);</div><div class="line">    cache.get(<span class="string">"5"</span>);</div><div class="line">    cache.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (Entry&lt;Object, Object&gt; entry : cache.entrySet()) &#123;</div><div class="line">        System.out.println(entry.getKey() + <span class="string">":"</span> + entry.getValue());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">1:1</div><div class="line">2:2</div><div class="line">3:3</div><div class="line">4:4</div><div class="line">7:7</div><div class="line">6:6</div><div class="line">5:5</div><div class="line">8:8</div></pre></td></tr></table></figure></p>
+<p>观察结果当超出最大容量自动删除了最久未使用的数据，访问过的数据排到了链表前端，符合预期</p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>了解原理后不管是解决问题还是重复造轮子都会得心应手。但不推荐重复造轮子，google guava cache 就是基于LUR算法实现的一个基础类库。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://songlee24.github.io/2015/05/10/design-LRU-Cache/" target="_blank" rel="external">设计并实现一个LRU Cache</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;在扩展框架中的缓存组件相关功能时浏览了本地缓存的实现，其核心是LUR算法，记录下LUR的相关内容加深记忆和理解&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;windows 10&lt;/li&gt;
+&lt;li&gt;jdk7&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;LUR&quot;&gt;&lt;a href=&quot;#LUR&quot; class=&quot;headerlink&quot; title=&quot;LUR&quot;&gt;&lt;/a&gt;LUR&lt;/h4&gt;&lt;p&gt;LRU全称是Least Recently Used，即&lt;strong&gt;最近最久未使用&lt;/strong&gt;的意思。 LRU算法的设计原则是：如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小。也就是说，当限定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
+    
+      <category term="jave" scheme="http://tungsing.cc/categories/cache/jave/"/>
+    
+      <category term="algorithm" scheme="http://tungsing.cc/categories/cache/jave/algorithm/"/>
+    
+    
+      <category term="java" scheme="http://tungsing.cc/tags/java/"/>
+    
+      <category term="cache" scheme="http://tungsing.cc/tags/cache/"/>
+    
+      <category term="algorithm" scheme="http://tungsing.cc/tags/algorithm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>golang 学习</title>
+    <link href="http://tungsing.cc/2019/05/11/golang/golang-leaning/"/>
+    <id>http://tungsing.cc/2019/05/11/golang/golang-leaning/</id>
+    <published>2019-05-11T14:03:57.100Z</published>
+    <updated>2019-05-18T09:55:10.893Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>为了看懂某站的源代码,就学了一下golang,记录一下学习过程慢慢积累</p>
+</blockquote>
+<h4 id="学习记录"><a href="#学习记录" class="headerlink" title="学习记录"></a>学习记录</h4><p>代码记录在<a href="https://github.com/tungSing/golang-learning" target="_blank" rel="external">github</a>上面,下面列举一下文件夹的内容，以防忘记<br><a id="more"></a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">文件夹</th>
+<th style="text-align:left">内容</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">chapter01</td>
+<td style="text-align:left">经典Hello World</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter02</td>
+<td style="text-align:left">基础语法</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter03</td>
+<td style="text-align:left">数据类型</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter04</td>
+<td style="text-align:left">变量</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter05</td>
+<td style="text-align:left">常量</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter06</td>
+<td style="text-align:left">运算符</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter07</td>
+<td style="text-align:left">流程控制</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter08</td>
+<td style="text-align:left">函数</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter09</td>
+<td style="text-align:left">方法</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter10</td>
+<td style="text-align:left">接口</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter11</td>
+<td style="text-align:left">错误</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter12</td>
+<td style="text-align:left">异常</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter13</td>
+<td style="text-align:left">单元测试</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">chapter14</td>
+<td style="text-align:left">并发</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">cmd</td>
+<td style="text-align:left">main</td>
+<td style="text-align:left">主程序</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a href="https://golang.org/doc/" target="_blank" rel="external">官网</a></li>
+<li><a href="https://www.kancloud.cn/liupengjie/go/570004" target="_blank" rel="external">golang</a></li>
+<li><a href="https://www.runoob.com/go/go-tutorial.html" target="_blank" rel="external">Go 语言教程</a></li>
+<li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html" target="_blank" rel="external">理解Go import</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;为了看懂某站的源代码,就学了一下golang,记录一下学习过程慢慢积累&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;学习记录&quot;&gt;&lt;a href=&quot;#学习记录&quot; class=&quot;headerlink&quot; title=&quot;学习记录&quot;&gt;&lt;/a&gt;学习记录&lt;/h4&gt;&lt;p&gt;代码记录在&lt;a href=&quot;https://github.com/tungSing/golang-learning&quot;&gt;github&lt;/a&gt;上面,下面列举一下文件夹的内容，以防忘记&lt;br&gt;
+    
+    </summary>
+    
+      <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/categories/golang/go/"/>
+    
+    
+      <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/tags/go/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>golang import 理解</title>
+    <link href="http://tungsing.cc/2019/04/25/golang/golang-import/"/>
+    <id>http://tungsing.cc/2019/04/25/golang/golang-import/</id>
+    <published>2019-04-25T03:09:58.634Z</published>
+    <updated>2019-05-18T09:55:16.438Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="包的理解"><a href="#包的理解" class="headerlink" title="包的理解"></a>包的理解</h4><p>Golang中有package的概念。在go源码文件的第一行就是先声明包名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">package xxx</div></pre></td></tr></table></figure></p>
+<p>这里的包名相当于一个标签，不是字符串。和所在文件夹没有关系，比如:上述源码在GOPATH/golang-learning/chapter06/文件夹下，它的包名就是<strong>xxx</strong></p>
+<a id="more"></a>
+<h4 id="导入包"><a href="#导入包" class="headerlink" title="导入包"></a>导入包</h4><p>用improt关键字导入包，包的导入路径是基于工作目录的。因此Go会在工作目录src子目录下查找包</p>
+<ul>
+<li><p>导入标准包使用的是给定的短路径，如“fmt”、“net/http”</p>
+<p>$GOPATH/src/learning/chapter01/hello.go</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">package hello</div><div class="line"></div><div class="line">import &quot;fmt&quot;</div><div class="line"></div><div class="line">func SayHello()  &#123;</div><div class="line">    fmt.Println(&quot;Hello,World!&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>项目的包，需要在工作目录下指定一个目录</p>
+<p>$GOPATH/src/learning/cmd/main.go</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import &quot;learning/chapter01&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">    hello.SayHello()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注意:</strong>同一个路径下不支持定义多个包，会报编译错误</p>
+</li>
+</ul>
+<h4 id="导入包的方式"><a href="#导入包的方式" class="headerlink" title="导入包的方式"></a>导入包的方式</h4><p>导入使用包有四种方式，不同方式用途不一样</p>
+<ol>
+<li><p>import “learning/chapter01”<br>常规方式，通过包名hello调用SayHello方法。hello.SayHello()</p>
+</li>
+<li><p>import h “learning/chapter01”<br>这里的 h 是包名 hello 的别名，h.SyayHello() 。该方式合适的场景</p>
+<ul>
+<li><p>包名过于复杂或者意思不明确<br>我写的代码其实就很不明确，所以最好要起别名来明确含义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import hello &quot;learning/chapter01&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>包名和其他包冲突<br>随着项目代码的不断增加或引入第三方包，很大概率大家会用相同的包名，就需要用别名来区别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">import (</div><div class="line">   &quot;errors&quot;</div><div class="line">   bizError &quot;learning/chapter11&quot;</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>import . “learning/chapter01”<br>这里的点”.”符号表示，对包 hello 的调用直接省略包名，你我以后就是一家人，不分彼此，你的东西就像我就的一样，随便用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import . &quot;learning/chapter01&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">    SayHello()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>improt _ “learning/chapter01”<br>当导入一个包时，该包下的文件里所有init()函数都会被执行,我们就需要用“_”符合来导入包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">package main</div><div class="line"></div><div class="line">import _ &quot;learning/chapter01&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html" target="_blank" rel="external">理解Go import</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;包的理解&quot;&gt;&lt;a href=&quot;#包的理解&quot; class=&quot;headerlink&quot; title=&quot;包的理解&quot;&gt;&lt;/a&gt;包的理解&lt;/h4&gt;&lt;p&gt;Golang中有package的概念。在go源码文件的第一行就是先声明包名：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;package xxx&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;这里的包名相当于一个标签，不是字符串。和所在文件夹没有关系，比如:上述源码在GOPATH/golang-learning/chapter06/文件夹下，它的包名就是&lt;strong&gt;xxx&lt;/strong&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/categories/golang/go/"/>
+    
+    
+      <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/tags/go/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>golang 项目组织</title>
+    <link href="http://tungsing.cc/2019/04/25/golang/golang-project/"/>
+    <id>http://tungsing.cc/2019/04/25/golang/golang-project/</id>
+    <published>2019-04-25T02:59:17.906Z</published>
+    <updated>2019-05-12T01:47:20.861Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>项目目录结构如何组织，一般语言都是没有规定。但Go语言这方面做了规定，这样可以保持一致性</p>
+</blockquote>
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><ol>
+<li>GOROOT就是Go被安装的地方</li>
+<li>GOPATH指向你的工作区,这就是如何让Go找到你的代码</li>
+<li>其他环境变量,一般情况不需要设置，要查看所有Go环境变量，请输入:go env<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">C:\Users\tungS&gt;go env</div><div class="line">set GOARCH=amd64</div><div class="line">set GOBIN=</div><div class="line">set GOCACHE=C:\Users\tungS\AppData\Local\go-build</div><div class="line">set GOEXE=.exe</div><div class="line">set GOFLAGS=</div><div class="line">set GOHOSTARCH=amd64</div><div class="line">set GOHOSTOS=windows</div><div class="line">.....</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<h4 id="代码组织结构"><a href="#代码组织结构" class="headerlink" title="代码组织结构"></a>代码组织结构</h4><ol>
+<li><p>一般的，一个Go项目在GOPATH下，会有如下三个目录：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">|--bin</div><div class="line">|--pkg</div><div class="line">|--src</div></pre></td></tr></table></figure>
+<p> bin存放编译后的可执行文件；<br> pkg存放编译后的包文件；<br> src存放项目源文件。<br> 一般，bin和pkg目录可以不创建，go命令会自动创建（如 go install），只需要创建src目录即可。对于pkg目录，曾经有人问：我把Go中的包放入pkg下面，怎么不行啊？他直接把Go包的源文件放入了pkg中。这显然是不对的。pkg中的文件是Go编译生成的，而不是手动放进去的。（一般文件后缀.a）对于src目录，存放源文件，Go中源文件以包（package）的形式组织。通常，新建一个包就在src目录中新建一个文件夹。</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;项目目录结构如何组织，一般语言都是没有规定。但Go语言这方面做了规定，这样可以保持一致性&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;环境变量&quot;&gt;&lt;a href=&quot;#环境变量&quot; class=&quot;headerlink&quot; title=&quot;环境变量&quot;&gt;&lt;/a&gt;环境变量&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;GOROOT就是Go被安装的地方&lt;/li&gt;
+&lt;li&gt;GOPATH指向你的工作区,这就是如何让Go找到你的代码&lt;/li&gt;
+&lt;li&gt;其他环境变量,一般情况不需要设置，要查看所有Go环境变量，请输入:go env&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;C:\Users\tungS&amp;gt;go env&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOARCH=amd64&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOBIN=&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOCACHE=C:\Users\tungS\AppData\Local\go-build&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOEXE=.exe&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOFLAGS=&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOHOSTARCH=amd64&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;set GOHOSTOS=windows&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;.....&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/categories/golang/go/"/>
+    
+    
+      <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/tags/go/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>golang IDE 选择</title>
+    <link href="http://tungsing.cc/2019/04/25/golang/golang-ide/"/>
+    <id>http://tungsing.cc/2019/04/25/golang/golang-ide/</id>
+    <published>2019-04-25T02:54:18.829Z</published>
+    <updated>2019-04-25T02:57:55.773Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>IDE有事半功倍效果，所以选择一个，但IDE对原理理解有影响</p>
+</blockquote>
+<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>据说JetBrains家的IDE比较好用所以直接选择<a href="https://www.jetbrains.com/go/" target="_blank" rel="external">GoLand</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;IDE有事半功倍效果，所以选择一个，但IDE对原理理解有影响&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;
+    
+    </summary>
+    
+      <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/categories/golang/go/"/>
+    
+    
+      <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
+    
+      <category term="go" scheme="http://tungsing.cc/tags/go/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>golang 环境搭建</title>
+    <link href="http://tungsing.cc/2019/04/21/golang/golang-install/"/>
+    <id>http://tungsing.cc/2019/04/21/golang/golang-install/</id>
+    <published>2019-04-21T14:12:29.322Z</published>
+    <updated>2019-05-11T14:41:47.072Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>开始学习golang</p>
+</blockquote>
+<h4 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h4><p>centos7</p>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
+<li><a href="https://golang.org/dl/" target="_blank" rel="external">go官网</a>下载安装包</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<ol>
+<li>根据自己需要解压安装</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz</div></pre></td></tr></table></figure>
+<ol>
+<li><p>配置环境变量<br>在/etc/profile文件中添加export PATH=$PATH:/usr/local/go/bin</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># vi /etc/profile</div><div class="line"># source /etc/profile</div></pre></td></tr></table></figure>
+</li>
+<li><p>测试是否安装成功</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># go version</div><div class="line">go version go1.12.4 linux/amd64</div></pre></td></tr></table></figure>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a href="https://golang.org/doc/install" target="_blank" rel="external">官网</a></li>
+<li><a href="https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/01.1.md" target="_blank" rel="external">安装go</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;开始学习golang&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;环境说明&quot;&gt;&lt;a href=&quot;#环境说明&quot; class=&quot;headerlink&quot; title=&quot;环境说明&quot;&gt;&lt;/a&gt;环境说明&lt;/h4&gt;&lt;p&gt;centos7&lt;/p&gt;
+&lt;h4 id=&quot;环境搭建&quot;&gt;&lt;a href=&quot;#环境搭建&quot; class=&quot;headerlink&quot; title=&quot;环境搭建&quot;&gt;&lt;/a&gt;环境搭建&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://golang.org/dl/&quot;&gt;go官网&lt;/a&gt;下载安装包&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;# wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
+    
+    
+      <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
+    
+  </entry>
   
   <entry>
     <title>DataUtils工具类优化</title>
@@ -84,7 +478,7 @@
     <link href="http://tungsing.cc/2019/02/28/git/gitlab_install/"/>
     <id>http://tungsing.cc/2019/02/28/git/gitlab_install/</id>
     <published>2019-02-28T08:00:10.907Z</published>
-    <updated>2019-02-28T08:35:13.821Z</updated>
+    <updated>2019-05-18T08:36:00.968Z</updated>
     
     <content type="html"><![CDATA[<h4 id="版本选择"><a href="#版本选择" class="headerlink" title="版本选择"></a>版本选择</h4><p>如果想安装指定版本，需要在下面的网站中下载指定版本。</p>
 <ol>
@@ -146,9 +540,9 @@
     </summary>
     
     
-      <category term="GitLab" scheme="http://tungsing.cc/tags/GitLab/"/>
-    
       <category term="git" scheme="http://tungsing.cc/tags/git/"/>
+    
+      <category term="gitLab" scheme="http://tungsing.cc/tags/gitLab/"/>
     
   </entry>
   
@@ -289,9 +683,9 @@
     </summary>
     
     
-      <category term="Linux" scheme="http://tungsing.cc/tags/Linux/"/>
-    
       <category term="yum" scheme="http://tungsing.cc/tags/yum/"/>
+    
+      <category term="Linux" scheme="http://tungsing.cc/tags/Linux/"/>
     
       <category term="redhat" scheme="http://tungsing.cc/tags/redhat/"/>
     
@@ -302,7 +696,7 @@
     <link href="http://tungsing.cc/2019/01/06/web/container/ssl_cert/"/>
     <id>http://tungsing.cc/2019/01/06/web/container/ssl_cert/</id>
     <published>2019-01-06T07:29:37.156Z</published>
-    <updated>2019-01-06T08:49:11.999Z</updated>
+    <updated>2019-05-18T08:37:38.480Z</updated>
     
     <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>本文用来记录通过OpenSSL生成自定义证书并在浏览器设置可信任</p>
@@ -375,8 +769,6 @@
     </summary>
     
     
-      <category term="Web" scheme="http://tungsing.cc/tags/Web/"/>
-    
       <category term="nginx" scheme="http://tungsing.cc/tags/nginx/"/>
     
       <category term="SSL" scheme="http://tungsing.cc/tags/SSL/"/>
@@ -385,6 +777,8 @@
     
       <category term="自定义证书" scheme="http://tungsing.cc/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AF%81%E4%B9%A6/"/>
     
+      <category term="web" scheme="http://tungsing.cc/tags/web/"/>
+    
   </entry>
   
   <entry>
@@ -392,7 +786,7 @@
     <link href="http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/"/>
     <id>http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/</id>
     <published>2019-01-04T06:01:22.264Z</published>
-    <updated>2019-01-06T07:52:01.644Z</updated>
+    <updated>2019-05-18T08:37:31.309Z</updated>
     
     <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>本文用来记录nginx加keepalived实现高可用，避免出现单点故障。</p>
@@ -502,13 +896,13 @@
     </summary>
     
     
-      <category term="Web" scheme="http://tungsing.cc/tags/Web/"/>
-    
       <category term="nginx" scheme="http://tungsing.cc/tags/nginx/"/>
     
       <category term="高可用" scheme="http://tungsing.cc/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
     
       <category term="keepalived" scheme="http://tungsing.cc/tags/keepalived/"/>
+    
+      <category term="web" scheme="http://tungsing.cc/tags/web/"/>
     
   </entry>
   
@@ -517,7 +911,7 @@
     <link href="http://tungsing.cc/2018/12/10/cache/redis/redis-info/"/>
     <id>http://tungsing.cc/2018/12/10/cache/redis/redis-info/</id>
     <published>2018-12-10T07:11:59.361Z</published>
-    <updated>2018-12-10T07:31:21.716Z</updated>
+    <updated>2019-05-18T08:34:37.739Z</updated>
     
     <content type="html"><![CDATA[<p>收集了info命令的中文解释</p>
 <table>
@@ -920,7 +1314,7 @@
     
     </summary>
     
-      <category term="Cache" scheme="http://tungsing.cc/categories/Cache/"/>
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
     
     
       <category term="redis" scheme="http://tungsing.cc/tags/redis/"/>
@@ -934,7 +1328,7 @@
     <link href="http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/"/>
     <id>http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/</id>
     <published>2018-12-10T05:54:54.023Z</published>
-    <updated>2018-12-10T07:12:34.753Z</updated>
+    <updated>2019-05-18T08:34:32.880Z</updated>
     
     <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
 <li>CentOS7 操作系统</li>
@@ -993,7 +1387,7 @@
     
     </summary>
     
-      <category term="Cache" scheme="http://tungsing.cc/categories/Cache/"/>
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
     
     
       <category term="redis" scheme="http://tungsing.cc/tags/redis/"/>
@@ -1009,7 +1403,7 @@
     <link href="http://tungsing.cc/2018/12/10/cache/redis/redis-install-linux/"/>
     <id>http://tungsing.cc/2018/12/10/cache/redis/redis-install-linux/</id>
     <published>2018-12-10T02:53:59.451Z</published>
-    <updated>2018-12-10T07:12:38.525Z</updated>
+    <updated>2019-05-18T08:34:42.616Z</updated>
     
     <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
 <li>CentOS7 操作系统</li>
@@ -1068,7 +1462,7 @@
     
     </summary>
     
-      <category term="Cache" scheme="http://tungsing.cc/categories/Cache/"/>
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
     
     
       <category term="redis" scheme="http://tungsing.cc/tags/redis/"/>
@@ -1082,7 +1476,7 @@
     <link href="http://tungsing.cc/2018/12/10/cache/redis/redis-install/"/>
     <id>http://tungsing.cc/2018/12/10/cache/redis/redis-install/</id>
     <published>2018-12-10T02:03:49.133Z</published>
-    <updated>2018-12-10T07:12:41.310Z</updated>
+    <updated>2019-05-18T08:34:46.869Z</updated>
     
     <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
 <li>Windows10 操作系统</li>
@@ -1124,7 +1518,7 @@
     
     </summary>
     
-      <category term="Cache" scheme="http://tungsing.cc/categories/Cache/"/>
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
     
     
       <category term="redis" scheme="http://tungsing.cc/tags/redis/"/>
@@ -1138,7 +1532,7 @@
     <link href="http://tungsing.cc/2018/12/06/cache/redis/redis/"/>
     <id>http://tungsing.cc/2018/12/06/cache/redis/redis/</id>
     <published>2018-12-06T01:45:34.280Z</published>
-    <updated>2018-12-10T07:12:44.385Z</updated>
+    <updated>2019-05-18T08:34:53.527Z</updated>
     
     <content type="html"><![CDATA[<h4 id="Redis-介绍"><a href="#Redis-介绍" class="headerlink" title="Redis 介绍"></a>Redis 介绍</h4><p>Redis 是一款开源的，基于 BSD 许可的，高级键值 (key-value) 缓存 (cache) 和存储 (store) 系统。由于 Redis 的键包括 string，hash，list，set，sorted set，bitmap 和 hyperloglog，所以常常被称为数据结构服务器。你可以在这些类型上面运行原子操作，例如，追加字符串，增加哈希中的值，加入一个元素到列表，计算集合的交集、并集和差集，或者是从有序集合中获取最高排名的元素。</p>
 <a id="more"></a>
@@ -1204,10 +1598,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a></p>
-<ol>
-<li><a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></li>
-</ol>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a><br>2.<a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></p>
 ]]></content>
     
     <summary type="html">
@@ -1216,7 +1607,7 @@
     
     </summary>
     
-      <category term="Cache" scheme="http://tungsing.cc/categories/Cache/"/>
+      <category term="cache" scheme="http://tungsing.cc/categories/cache/"/>
     
     
       <category term="redis" scheme="http://tungsing.cc/tags/redis/"/>
@@ -1230,7 +1621,7 @@
     <link href="http://tungsing.cc/2018/09/14/web/container/weblogic-install/"/>
     <id>http://tungsing.cc/2018/09/14/web/container/weblogic-install/</id>
     <published>2018-09-14T02:57:31.667Z</published>
-    <updated>2018-10-02T09:06:11.138Z</updated>
+    <updated>2019-05-18T08:37:48.968Z</updated>
     
     <content type="html"><![CDATA[<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
 <li>Linux CentOS6.9 系统</li>
@@ -1309,13 +1700,13 @@
     </summary>
     
     
-      <category term="Web" scheme="http://tungsing.cc/tags/Web/"/>
-    
       <category term="java" scheme="http://tungsing.cc/tags/java/"/>
     
       <category term="Oracle" scheme="http://tungsing.cc/tags/Oracle/"/>
     
       <category term="Weblogic" scheme="http://tungsing.cc/tags/Weblogic/"/>
+    
+      <category term="web" scheme="http://tungsing.cc/tags/web/"/>
     
   </entry>
   
@@ -1324,25 +1715,69 @@
     <link href="http://tungsing.cc/2018/09/14/web/container/was-install/"/>
     <id>http://tungsing.cc/2018/09/14/web/container/was-install/</id>
     <published>2018-09-14T02:56:59.263Z</published>
-    <updated>2018-09-14T02:56:59.263Z</updated>
+    <updated>2019-05-18T08:37:45.082Z</updated>
     
-    <content type="html"><![CDATA[<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
-<li>Linux CentOS6.9 系统</li>
+    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>为了代码适配Websphere，而搭建的环境</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS7 系统</li>
 <li>WebSphere 8.5</li>
 </ul>
 <h4 id="安装IBM-Installation-Manager"><a href="#安装IBM-Installation-Manager" class="headerlink" title="安装IBM Installation Manager"></a>安装IBM Installation Manager</h4><h5 id="下载IBM-Installation-Manager"><a href="#下载IBM-Installation-Manager" class="headerlink" title="下载IBM Installation Manager"></a>下载IBM Installation Manager</h5><p>基于<a href="https://www-945.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Rational&amp;product=ibm/Rational/IBM+Installation+Manager&amp;function=all" target="_blank" rel="external">IBM Installation Manager</a>安装WebSphere，故下载</p>
 <p><img src="/images/web/container/was1.jpg" alt=""><br>需要登录才可以下载，注册一个IBM ID就行<br><img src="/images/web/container/was2.jpg" alt=""></p>
 <a id="more"></a>
-<h5 id="解压并安装"><a href="#解压并安装" class="headerlink" title="解压并安装"></a>解压并安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ unzip agent.installer.linux.gtk.x86_64_1.8.9000.20180313_1417.zip</div></pre></td></tr></table></figure>
-<p>在解压目录中执行如下命令,默认安装目录为/opt/IBM/InstallationManager<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./installc -log log_file -acceptLicense</div></pre></td></tr></table></figure></p>
+<h5 id="解压并安装"><a href="#解压并安装" class="headerlink" title="解压并安装"></a>解压并安装</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># unzip agent.installer.linux.gtk.x86_64_1.8.9000.20180313_1417.zip</div></pre></td></tr></table></figure>
+<p>在解压目录中执行如下命令,默认安装目录为/opt/IBM/InstallationManager<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># ./installc -log log_file -acceptLicense</div></pre></td></tr></table></figure></p>
 <p><a href="https://www.ibm.com/support/knowledgecenter/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/t_silent_installIM_IMinst.html" target="_blank" rel="external">installc命令的用法详见官方文档)</a></p>
-<h4 id="安装WAS"><a href="#安装WAS" class="headerlink" title="安装WAS"></a>安装WAS</h4><h4 id="安装WAS-1"><a href="#安装WAS-1" class="headerlink" title="安装WAS"></a>安装WAS</h4><h5 id="下载WAS安装包"><a href="#下载WAS安装包" class="headerlink" title="下载WAS安装包"></a>下载WAS安装包</h5><p>到<a href="http://www-01.ibm.com/support/docview.wss?uid=swg27038624#linux" target="_blank" rel="external">官方地址</a>按步骤下载Linux版本的WAS。需要使用绑定了site number的IBM ID登录 <a href="https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/blueid/Entitlement?jadeAction=DISPLAY_SELF_NOMINATION" target="_blank" rel="external">IBM Passport Advantage Online website</a>，检索Part number找到相应的文件进行下载。以WAS ND 8.5.5为例， “CIK2HML,CIK2IML,CIK2JML”对应三个文件。<br><img src="/images/web/container/was3.jpg" alt=""></p>
-<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5>]]></content>
+<h4 id="安装WAS"><a href="#安装WAS" class="headerlink" title="安装WAS"></a>安装WAS</h4><h4 id="安装WAS-1"><a href="#安装WAS-1" class="headerlink" title="安装WAS"></a>安装WAS</h4><h5 id="下载WAS安装包-不对"><a href="#下载WAS安装包-不对" class="headerlink" title="下载WAS安装包(不对)"></a>下载WAS安装包(不对)</h5><p>到<a href="http://www-01.ibm.com/support/docview.wss?uid=swg27038624#linux" target="_blank" rel="external">官方地址</a>按步骤下载Linux版本的WAS。需要使用绑定了site number的IBM ID登录 <a href="https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/blueid/Entitlement?jadeAction=DISPLAY_SELF_NOMINATION" target="_blank" rel="external">IBM Passport Advantage Online website</a>，检索Part number找到相应的文件进行下载。以WAS ND 8.5.5为例， “CIK2HML,CIK2IML,CIK2JML”对应三个文件。<br><img src="/images/web/container/was3.jpg" alt=""></p>
+<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5><ol>
+<li><p>解压WAS安装源的压缩包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># unzip was.repo.8550.basetrial_part1.zip -d was/</div><div class="line"># unzip was.repo.8550.basetrial_part2.zip -d was/</div><div class="line"># unzip was.repo.8550.basetrial_part3.zip -d was/</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过IM的listAvailablePackages命令验证安装包的版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories /opt/software/was/</div></pre></td></tr></table></figure>
+<p>显示结果:com.ibm.websphere.BASETRIAL.v85_8.5.5000.20130514_1044<br>输出的结果中com.ibm.websphere.BASETRIAL.v85是WAS的offering_ID，</p>
+<pre><code>8.5.5000.20130514_1044是offering_version，
+在下文中更新WAS的时候会用到。
+</code></pre></li>
+</ol>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><ul>
+<li><p>用install命令进行安装，-installationDirectory参数指定安装路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.BASETRIAL.v85 -repositories /opt/software/was/ -installationDirectory /opt/IBM/WebSphere/AppServer/ -acceptLicense -showProgress</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装成功<br><img src="/images/web/container/was4.jpg" alt=""></p>
+</li>
+<li><p>验证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages -verbose</div></pre></td></tr></table></figure>
+<p><img src="/images/web/container/was5.jpg" alt="">  </p>
+</li>
+</ul>
+<h4 id="更新WAS"><a href="#更新WAS" class="headerlink" title="更新WAS"></a>更新WAS</h4><h4 id="配置使用"><a href="#配置使用" class="headerlink" title="配置使用"></a>配置使用</h4><ol>
+<li><p>创建应用概要文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># ./manageprofiles.sh -create -profileName AppSvr01  -profilePath /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/ -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -hostName 127.0.0.1</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/bin</div><div class="line"># ./startServer.sh server1</div></pre></td></tr></table></figure>
+</li>
+<li><p>登陆管理控制台<br>查看控制台端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># more /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/dev01Node01Cell/nodes/dev01Node01/serverindex.xml</div><div class="line"></div><div class="line">&lt;specialEndpoints xmi:id=&quot;NamedEndPoint_1282247807415&quot; endPointName=&quot;WC_adminhost_secure&quot;&gt;</div><div class="line">   &lt;endPoint xmi:id=&quot;EndPoint_1282247807415&quot; host=&quot;*&quot; port=&quot;9060&quot;/&gt;</div><div class="line">&lt;/specialEndpoints&gt;</div></pre></td></tr></table></figure>
+<p><code>WC_adminhost_secure</code></p>
+</li>
+</ol>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="http://www.leonlu.cc/profession/5-WAS-installation-with-cmd/" target="_blank" rel="external">命令行方式安装IBM WebSphere Application Server</a></li>
+<li><a href="https://blog.csdn.net/mfanoffice2012/article/details/81605126" target="_blank" rel="external">WebSphere 8.5.5 静默安装及升级补丁</a></li>
+</ol>
+]]></content>
     
     <summary type="html">
     
-      &lt;h4 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Linux CentOS6.9 系统&lt;/li&gt;
+      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;为了代码适配Websphere，而搭建的环境&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Linux CentOS7 系统&lt;/li&gt;
 &lt;li&gt;WebSphere 8.5&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id=&quot;安装IBM-Installation-Manager&quot;&gt;&lt;a href=&quot;#安装IBM-Installation-Manager&quot; class=&quot;headerlink&quot; title=&quot;安装IBM Installation Manager&quot;&gt;&lt;/a&gt;安装IBM Installation Manager&lt;/h4&gt;&lt;h5 id=&quot;下载IBM-Installation-Manager&quot;&gt;&lt;a href=&quot;#下载IBM-Installation-Manager&quot; class=&quot;headerlink&quot; title=&quot;下载IBM Installation Manager&quot;&gt;&lt;/a&gt;下载IBM Installation Manager&lt;/h5&gt;&lt;p&gt;基于&lt;a href=&quot;https://www-945.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Rational&amp;amp;product=ibm/Rational/IBM+Installation+Manager&amp;amp;function=all&quot;&gt;IBM Installation Manager&lt;/a&gt;安装WebSphere，故下载&lt;/p&gt;
@@ -1351,13 +1786,13 @@
     </summary>
     
     
-      <category term="Web" scheme="http://tungsing.cc/tags/Web/"/>
-    
       <category term="java" scheme="http://tungsing.cc/tags/java/"/>
     
       <category term="WebSphere" scheme="http://tungsing.cc/tags/WebSphere/"/>
     
       <category term="was" scheme="http://tungsing.cc/tags/was/"/>
+    
+      <category term="web" scheme="http://tungsing.cc/tags/web/"/>
     
   </entry>
   
@@ -1441,349 +1876,6 @@
     
     
       <category term="Oracle" scheme="http://tungsing.cc/tags/Oracle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Thread类</title>
-    <link href="http://tungsing.cc/2018/02/09/java/thread/chapter03/"/>
-    <id>http://tungsing.cc/2018/02/09/java/thread/chapter03/</id>
-    <published>2018-02-09T08:33:20.242Z</published>
-    <updated>2018-02-11T09:16:33.803Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h4 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h4><ol>
-<li><p>start方法：启动线程，调用start方法后，系统才会开启一个新的线程来执行用户定义的子任务，同时，会为线程分配资源。</p>
-</li>
-<li><p>run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。</p>
-</li>
-<li><p>sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。</p>
-</li>
-<li><p>yield方法：该线程就会把CPU时间让掉，让其他或者自己的线程执行（也就是谁先抢到谁执行）。但是yield不能控制具体的交出CPU的时间，只能让相同优先级的线程获取CPU执行时间的机会。<br>　　注意，调用yield方法并不会让线程进入阻塞状态，而是让线程重回就绪状态，它只需要等待重新获取CPU执行时间，这一点是和sleep方法不一样的。</p>
-</li>
-<li><p>join方法:让“主线程”等待“子线程”结束之后才能继续运行。实际上，调用join方法是调用了Object的wait方法，wait方法会让线程进入阻塞状态，并且会释放线程占有的锁，并交出CPU执行权限，所以join方法同样会让线程释放对一个对象持有的锁。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">10</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (i == <span class="number">3</span>) &#123;</div><div class="line">                SubThread st = <span class="keyword">new</span> SubThread();</div><div class="line">                st.start();</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    st.join();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完毕"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行---&gt;&gt;&gt;"</span>);</div><div class="line">        <span class="comment">// 延时操作</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">            System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行中---&gt;&gt;&gt;"</span>);</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完成"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        MainThread mt = <span class="keyword">new</span> MainThread();</div><div class="line">        mt.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p> 输出结果：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Thread-<span class="number">0</span>开始执行</div><div class="line">Thread-<span class="number">1</span>开始执行---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行完成</div><div class="line">Thread-<span class="number">0</span>执行完毕</div></pre></td></tr></table></figure>
-<p> 说明：MainThread线程中启动了SubThread线程，等待SubThread执行完，主线程MainThread继续执行</p>
-</li>
-</ol>
-<ol>
-<li>interrupt方法：中断；<br>一、可以中断一个正处于阻塞状态的线程；<br>二、通过组合interrupt方法和isInterrupted()方法可停止正在运行的线程。</li>
-</ol>
-<a id="more"></a>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;常用方法&quot;&gt;&lt;a href=&quot;#常用方法&quot; class=&quot;headerlink&quot; title=&quot;常用方法&quot;&gt;&lt;/a&gt;常用方法&lt;/h3&gt;&lt;h4 id=&quot;对象方法&quot;&gt;&lt;a href=&quot;#对象方法&quot; class=&quot;headerlink&quot; title=&quot;对象方法&quot;&gt;&lt;/a&gt;对象方法&lt;/h4&gt;&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;start方法：启动线程，调用start方法后，系统才会开启一个新的线程来执行用户定义的子任务，同时，会为线程分配资源。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;yield方法：该线程就会把CPU时间让掉，让其他或者自己的线程执行（也就是谁先抢到谁执行）。但是yield不能控制具体的交出CPU的时间，只能让相同优先级的线程获取CPU执行时间的机会。&lt;br&gt;　　注意，调用yield方法并不会让线程进入阻塞状态，而是让线程重回就绪状态，它只需要等待重新获取CPU执行时间，这一点是和sleep方法不一样的。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;join方法:让“主线程”等待“子线程”结束之后才能继续运行。实际上，调用join方法是调用了Object的wait方法，wait方法会让线程进入阻塞状态，并且会释放线程占有的锁，并交出CPU执行权限，所以join方法同样会让线程释放对一个对象持有的锁。&lt;/p&gt;
-&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;18&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;19&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;20&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;21&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;22&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;23&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;24&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;25&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;26&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;27&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;28&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;29&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;30&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;31&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;32&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;33&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;34&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;35&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;36&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;MainThread&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Thread&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;meta&quot;&gt;@Override&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getName() + &lt;span class=&quot;string&quot;&gt;&quot;开始执行&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt;= &lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;; i++) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (i == &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                SubThread st = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; SubThread();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                st.start();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    st.join();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                &amp;#125; &lt;span class=&quot;keyword&quot;&gt;catch&lt;/span&gt; (InterruptedException e) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    e.printStackTrace();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;            &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getName() + &lt;span class=&quot;string&quot;&gt;&quot;执行完毕&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SubThread&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Thread&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;meta&quot;&gt;@Override&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getName() + &lt;span class=&quot;string&quot;&gt;&quot;开始执行---&amp;gt;&amp;gt;&amp;gt;&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;// 延时操作&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;; i++) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;            System.out.println(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getName() + &lt;span class=&quot;string&quot;&gt;&quot;执行中---&amp;gt;&amp;gt;&amp;gt;&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.getName() + &lt;span class=&quot;string&quot;&gt;&quot;执行完成&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;App&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(String[] args)&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;throws&lt;/span&gt; InterruptedException &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        MainThread mt = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; MainThread();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        mt.start();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt; 输出结果：&lt;/p&gt;
-&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;开始执行&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;开始执行---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行中---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行中---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行中---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行中---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行中---&amp;gt;&amp;gt;&amp;gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;执行完成&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;Thread-&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;执行完毕&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt; 说明：MainThread线程中启动了SubThread线程，等待SubThread执行完，主线程MainThread继续执行&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ol&gt;
-&lt;li&gt;interrupt方法：中断；&lt;br&gt;一、可以中断一个正处于阻塞状态的线程；&lt;br&gt;二、通过组合interrupt方法和isInterrupted()方法可停止正在运行的线程。&lt;/li&gt;
-&lt;/ol&gt;
-    
-    </summary>
-    
-      <category term="Java" scheme="http://tungsing.cc/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="http://tungsing.cc/tags/Java/"/>
-    
-      <category term="thread" scheme="http://tungsing.cc/tags/thread/"/>
-    
-      <category term="多线程" scheme="http://tungsing.cc/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>创建线程</title>
-    <link href="http://tungsing.cc/2018/02/09/java/thread/chapter02/"/>
-    <id>http://tungsing.cc/2018/02/09/java/thread/chapter02/</id>
-    <published>2018-02-09T05:43:31.032Z</published>
-    <updated>2018-02-09T08:32:19.286Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="常用创建线程方式"><a href="#常用创建线程方式" class="headerlink" title="常用创建线程方式"></a>常用创建线程方式</h4><p>方式一：继承Thread类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"运行中---&gt;&gt;&gt;"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>方式二：实现Runnable接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"运行中---&gt;&gt;&gt;"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<h4 id="Thread和Runnable的不同点"><a href="#Thread和Runnable的不同点" class="headerlink" title="Thread和Runnable的不同点"></a>Thread和Runnable的不同点</h4><ol>
-<li><p>Thread 是类，而Runnable是接口；<br>Thread本身是实现了Runnable接口的类。我们知道“一个类只能有一个父类，但是却能实现多个接口”，因此Runnable具有更好的扩展性。</p>
-</li>
-<li><p>Runnable还可以用于“资源的共享”。<br>多个线程都是基于某一个Runnable对象建立的，它们会共享Runnable对象上的资源。</p>
-</li>
-</ol>
-<p>Thread多线程例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.ticket &gt; <span class="number">0</span>) &#123;</div><div class="line">                System.out.println(<span class="keyword">this</span>.getName() + <span class="string">" 卖票：ticket"</span> + <span class="keyword">this</span>.ticket--);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SimpleThread st1 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        SimpleThread st2 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        SimpleThread st3 = <span class="keyword">new</span> SimpleThread();</div><div class="line">        st1.start();</div><div class="line">        st2.start();</div><div class="line">        st3.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">Thread-2 卖票：ticket10</div><div class="line">Thread-1 卖票：ticket10</div><div class="line">Thread-0 卖票：ticket10</div><div class="line">Thread-0 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket9</div><div class="line">Thread-2 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket8</div><div class="line">Thread-0 卖票：ticket8</div><div class="line">Thread-1 卖票：ticket7</div><div class="line">Thread-2 卖票：ticket8</div><div class="line">Thread-1 卖票：ticket6</div><div class="line">Thread-0 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket5</div><div class="line">Thread-2 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket4</div><div class="line">Thread-0 卖票：ticket6</div><div class="line">Thread-1 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket6</div><div class="line">Thread-1 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket5</div><div class="line">Thread-1 卖票：ticket1</div><div class="line">Thread-2 卖票：ticket5</div><div class="line">Thread-0 卖票：ticket4</div><div class="line">Thread-2 卖票：ticket4</div><div class="line">Thread-0 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket3</div><div class="line">Thread-0 卖票：ticket2</div><div class="line">Thread-2 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket1</div><div class="line">Thread-2 卖票：ticket1</div></pre></td></tr></table></figure></p>
-<p>结果表明：</p>
-<ol>
-<li>每个SimpleThread线程都会卖出10张票</li>
-<li>主线程main创建并启动3个SimpleThread子线程。每个子线程都各自卖出了10张票。</li>
-</ol>
-<p>Runnable多线程例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.ticket &gt; <span class="number">0</span>) &#123;</div><div class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">" 卖票：ticket"</span> + <span class="keyword">this</span>.ticket--);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SimpleRunnable sr = <span class="keyword">new</span> SimpleRunnable();</div><div class="line">        <span class="comment">// 启动3个线程t1,t2,t3(它们共用一个Runnable对象)，这3个线程一共卖10张票！</span></div><div class="line">        Thread t1 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        Thread t2 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        Thread t3 = <span class="keyword">new</span> Thread(sr);</div><div class="line">        t1.start();</div><div class="line">        t2.start();</div><div class="line">        t3.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread-0 卖票：ticket10</div><div class="line">Thread-1 卖票：ticket8</div><div class="line">Thread-2 卖票：ticket9</div><div class="line">Thread-1 卖票：ticket6</div><div class="line">Thread-0 卖票：ticket7</div><div class="line">Thread-1 卖票：ticket4</div><div class="line">Thread-2 卖票：ticket5</div><div class="line">Thread-1 卖票：ticket2</div><div class="line">Thread-0 卖票：ticket3</div><div class="line">Thread-2 卖票：ticket1</div></pre></td></tr></table></figure></p>
-<p>结果表明：</p>
-<ol>
-<li>SimpleThread线程也是卖10张票，不同的是它实现了Runnable接口，而不是继承Thread类</li>
-<li><p>主线程main创建并启动3个子线程，而且这3个子线程都是基于“sr这个Runnable对象”而创建的。运行结果是这3个子线程一共卖出了10张票。这说明它们是共享了SimpleThread接口的。</p>
-<h4 id="其他创建方式"><a href="#其他创建方式" class="headerlink" title="其他创建方式"></a>其他创建方式</h4><p>//todo</p>
-</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;常用创建线程方式&quot;&gt;&lt;a href=&quot;#常用创建线程方式&quot; class=&quot;headerlink&quot; title=&quot;常用创建线程方式&quot;&gt;&lt;/a&gt;常用创建线程方式&lt;/h4&gt;&lt;p&gt;方式一：继承Thread类&lt;br&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SimpleThread&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Thread&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;meta&quot;&gt;@Override&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;string&quot;&gt;&quot;运行中---&amp;gt;&amp;gt;&amp;gt;&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;方式二：实现Runnable接口&lt;br&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;SimpleRunnable&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Runnable&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;string&quot;&gt;&quot;运行中---&amp;gt;&amp;gt;&amp;gt;&quot;&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Java" scheme="http://tungsing.cc/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="http://tungsing.cc/tags/Java/"/>
-    
-      <category term="thread" scheme="http://tungsing.cc/tags/thread/"/>
-    
-      <category term="多线程" scheme="http://tungsing.cc/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>认识线程</title>
-    <link href="http://tungsing.cc/2018/02/09/java/thread/chapter01/"/>
-    <id>http://tungsing.cc/2018/02/09/java/thread/chapter01/</id>
-    <published>2018-02-09T05:01:34.914Z</published>
-    <updated>2018-02-09T05:43:14.557Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>进程：正在执行中的程序，其实是应用程序在内存中运行的那片空间。<br>线程：进程中的一个执行单元，负责进程中的程序的运行，一个进程中至少要有一个线程。一个进程中可以有多个线程的，这个应用程序也可以称之为多线程程序。</p>
-<h4 id="线程分类"><a href="#线程分类" class="headerlink" title="线程分类"></a>线程分类</h4><ol>
-<li>用户线程<br>Java虚拟机在它所有非守护线程已经离开后自动离开。</li>
-<li>守护线程(Daemon)<br>守护线程则是用来服务用户线程的，如果没有其他用户线程在运行，那么就没有可服务对象，也就没有理由继续下去。</li>
-</ol>
-<h4 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h4><p>线程的优先级从1到10，1是最不重要的，10是最重要的。如果没有给线程设置优先级，那么线程的优先级将是默认值5。</p>
-<a id="more"></a>
-<h4 id="线程的内存模型"><a href="#线程的内存模型" class="headerlink" title="线程的内存模型"></a>线程的内存模型</h4><p>//todo</p>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://my.oschina.net/langxSpirit/blog/825290" target="_blank" rel="external">https://my.oschina.net/langxSpirit/blog/825290</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h4&gt;&lt;p&gt;进程：正在执行中的程序，其实是应用程序在内存中运行的那片空间。&lt;br&gt;线程：进程中的一个执行单元，负责进程中的程序的运行，一个进程中至少要有一个线程。一个进程中可以有多个线程的，这个应用程序也可以称之为多线程程序。&lt;/p&gt;
-&lt;h4 id=&quot;线程分类&quot;&gt;&lt;a href=&quot;#线程分类&quot; class=&quot;headerlink&quot; title=&quot;线程分类&quot;&gt;&lt;/a&gt;线程分类&lt;/h4&gt;&lt;ol&gt;
-&lt;li&gt;用户线程&lt;br&gt;Java虚拟机在它所有非守护线程已经离开后自动离开。&lt;/li&gt;
-&lt;li&gt;守护线程(Daemon)&lt;br&gt;守护线程则是用来服务用户线程的，如果没有其他用户线程在运行，那么就没有可服务对象，也就没有理由继续下去。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h4 id=&quot;线程优先级&quot;&gt;&lt;a href=&quot;#线程优先级&quot; class=&quot;headerlink&quot; title=&quot;线程优先级&quot;&gt;&lt;/a&gt;线程优先级&lt;/h4&gt;&lt;p&gt;线程的优先级从1到10，1是最不重要的，10是最重要的。如果没有给线程设置优先级，那么线程的优先级将是默认值5。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Java" scheme="http://tungsing.cc/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="http://tungsing.cc/tags/Java/"/>
-    
-      <category term="thread" scheme="http://tungsing.cc/tags/thread/"/>
-    
-      <category term="多线程" scheme="http://tungsing.cc/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>XtraBackup搭建Mysql物理备份</title>
-    <link href="http://tungsing.cc/2017/11/28/mysql/mysql-bak/"/>
-    <id>http://tungsing.cc/2017/11/28/mysql/mysql-bak/</id>
-    <published>2017-11-28T06:30:11.680Z</published>
-    <updated>2017-11-28T09:16:34.907Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>Linux CentOS6 操作系统</li>
-<li>Mysql5.6 </li>
-<li>XtraBackup 2.4.8</li>
-</ul>
-<h4 id="XtraBackup简介"><a href="#XtraBackup简介" class="headerlink" title="XtraBackup简介"></a>XtraBackup简介</h4><p>Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。</p>
-<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://www.percona.com/downloads/XtraBackup/LATEST/" target="_blank" rel="external">官网</a>安装包。<br><img src="/images/mysql/backup1.jpg" alt=""></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rpm -ivh libev-4.15-1.el6.rf.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh MySQL-shared-compat-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh perl-DBI-1.609-4.el6.x86_64.rpm </span></div><div class="line"><span class="comment"># rpm -ivh perl-DBD-MySQL-4.013-3.el6.x86_64.rpm</span></div><div class="line"><span class="comment"># rpm -ivh rsync-3.0.6-12.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
-<h5 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rpm -ivh percona-xtrabackup-24-2.4.8-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
-<a id="more"></a>
-<h5 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 /home/databackup</span></div><div class="line">171128 14:51:16 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 14:51:17 completed OK!</div></pre></td></tr></table></figure>
-<p>备份数据存放在/home/databackup/下面，innobackupex会自动创建一个文件夹，是当前系统的时间戳。</p>
-<h5 id="增量备份"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份</h5><p>在进行增量备份时，首先要进行一次全量备份，第一次增量备份是基于全备的，之后的增量备份是基于上一次的增量备份，以此类推。</p>
-<ol>
-<li>全量备份</li>
-<li>在test库中创建表并增量备份<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE <span class="built_in">test</span>(  </div><div class="line">  `id` INT NOT NULL,</div><div class="line">  PRIMARY KEY (`id`)</div><div class="line">);</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 --incremental /home/databackup/inc/ --incremental-basedir=/home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">171128 15:04:22 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 15:04:22 completed OK!</div></pre></td></tr></table></figure>
-<ol>
-<li>添加数据并增量备份<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mysql&gt; insert <span class="built_in">test</span> values(1);</div><div class="line">Query OK, 1 row affected (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; select * from <span class="built_in">test</span>;</div><div class="line">+----+</div><div class="line">| id |</div><div class="line">+----+</div><div class="line">|  1 |</div><div class="line">+----+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --user=root --password=123456 --incremental /home/databackup/inc/ --incremental-basedir=/home/databackup/inc/2017-11-28_16-18-29/</span></div><div class="line">171128 15:04:22 [00]        ...done</div><div class="line">xtrabackup: Transaction <span class="built_in">log</span> of lsn (1626027) to (1626027) was copied.</div><div class="line">171128 15:04:22 completed OK!</div></pre></td></tr></table></figure>
-<h5 id="全量恢复"><a href="#全量恢复" class="headerlink" title="全量恢复"></a>全量恢复</h5><ol>
-<li><p>删除数据库(生产不要这么搞)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># drop database test;</span></div><div class="line">mysql&gt; show databases;</div><div class="line">+--------------------+</div><div class="line">| Database           |</div><div class="line">+--------------------+</div><div class="line">| information_schema |</div><div class="line">| logs               |</div><div class="line">| mysql              |</div><div class="line">| performance_schema |</div><div class="line">+--------------------+</div><div class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-</li>
-<li><p>恢复全备<br>恢复备份到mysql的数据文件目录，这一过程要先关闭mysql数据库，重命名或者删除原数据文件目录都可以，再创建一个新的数据文件目录，将备份数据复制到新的数据文件目录下，赋权，修改权限，启动数据库。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log /opt/databackup/full/2017-11-28_14-57-31/ </span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1626152</div><div class="line">171128 15:24:34 completed OK!</div><div class="line"></div><div class="line"><span class="comment">#innobackupex --defaults-file=/var/my.cnf --copy-back --rsync /home/databackup/full/2017-11-28_14-57-31/</span></div><div class="line">171128 15:36:01 [01]        ...done</div><div class="line">171128 15:36:01 [01] Copying ./<span class="built_in">test</span>/db.opt to /home/data/mysql/<span class="built_in">test</span>/db.opt</div><div class="line">171128 15:36:01 [01]        ...done</div><div class="line">171128 15:36:01 completed OK!</div></pre></td></tr></table></figure>
-</li>
-<li><p>验证</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show databases;</div><div class="line">+--------------------+</div><div class="line">| Database           |</div><div class="line">+--------------------+</div><div class="line">| information_schema |</div><div class="line">| logs               |</div><div class="line">| mysql              |</div><div class="line">| performance_schema |</div><div class="line">| <span class="built_in">test</span>               |</div><div class="line">+--------------------+</div><div class="line">5 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h5 id="增量恢复"><a href="#增量恢复" class="headerlink" title="增量恢复"></a>增量恢复</h5><p>增量备份的恢复大体为3个步骤</p>
-<ol>
-<li><p>恢复完全备份<br>注意：这里一定要加–redo-only参数，该参数的意思是只应用xtrabackup日志中已提交的事务数据，不回滚还未提交的数据</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log --redo-only /home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1626171</div><div class="line">InnoDB: Number of pools: 1</div><div class="line">171128 16:24:41 completed OK!</div></pre></td></tr></table></figure>
-</li>
-<li><p>恢复增量备份到完全备份<br>注意：开始恢复的增量备份要添加–redo-only参数，到最后一次增量备份去掉–redo-only参数<br>第1次：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log --redo-only /home/databackup/full/2017-11-28_16-08-17/ --incremental-dir=/home/databackup/inc/2017-11-28_16-18-29/</span></div><div class="line">171128 16:28:00 [00] Copying /home/databackup/inc/2017-11-28_16-18-29//xtrabackup_binlog_info to ./xtrabackup_binlog_info</div><div class="line">171128 16:28:00 [00]        ...done</div><div class="line">171128 16:28:00 [00] Copying /home/databackup/inc/2017-11-28_16-18-29//xtrabackup_info to ./xtrabackup_info</div><div class="line">171128 16:28:00 [00]        ...done</div><div class="line">171128 16:28:00 completed OK!</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>第…次，同第1次。</p>
-<p>最后一次<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log  /home/databackup/full/2017-11-28_16-08-17/ --incremental-dir=/home/databackup/inc/2017-11-28_16-20-46/</span></div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1636904</div><div class="line">171128 16:32:58 completed OK!</div></pre></td></tr></table></figure></p>
-<ol>
-<li>对整体的完全备份进行恢复，回滚那些未提交的数据<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --apply-log /home/databackup/full/2017-11-28_16-08-17/</span></div><div class="line">InnoDB: FTS optimize thread exiting.</div><div class="line">InnoDB: Starting shutdown...</div><div class="line">InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1636942</div><div class="line">171128 16:36:41 completed OK!</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>把恢复完的备份复制到数据库目录文件中，和全量备份恢复一样。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># innobackupex --defaults-file=/var/my.cnf --copy-back --rsync /home/databackup/full/2017-11-28_14-57-31/</span></div><div class="line">171128 16:42:34 [01] Copying ./<span class="built_in">test</span>/test.ibd to /home/data/mysql/<span class="built_in">test</span>/test.ibd</div><div class="line">171128 16:42:34 [01]        ...done</div><div class="line">171128 16:42:34 [01] Copying ./<span class="built_in">test</span>/db.opt to /home/data/mysql/<span class="built_in">test</span>/db.opt</div><div class="line">171128 16:42:34 [01]        ...done</div><div class="line">171128 16:42:34 completed OK!</div></pre></td></tr></table></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from <span class="built_in">test</span>;</div><div class="line">+----+</div><div class="line">| id |</div><div class="line">+----+</div><div class="line">|  1 |</div><div class="line">+----+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>真实场景还需仔细学习对应功能，写成自动化的脚本去运行。</p>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a href="http://www.cnblogs.com/gomysql/p/3650645.html" target="_blank" rel="external">xtrabackup 详解</a><br>2.<a href="https://wsgzao.github.io/post/xtrabackup/" target="_blank" rel="external">XtraBackup不停机不锁表搭建MySQL主从同步实践</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Linux CentOS6 操作系统&lt;/li&gt;
-&lt;li&gt;Mysql5.6 &lt;/li&gt;
-&lt;li&gt;XtraBackup 2.4.8&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;XtraBackup简介&quot;&gt;&lt;a href=&quot;#XtraBackup简介&quot; class=&quot;headerlink&quot; title=&quot;XtraBackup简介&quot;&gt;&lt;/a&gt;XtraBackup简介&lt;/h4&gt;&lt;p&gt;Percona XtraBackup是一个免费开源数据备份工具，支持在线无锁表同步复制和可并行高效率的安全备份恢复机制，相比mysqldump来说确实让人眼前一亮。&lt;/p&gt;
-&lt;h4 id=&quot;下载mysql安装包&quot;&gt;&lt;a href=&quot;#下载mysql安装包&quot; class=&quot;headerlink&quot; title=&quot;下载mysql安装包&quot;&gt;&lt;/a&gt;下载mysql安装包&lt;/h4&gt;&lt;p&gt;在&lt;a href=&quot;https://www.percona.com/downloads/XtraBackup/LATEST/&quot;&gt;官网&lt;/a&gt;安装包。&lt;br&gt;&lt;img src=&quot;/images/mysql/backup1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h4 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h4&gt;&lt;h5 id=&quot;安装依赖包&quot;&gt;&lt;a href=&quot;#安装依赖包&quot; class=&quot;headerlink&quot; title=&quot;安装依赖包&quot;&gt;&lt;/a&gt;安装依赖包&lt;/h5&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh libev-4.15-1.el6.rf.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh MySQL-shared-compat-5.6.38-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh perl-DBI-1.609-4.el6.x86_64.rpm &lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh perl-DBD-MySQL-4.013-3.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh rsync-3.0.6-12.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h5 id=&quot;安装-1&quot;&gt;&lt;a href=&quot;#安装-1&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h5&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# rpm -ivh percona-xtrabackup-24-2.4.8-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-      <category term="Mysql" scheme="http://tungsing.cc/categories/Mysql/"/>
-    
-    
-      <category term="Mysql XtraBackup backup" scheme="http://tungsing.cc/tags/Mysql-XtraBackup-backup/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>记录Linux CentOS 系统安装Mysql数据库</title>
-    <link href="http://tungsing.cc/2017/11/28/mysql/mysql-install-linux/"/>
-    <id>http://tungsing.cc/2017/11/28/mysql/mysql-install-linux/</id>
-    <published>2017-11-28T04:59:08.040Z</published>
-    <updated>2017-11-28T06:16:26.572Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>Linux CentOS6 操作系统</li>
-<li>Mysql5.6 安装包</li>
-</ul>
-<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://dev.mysql.com/downloads/mysql/5.6.html#downloads" target="_blank" rel="external">官网</a>下载社区版。本文安装的是mysql5.6。<br><img src="/images/mysql/17.jpg" alt=""></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="确认系统是否已经安装mysql，如果安装卸载后再安装"><a href="#确认系统是否已经安装mysql，如果安装卸载后再安装" class="headerlink" title="确认系统是否已经安装mysql，如果安装卸载后再安装"></a>确认系统是否已经安装mysql，如果安装卸载后再安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -qa |grep -i mysql</span></div></pre></td></tr></table></figure>
-<p>如果安装mysql，卸载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure></p>
-<p>注意：如果卸载不掉可以加nodeps强制卸载，或用yum命令卸载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm --nodeps</span></div><div class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm --nodeps</span></div><div class="line"><span class="comment">#yum remove MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#yum remove MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure></p>
-<h5 id="解压安装包"><a href="#解压安装包" class="headerlink" title="解压安装包"></a>解压安装包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#tar -xvf MySQL-5.6.38-1.el6.x86_64.rpm-bundle.tar</span></div></pre></td></tr></table></figure>
-<a id="more"></a>
-<h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#yum -y install perl</span></div><div class="line"><span class="comment">#rpm -ivh numactl-2.0.9-2.el6.x86_64.rpm</span></div><div class="line"><span class="comment">#rpm -ivh libaio-0.3.107-10.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
-<h5 id="安装Mysql-server"><a href="#安装Mysql-server" class="headerlink" title="安装Mysql-server"></a>安装Mysql-server</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ivh MySQL-server-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
-<h5 id="安装Mysql-client"><a href="#安装Mysql-client" class="headerlink" title="安装Mysql-client"></a>安装Mysql-client</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#rpm -ivh MySQL-client-5.6.38-1.el6.x86_64.rpm</span></div></pre></td></tr></table></figure>
-<h5 id="自定义数据路径"><a href="#自定义数据路径" class="headerlink" title="自定义数据路径"></a>自定义数据路径</h5><p>根据自己的实际情况创建数据文件夹，例如<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mkdir /home/data</span></div></pre></td></tr></table></figure></p>
-<p>把默认的数据文件移动到刚刚创建的数据目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mv /var/lib/mysql /home/data</span></div></pre></td></tr></table></figure></p>
-<h5 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">datadir = /home/data/mysql</div><div class="line">port = 3306</div><div class="line">server_id = 1</div><div class="line">socket = /home/data/mysql/mysql.sock</div><div class="line">log_bin = mysql-bin</div><div class="line">binlog_format = mixed  </div><div class="line">expire_logs_days = 30</div><div class="line">log_error = /home/data/mysql/logs/mysql-error.log</div><div class="line">explicit_defaults_for_timestamp=1</div></pre></td></tr></table></figure>
-<p>注：此处重点是修改datadir和socket的路径</p>
-<h5 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#service mysql start</span></div><div class="line">Starting MySQL. SUCCESS!</div></pre></td></tr></table></figure>
-<h5 id="登陆mysql"><a href="#登陆mysql" class="headerlink" title="登陆mysql"></a>登陆mysql</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mysql -uroot -p</span></div></pre></td></tr></table></figure>
-<p>注：这个地方输入默认密码，默认密码在/root/.mysql_secret文件中。此处应该会报错，解决办法如下</p>
-<ol>
-<li><p>mysql 命令加参数</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#mysql -h 127.0.0.1 -uroot -p</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>加软链接(快捷方式)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#ln -s /home/data/mysql/mysql.sock /var/lib/mysql</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>修改配置，但这个方法没有成功，网上很多资料成功了</p>
-</li>
-</ol>
-<p>登陆成功后，首先要设置密码<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#set password = password('此处为复杂度高的密码');</span></div></pre></td></tr></table></figure></p>
-<h5 id="mysql服务加入开机启动项"><a href="#mysql服务加入开机启动项" class="headerlink" title="mysql服务加入开机启动项"></a>mysql服务加入开机启动项</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#chkconfig mysql on</span></div></pre></td></tr></table></figure>
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>到此就安装结束了，剩余工作就是优化、配置mysql，适用于自己的项目。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Linux CentOS6 操作系统&lt;/li&gt;
-&lt;li&gt;Mysql5.6 安装包&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;下载mysql安装包&quot;&gt;&lt;a href=&quot;#下载mysql安装包&quot; class=&quot;headerlink&quot; title=&quot;下载mysql安装包&quot;&gt;&lt;/a&gt;下载mysql安装包&lt;/h4&gt;&lt;p&gt;在&lt;a href=&quot;https://dev.mysql.com/downloads/mysql/5.6.html#downloads&quot;&gt;官网&lt;/a&gt;下载社区版。本文安装的是mysql5.6。&lt;br&gt;&lt;img src=&quot;/images/mysql/17.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;h4 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h4&gt;&lt;h5 id=&quot;确认系统是否已经安装mysql，如果安装卸载后再安装&quot;&gt;&lt;a href=&quot;#确认系统是否已经安装mysql，如果安装卸载后再安装&quot; class=&quot;headerlink&quot; title=&quot;确认系统是否已经安装mysql，如果安装卸载后再安装&quot;&gt;&lt;/a&gt;确认系统是否已经安装mysql，如果安装卸载后再安装&lt;/h5&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#rpm -qa |grep -i mysql&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;如果安装mysql，卸载&lt;br&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;注意：如果卸载不掉可以加nodeps强制卸载，或用yum命令卸载&lt;br&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm --nodeps&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm --nodeps&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#yum remove MySQL-server-5.6.38-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#yum remove MySQL-client-5.6.38-1.el6.x86_64.rpm&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;h5 id=&quot;解压安装包&quot;&gt;&lt;a href=&quot;#解压安装包&quot; class=&quot;headerlink&quot; title=&quot;解压安装包&quot;&gt;&lt;/a&gt;解压安装包&lt;/h5&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#tar -xvf MySQL-5.6.38-1.el6.x86_64.rpm-bundle.tar&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-      <category term="Mysql" scheme="http://tungsing.cc/categories/Mysql/"/>
-    
-    
-      <category term="Mysql Linux CentOS" scheme="http://tungsing.cc/tags/Mysql-Linux-CentOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SonarQube与jenkins集成</title>
-    <link href="http://tungsing.cc/2017/09/25/review/sonarqube-jenkins/"/>
-    <id>http://tungsing.cc/2017/09/25/review/sonarqube-jenkins/</id>
-    <published>2017-09-25T07:26:37.201Z</published>
-    <updated>2017-09-25T07:59:42.940Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>使用 Jenkins 与 Sonar 集成对代码进行持续检测</p>
-</blockquote>
-<h4 id="jenkins-安装配置"><a href="#jenkins-安装配置" class="headerlink" title="jenkins 安装配置"></a>jenkins 安装配置</h4><p>jenkins安装配置比较简单，同样套路<a href="https://jenkins.io/download/" target="_blank" rel="external">官网</a>下载安装包，配置即可。</p>
-<h4 id="SonarQube与jenkins集成配置"><a href="#SonarQube与jenkins集成配置" class="headerlink" title="SonarQube与jenkins集成配置"></a>SonarQube与jenkins集成配置</h4><h5 id="在jenkins的插件管理里下载SonarQube插件"><a href="#在jenkins的插件管理里下载SonarQube插件" class="headerlink" title="在jenkins的插件管理里下载SonarQube插件"></a>在jenkins的插件管理里下载SonarQube插件</h5><p><img src="/images/sonarqube/13.jpg" alt=""></p>
-<a id="more"></a>
-<h5 id="在jenkins系统设置里配置SonarQube插件"><a href="#在jenkins系统设置里配置SonarQube插件" class="headerlink" title="在jenkins系统设置里配置SonarQube插件"></a>在jenkins系统设置里配置SonarQube插件</h5><p><img src="/images/sonarqube/14.jpg" alt=""></p>
-<h5 id="具体工程配置"><a href="#具体工程配置" class="headerlink" title="具体工程配置"></a>具体工程配置</h5><p><img src="/images/sonarqube/15.jpg" alt=""></p>
-<h5 id="具体properties配置"><a href="#具体properties配置" class="headerlink" title="具体properties配置"></a>具体properties配置</h5><p>此文件放置到工作代码中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#项目标识</span></div><div class="line">sonar.projectKey=id</div><div class="line"><span class="comment">#项目名称</span></div><div class="line">sonar.projectName=name</div><div class="line"><span class="comment">#版本</span></div><div class="line">sonar.projectVersion=1.0</div><div class="line"><span class="comment">#编码</span></div><div class="line">sonar.sourceEncoding=UTF-8</div><div class="line"><span class="comment">#目录代码根目录</span></div><div class="line">sonar.sources=.</div><div class="line"></div><div class="line"><span class="comment">#项目模块</span></div><div class="line">sonar.modules=common,web</div><div class="line"></div><div class="line">common.sonar.projectName=common</div><div class="line">common.sonar.sources=.</div><div class="line"><span class="comment">#模块的语言</span></div><div class="line">common.sonar.language=java</div><div class="line"></div><div class="line">web.sonar.projectName=web</div><div class="line">sonar.sources=src</div><div class="line">web.sonar.language=js</div></pre></td></tr></table></figure></p>
-<p>其他配置详见<a href="https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner" target="_blank" rel="external">官网</a></p>
-<h5 id="构建完成登陆SonarQube系统找到对应项目看到析的果"><a href="#构建完成登陆SonarQube系统找到对应项目看到析的果" class="headerlink" title="构建完成登陆SonarQube系统找到对应项目看到析的果"></a>构建完成登陆SonarQube系统找到对应项目看到析的果</h5><p><img src="/images/sonarqube/16.jpg" alt=""></p>
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>SonarQube与jenkins集成就完成了，集成的方式不只这一种，还有别的方式。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;使用 Jenkins 与 Sonar 集成对代码进行持续检测&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;jenkins-安装配置&quot;&gt;&lt;a href=&quot;#jenkins-安装配置&quot; class=&quot;headerlink&quot; title=&quot;jenkins 安装配置&quot;&gt;&lt;/a&gt;jenkins 安装配置&lt;/h4&gt;&lt;p&gt;jenkins安装配置比较简单，同样套路&lt;a href=&quot;https://jenkins.io/download/&quot;&gt;官网&lt;/a&gt;下载安装包，配置即可。&lt;/p&gt;
-&lt;h4 id=&quot;SonarQube与jenkins集成配置&quot;&gt;&lt;a href=&quot;#SonarQube与jenkins集成配置&quot; class=&quot;headerlink&quot; title=&quot;SonarQube与jenkins集成配置&quot;&gt;&lt;/a&gt;SonarQube与jenkins集成配置&lt;/h4&gt;&lt;h5 id=&quot;在jenkins的插件管理里下载SonarQube插件&quot;&gt;&lt;a href=&quot;#在jenkins的插件管理里下载SonarQube插件&quot; class=&quot;headerlink&quot; title=&quot;在jenkins的插件管理里下载SonarQube插件&quot;&gt;&lt;/a&gt;在jenkins的插件管理里下载SonarQube插件&lt;/h5&gt;&lt;p&gt;&lt;img src=&quot;/images/sonarqube/13.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="SonarQube" scheme="http://tungsing.cc/tags/SonarQube/"/>
-    
-      <category term="review" scheme="http://tungsing.cc/tags/review/"/>
-    
-      <category term="jenkins" scheme="http://tungsing.cc/tags/jenkins/"/>
     
   </entry>
   
