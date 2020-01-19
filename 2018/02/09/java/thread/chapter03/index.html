@@ -145,7 +145,9 @@ start方法：启动线程，调用start方法后，系统才会开启一个新�
 
 run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。
 
-sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
+isAlive方法：判断线程是否处于活动状态
+
+sleep方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Thread类">
 <meta property="og:url" content="http://tungsing.cc/2018/02/09/java/thread/chapter03/index.html">
@@ -155,8 +157,10 @@ start方法：启动线程，调用start方法后，系统才会开启一个新�
 
 run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。
 
-sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
-<meta property="og:updated_time" content="2019-05-18T08:36:46.362Z">
+isAlive方法：判断线程是否处于活动状态
+
+sleep方法">
+<meta property="og:updated_time" content="2019-05-26T02:49:31.880Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thread类">
 <meta name="twitter:description" content="常用方法对象方法
@@ -164,7 +168,9 @@ start方法：启动线程，调用start方法后，系统才会开启一个新�
 
 run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。
 
-sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
+isAlive方法：判断线程是否处于活动状态
+
+sleep方法">
 
 
 
@@ -512,7 +518,7 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-18 08:36:46" itemprop="dateModified" datetime="2019-05-18T08:36:46Z">2019-05-18</time>
+                <time title="修改时间：2019-05-26 02:49:31" itemprop="dateModified" datetime="2019-05-26T02:49:31Z">2019-05-26</time>
               
             
           </span>
@@ -582,6 +588,8 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
 </li>
 <li><p>run方法：用户不需要调用，当start方法启动线程并获得CPU执行时间后，便自动执行run方法体中的任务。（所以，继承Thread类必须重写run方法，在run方法中定义具体要执行的任务）。</p>
 </li>
+<li><p>isAlive方法：判断线程是否处于活动状态</p>
+</li>
 <li><p>sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。</p>
 </li>
 <li><p>yield方法：该线程就会把CPU时间让掉，让其他或者自己的线程执行（也就是谁先抢到谁执行）。但是yield不能控制具体的交出CPU的时间，只能让相同优先级的线程获取CPU执行时间的机会。<br>　　注意，调用yield方法并不会让线程进入阻塞状态，而是让线程重回就绪状态，它只需要等待重新获取CPU执行时间，这一点是和sleep方法不一样的。</p>
@@ -589,7 +597,7 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
 <li><p>join方法:让“主线程”等待“子线程”结束之后才能继续运行。实际上，调用join方法是调用了Object的wait方法，wait方法会让线程进入阻塞状态，并且会释放线程占有的锁，并交出CPU执行权限，所以join方法同样会让线程释放对一个对象持有的锁。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行"</span>);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">10</span>; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (i == <span class="number">3</span>) &#123;</div><div class="line">                SubThread st = <span class="keyword">new</span> SubThread();</div><div class="line">                st.start();</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    st.join();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完毕"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"开始执行---&gt;&gt;&gt;"</span>);</div><div class="line">        <span class="comment">// 延时操作</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">            System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行中---&gt;&gt;&gt;"</span>);</div><div class="line">        &#125;</div><div class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">"执行完成"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        MainThread mt = <span class="keyword">new</span> MainThread();</div><div class="line">        mt.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p> 输出结果：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Thread-<span class="number">0</span>开始执行</div><div class="line">Thread-<span class="number">1</span>开始执行---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行中---&gt;&gt;&gt;</div><div class="line">Thread-<span class="number">1</span>执行完成</div><div class="line">Thread-<span class="number">0</span>执行完毕</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Thread-0开始执行</div><div class="line">Thread-1开始执行---&gt;&gt;&gt;</div><div class="line">Thread-1执行中---&gt;&gt;&gt;</div><div class="line">Thread-1执行中---&gt;&gt;&gt;</div><div class="line">Thread-1执行中---&gt;&gt;&gt;</div><div class="line">Thread-1执行中---&gt;&gt;&gt;</div><div class="line">Thread-1执行中---&gt;&gt;&gt;</div><div class="line">Thread-1执行完成</div><div class="line">Thread-0执行完毕</div></pre></td></tr></table></figure>
 <p> 说明：MainThread线程中启动了SubThread线程，等待SubThread执行完，主线程MainThread继续执行</p>
 </li>
 </ol>
@@ -597,6 +605,13 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
 <li>interrupt方法：中断；<br>一、可以中断一个正处于阻塞状态的线程；<br>二、通过组合interrupt方法和isInterrupted()方法可停止正在运行的线程。</li>
 </ol>
 <a id="more"></a>
+<ol>
+<li><p>getId方法：获取线程的唯一标识</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    <span class="comment">// getId 获取线程唯一标识</span></div><div class="line">    Thread runThread = Thread.currentThread();</div><div class="line">    System.out.println(runThread.getName() + <span class="string">"  "</span> + runThread.getId());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>wait方法：使线程挂起，直到线程得到了notify()和notifyAll()消息，线程才会进入“可执行”状态。</p>
+</li>
+</ol>
 
       
     </div>
@@ -722,7 +737,7 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -970,7 +985,7 @@ sleep方法：交出CPU让线程睡眠，CPU可执行其他任务。">
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
