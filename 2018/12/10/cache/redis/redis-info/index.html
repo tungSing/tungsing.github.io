@@ -1,23 +1,1848 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext"/>
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="收集了info命令的中文解释    信息 中文解释     Server 服务信息   redis_version Redis 服务器版本   redis_git_sha1 Git SHA1   redis_git_dirty Git dirty flag   redis_build_id redis build id   redis_mode 运行模式，单机或者集群   os Redis 服务器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis info 命令">
+<meta property="og:url" content="http://tungsing.cc/2018/12/10/cache/redis/redis-info/index.html">
+<meta property="og:site_name" content="TungSing&#39;s Blog">
+<meta property="og:description" content="收集了info命令的中文解释    信息 中文解释     Server 服务信息   redis_version Redis 服务器版本   redis_git_sha1 Git SHA1   redis_git_dirty Git dirty flag   redis_build_id redis build id   redis_mode 运行模式，单机或者集群   os Redis 服务器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-10T07:11:59.361Z">
+<meta property="article:modified_time" content="2019-05-18T10:14:11.205Z">
+<meta property="article:author" content="tungSing">
+<meta property="article:tag" content="cache">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://tungsing.cc/2018/12/10/cache/redis/redis-info/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>redis info 命令 | TungSing's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TungSing's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">用心记录一切！</p>
+      
+    
+    
   </div>
 
-{% endblock %}
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-th&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-user&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-photos">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-image&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;相册</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-info/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tungSing"/>
+      <meta itemprop="description" content="多读书多看报"/>
+      <meta itemprop="image" content="/images/avatar.gif"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis info 命令
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-10 07:11:59" itemprop="dateCreated datePublished" datetime="2018-12-10T07:11:59Z">2018-12-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-18 10:14:11" itemprop="dateModified" datetime="2019-05-18T10:14:11Z">2019-05-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/cache/" itemprop="url" rel="index"><span itemprop="name">cache</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>收集了info命令的中文解释</p>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>中文解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server</td>
+<td>服务信息</td>
+</tr>
+<tr>
+<td>redis_version</td>
+<td>Redis 服务器版本</td>
+</tr>
+<tr>
+<td>redis_git_sha1</td>
+<td>Git SHA1</td>
+</tr>
+<tr>
+<td>redis_git_dirty</td>
+<td>Git dirty flag</td>
+</tr>
+<tr>
+<td>redis_build_id</td>
+<td>redis build id</td>
+</tr>
+<tr>
+<td>redis_mode</td>
+<td>运行模式，单机或者集群</td>
+</tr>
+<tr>
+<td>os</td>
+<td>Redis 服务器的宿主操作系统</td>
+</tr>
+<tr>
+<td>arch_bits</td>
+<td>架构（32 或 64 位）</td>
+</tr>
+<tr>
+<td>multiplexing_api</td>
+<td>Redis 所使用的事件处理机制</td>
+</tr>
+<tr>
+<td>process_id</td>
+<td>服务器进程的 PID</td>
+</tr>
+<tr>
+<td>run_id</td>
+<td>Redis 服务器的随机标识符（用于 Sentinel 和集群）</td>
+</tr>
+<tr>
+<td>tcp_port</td>
+<td>TCP/IP 监听端口</td>
+</tr>
+<tr>
+<td>uptime_in_seconds</td>
+<td>自 Redis 服务器启动以来，经过的秒数</td>
+</tr>
+<tr>
+<td>uptime_in_days</td>
+<td>自 Redis 服务器启动以来，经过的天数</td>
+</tr>
+<tr>
+<td>hz</td>
+<td>redis内部调度（进行关闭timeout的客户端，删除过期key等等）频率，程序规定serverCron每秒运行10次</td>
+</tr>
+<tr>
+<td>lru_clock</td>
+<td>以分钟为单位进行自增的时钟，用于 LRU 管理</td>
+</tr>
+<tr>
+<td>executable</td>
+<td></td>
+</tr>
+<tr>
+<td>config_file</td>
+<td>配置文件路径</td>
+</tr>
+<tr>
+<td>Clients</td>
+<td>客户端信息</td>
+</tr>
+<tr>
+<td>connected_clients</td>
+<td>已连接客户端的数量（不包括通过从属服务器连接的客户端）</td>
+</tr>
+<tr>
+<td>client_longest_output_list</td>
+<td>当前连接的客户端当中，最长的输出列表</td>
+</tr>
+<tr>
+<td>client_biggest_input_buf</td>
+<td>当前连接的客户端当中，最大输入缓存</td>
+</tr>
+<tr>
+<td>blocked_clients</td>
+<td>正在等待阻塞命令(BLPOP、BRPOP、BRPOPLPUSH)的客户端的数量</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>内存信息</td>
+</tr>
+<tr>
+<td>used_memory</td>
+<td>由 Redis 分配器分配的内存总量，以字节(byte)为单位</td>
+</tr>
+<tr>
+<td>used_memory_human</td>
+<td>以人类可读的格式返回 Redis 分配的内存总量</td>
+</tr>
+<tr>
+<td>used_memory_rss</td>
+<td>从操作系统的角度，返回 Redis 已分配的内存总量（俗称常驻集大小）。这个值和 top 、 ps 等命令的输出一致。</td>
+</tr>
+<tr>
+<td>used_memory_rss_human</td>
+<td>以人类可读的格式返回Redis已分配的内存总量</td>
+</tr>
+<tr>
+<td>used_memory_peak</td>
+<td>Redis 的内存消耗峰值（以字节为单位）</td>
+</tr>
+<tr>
+<td>used_memory_peak_human</td>
+<td>以人类可读的格式返回 Redis 的内存消耗峰值</td>
+</tr>
+<tr>
+<td>total_system_memory</td>
+<td></td>
+</tr>
+<tr>
+<td>total_system_memory_human</td>
+<td></td>
+</tr>
+<tr>
+<td>used_memory_lua</td>
+<td>lua引擎所使用的内存大小(以字节为单位)</td>
+</tr>
+<tr>
+<td>used_memory_lua_human</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory_human</td>
+<td></td>
+</tr>
+<tr>
+<td>maxmemory_policy</td>
+<td>内存淘汰机制，当内存使用达到阈值的时候，所有引起申请内存的命令会报错</td>
+</tr>
+<tr>
+<td>mem_fragmentation_ratio</td>
+<td>used_memory_rss和used_memory之间的比率，小于1表示使用了swap，大于1表示碎片比较多</td>
+</tr>
+<tr>
+<td>mem_allocator</td>
+<td>在编译时指定的redis所使用的内存分配器。可以是libc、jemalloc或者tcmalloc</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>持久化信息</td>
+</tr>
+<tr>
+<td>loading</td>
+<td>服务器是否正在载入持久化文件</td>
+</tr>
+<tr>
+<td>rdb_changes_since_last_save</td>
+<td>离最近一次成功生成rdb文件，写入命令的个数，即有多少个写入命令没有持久化</td>
+</tr>
+<tr>
+<td>rdb_bgsave_in_progress</td>
+<td>服务器是否正在创建rdb文件</td>
+</tr>
+<tr>
+<td>rdb_last_save_time</td>
+<td>离最近一次成功创建rdb文件的时间戳。当前时间戳 - rdb_last_save_time=多少秒未成功生成rdb文件</td>
+</tr>
+<tr>
+<td>rdb_last_bgsave_status</td>
+<td>最近一次rdb持久化是否成功</td>
+</tr>
+<tr>
+<td>rdb_last_bgsave_time_sec</td>
+<td>最近一次成功生成rdb文件耗时秒数</td>
+</tr>
+<tr>
+<td>rdb_current_bgsave_time_sec</td>
+<td>如果服务器正在创建rdb文件，那么这个域记录的就是当前的创建操作已经耗费的秒数</td>
+</tr>
+<tr>
+<td>aof_enabled</td>
+<td>是否开启了aof</td>
+</tr>
+<tr>
+<td>aof_rewrite_in_progress</td>
+<td>标识aof的rewrite操作是否在进行中</td>
+</tr>
+<tr>
+<td>aof_rewrite_scheduled</td>
+<td>rewrite任务计划，当客户端发送bgrewriteaof指令，如果当前rewrite子进程正在执行，那么将客户端请求的bgrewriteaof变为计划任务，待aof子进程结束后执行rewrite</td>
+</tr>
+<tr>
+<td>aof_last_rewrite_time_sec</td>
+<td>最近一次aof rewrite耗费的时长</td>
+</tr>
+<tr>
+<td>aof_current_rewrite_time_sec</td>
+<td>如果rewrite操作正在进行，则记录所使用的时间，单位秒</td>
+</tr>
+<tr>
+<td>aof_last_bgrewrite_status</td>
+<td>上次bgrewriteaof操作的状态</td>
+</tr>
+<tr>
+<td>aof_last_write_status</td>
+<td>上次aof写入状态</td>
+</tr>
+<tr>
+<td>Stats</td>
+<td>一般统计信息</td>
+</tr>
+<tr>
+<td>total_connections_received</td>
+<td>新创建连接个数,如果新创建连接过多，过度地创建和销毁连接对性能有影响，说明短连接严重或连接池使用有问题，需调研代码的连接设置</td>
+</tr>
+<tr>
+<td>total_commands_processed</td>
+<td>redis处理的命令数</td>
+</tr>
+<tr>
+<td>instantaneous_ops_per_sec</td>
+<td>redis当前的qps，redis内部较实时的每秒执行的命令数</td>
+</tr>
+<tr>
+<td>total_net_input_bytes</td>
+<td>redis网络入口流量字节数</td>
+</tr>
+<tr>
+<td>total_net_output_bytes</td>
+<td>redis网络出口流量字节数</td>
+</tr>
+<tr>
+<td>instantaneous_input_kbps</td>
+<td>redis网络入口kps</td>
+</tr>
+<tr>
+<td>instantaneous_output_kbps</td>
+<td>redis网络出口kps</td>
+</tr>
+<tr>
+<td>rejected_connections</td>
+<td>拒绝的连接个数，redis连接个数达到maxclients限制，拒绝新连接的个数</td>
+</tr>
+<tr>
+<td>sync_full</td>
+<td>主从完全同步成功次数</td>
+</tr>
+<tr>
+<td>sync_partial_ok</td>
+<td>主从部分同步成功次数</td>
+</tr>
+<tr>
+<td>sync_partial_err</td>
+<td>主从部分同步失败次数</td>
+</tr>
+<tr>
+<td>expired_keys</td>
+<td>运行以来过期的key的数量</td>
+</tr>
+<tr>
+<td>evicted_keys</td>
+<td>运行以来剔除(超过了maxmemory后)的key的数量</td>
+</tr>
+<tr>
+<td>keyspace_hits</td>
+<td>命中次数</td>
+</tr>
+<tr>
+<td>keyspace_misses</td>
+<td>没命中次数</td>
+</tr>
+<tr>
+<td>pubsub_channels</td>
+<td>当前使用中的频道数量</td>
+</tr>
+<tr>
+<td>pubsub_patterns</td>
+<td>当前使用的模式的数量</td>
+</tr>
+<tr>
+<td>latest_fork_usec</td>
+<td>最近一次fork操作阻塞redis进程的耗时数，单位微秒</td>
+</tr>
+<tr>
+<td>migrate_cached_sockets</td>
+<td></td>
+</tr>
+<tr>
+<td>Replication</td>
+<td>主从信息</td>
+</tr>
+<tr>
+<td>role</td>
+<td>实例的角色，是master or slave</td>
+</tr>
+<tr>
+<td>connected_slaves</td>
+<td>连接的slave实例个数</td>
+</tr>
+<tr>
+<td>master_repl_offset</td>
+<td>主从同步偏移量,此值如果和上面的offset相同说明主从一致没延迟</td>
+</tr>
+<tr>
+<td>repl_backlog_active</td>
+<td>复制积压缓冲区是否开启</td>
+</tr>
+<tr>
+<td>repl_backlog_size</td>
+<td>复制积压缓冲大小</td>
+</tr>
+<tr>
+<td>repl_backlog_first_byte_offset</td>
+<td>复制缓冲区里偏移量的大小</td>
+</tr>
+<tr>
+<td>repl_backlog_histlen</td>
+<td>此值等于 master_repl_offset-repl_backlog_first_byte_offset,该值不会超过repl_backlog_size的大小</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>CPU信息</td>
+</tr>
+<tr>
+<td>used_cpu_sys</td>
+<td>将所有redis主进程在核心态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_user</td>
+<td>将所有redis主进程在用户态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_sys_children</td>
+<td>将后台进程在核心态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>used_cpu_user_children</td>
+<td>将后台进程在用户态所占用的CPU时求和累计起来</td>
+</tr>
+<tr>
+<td>Cluster</td>
+<td>集群信息</td>
+</tr>
+<tr>
+<td>cluster_enabled</td>
+<td>实例是否启用集群模式</td>
+</tr>
+<tr>
+<td>Keyspace</td>
+<td>数据库相关的统计信息</td>
+</tr>
+<tr>
+<td>db0</td>
+<td>db0的key的数量,以及带有生存期的key的数,平均存活时间</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="https://stackoverflow.com/questions/10558465/memcached-vs-redis" target="_blank" rel="external">stackoverflow</a></li>
+<li><a href="https://coolshell.cn/articles/10739.html" target="_blank" rel="external">LUA脚本</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/cache/" rel="tag"># cache</a>
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/10/cache/redis/redis-cluster/" rel="next" title="redis集群搭建">
+                <i class="fa fa-chevron-left"></i> redis集群搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/04/web/container/nginx_keepalived/" rel="prev" title="nginx+keepalived 主从搭建">
+                nginx+keepalived 主从搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">tungSing</p>
+              <div class="site-description motion-element" itemprop="description">多读书多看报</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">43</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/%20%7C%7C%20th">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/%20%7C%7C%20tags">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">60</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/tungsing" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/dongsheng__gao" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-twitter&quot;&gt;&lt;&#x2F;i&gt;Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2022</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
