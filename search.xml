@@ -37,7 +37,7 @@
 <h5 id="注册Github账户"><a href="#注册Github账户" class="headerlink" title="注册Github账户"></a>注册Github账户</h5><p>1.访问<a href="https://github.com/">Github</a>首页<br>2.点击右上角的 Sign Up，注册自己的账户</p>
 <h5 id="创建项目代码库"><a href="#创建项目代码库" class="headerlink" title="创建项目代码库"></a>创建项目代码库</h5><p>1.注册完登陆后，我们就创建一个我们自己的Github Pages项目。点击New repository。<br>2.创建要点如下：</p>
 <p><img src="/images/4.png"></p>
-<h5 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h5><p>配置Github的SSH密钥可以让本地git项目与远程的github建立联系，让我们在本地写了代码之后直接通过git操作就可以实现本地代码库与Github代码库同步。操作如下：<br>1.桌面右键-&gt;Git Gui Here。<br><img src="/images/5.jpg"><br>2.在打开的窗口打开Help-&gt;Show SSH Key，如果没有，生成一个即可。<br><img src="/images/6.jpg"><br>3.登陆GitHub,进入你的Account Settings.添加你的公钥<br><img src="/images/8.png"><br>4.选择SSH Keys<br><img src="/images/9.png"><br>5.粘贴密钥，添加即可<br><img src="/images/10.png"><br>6.桌面右键-&gt;Git Bash Here,输入下面的命令，看看设置是否成功，<a href="mailto:&#x67;&#x69;&#116;&#64;&#x67;&#x69;&#116;&#x68;&#x75;&#x62;&#x2e;&#x63;&#x6f;&#109;">&#x67;&#x69;&#116;&#64;&#x67;&#x69;&#116;&#x68;&#x75;&#x62;&#x2e;&#x63;&#x6f;&#109;</a>的部分不要修改</p>
+<h5 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h5><p>配置Github的SSH密钥可以让本地git项目与远程的github建立联系，让我们在本地写了代码之后直接通过git操作就可以实现本地代码库与Github代码库同步。操作如下：<br>1.桌面右键-&gt;Git Gui Here。<br><img src="/images/5.jpg"><br>2.在打开的窗口打开Help-&gt;Show SSH Key，如果没有，生成一个即可。<br><img src="/images/6.jpg"><br>3.登陆GitHub,进入你的Account Settings.添加你的公钥<br><img src="/images/8.png"><br>4.选择SSH Keys<br><img src="/images/9.png"><br>5.粘贴密钥，添加即可<br><img src="/images/10.png"><br>6.桌面右键-&gt;Git Bash Here,输入下面的命令，看看设置是否成功，<a href="mailto:&#x67;&#x69;&#x74;&#64;&#x67;&#x69;&#116;&#x68;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;">&#x67;&#x69;&#x74;&#64;&#x67;&#x69;&#116;&#x68;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;</a>的部分不要修改</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
 
 <h5 id="将本地的Hexo文件更新到Github的库中"><a href="#将本地的Hexo文件更新到Github的库中" class="headerlink" title="将本地的Hexo文件更新到Github的库中"></a>将本地的Hexo文件更新到Github的库中</h5><p>1.登录Github打开自己的项目 username.github.io<br><img src="/images/11.png"><br>2.打开之后，点击HTTPS，选择HTTPS类型地址<br><img src="/images/12.png"><br>3.复制地址<br><img src="/images/13.png"><br>4.打开你一开始创建的Hexo文件夹（如F:\Blog\Hexo），用记事本打开刚文件夹下的_config.yml文件<br><img src="/images/14.png"><br>5.在配置文件里作如下修改，保存<br><img src="/images/15.png"><br>6.在本地目录执行如下命令</p>
@@ -416,23 +416,6 @@
       </tags>
   </entry>
   <entry>
-    <title>golang IDE 选择</title>
-    <url>/2019/04/25/golang/golang-ide/</url>
-    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>IDE有事半功倍效果，所以选择一个，但IDE对原理理解有影响</p>
-</blockquote>
-<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>据说JetBrains家的IDE比较好用所以直接选择<a href="https://www.jetbrains.com/go/">GoLand</a></p>
-]]></content>
-      <categories>
-        <category>golang</category>
-        <category>go</category>
-      </categories>
-      <tags>
-        <tag>golang</tag>
-        <tag>go</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Redhat7.5 安装 使用 GitLab</title>
     <url>/2019/02/28/git/gitlab_install/</url>
     <content><![CDATA[<h4 id="版本选择"><a href="#版本选择" class="headerlink" title="版本选择"></a>版本选择</h4><p>如果想安装指定版本，需要在下面的网站中下载指定版本。</p>
@@ -475,6 +458,23 @@
       </tags>
   </entry>
   <entry>
+    <title>golang IDE 选择</title>
+    <url>/2019/04/25/golang/golang-ide/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>IDE有事半功倍效果，所以选择一个，但IDE对原理理解有影响</p>
+</blockquote>
+<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>据说JetBrains家的IDE比较好用所以直接选择<a href="https://www.jetbrains.com/go/">GoLand</a></p>
+]]></content>
+      <categories>
+        <category>golang</category>
+        <category>go</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+        <tag>go</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>golang import 理解</title>
     <url>/2019/04/25/golang/golang-import/</url>
     <content><![CDATA[<h4 id="包的理解"><a href="#包的理解" class="headerlink" title="包的理解"></a>包的理解</h4><p>Golang中有package的概念。在go源码文件的第一行就是先声明包名：</p>
@@ -510,73 +510,6 @@
 </ol>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
 <li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html">理解Go import</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>golang</category>
-        <category>go</category>
-      </categories>
-      <tags>
-        <tag>golang</tag>
-        <tag>go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>golang 环境搭建</title>
-    <url>/2019/04/21/golang/golang-install/</url>
-    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>开始学习golang</p>
-</blockquote>
-<h4 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h4><p>centos7</p>
-<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
-<li><a href="https://golang.org/dl/">go官网</a>下载安装包</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<ol start="2">
-<li>根据自己需要解压安装</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p>配置环境变量<br>在/etc/profile文件中添加export PATH=$PATH:/usr/local/go/bin</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/profile</span><br><span class="line"># source /etc/profile</span><br></pre></td></tr></table></figure></li>
-<li><p>测试是否安装成功</p>
-</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># go version</span><br><span class="line">go version go1.12.4 linux/amd64</span><br></pre></td></tr></table></figure>
-
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
-<li><a href="https://golang.org/doc/install">官网</a></li>
-<li><a href="https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/01.1.md">安装go</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>golang</category>
-      </categories>
-      <tags>
-        <tag>golang</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>golang 项目组织</title>
-    <url>/2019/04/25/golang/golang-project/</url>
-    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>项目目录结构如何组织，一般语言都是没有规定。但Go语言这方面做了规定，这样可以保持一致性</p>
-</blockquote>
-<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><ol>
-<li>GOROOT就是Go被安装的地方</li>
-<li>GOPATH指向你的工作区,这就是如何让Go找到你的代码</li>
-<li>其他环境变量,一般情况不需要设置，要查看所有Go环境变量，请输入:go env<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Users\tungS&gt;go env</span><br><span class="line">set GOARCH=amd64</span><br><span class="line">set GOBIN=</span><br><span class="line">set GOCACHE=C:\Users\tungS\AppData\Local\go-build</span><br><span class="line">set GOEXE=.exe</span><br><span class="line">set GOFLAGS=</span><br><span class="line">set GOHOSTARCH=amd64</span><br><span class="line">set GOHOSTOS=windows</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
-<span id="more"></span></li>
-</ol>
-<h4 id="代码组织结构"><a href="#代码组织结构" class="headerlink" title="代码组织结构"></a>代码组织结构</h4><ol>
-<li><p>一般的，一个Go项目在GOPATH下，会有如下三个目录：</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">|--bin</span><br><span class="line">|--pkg</span><br><span class="line">|--src</span><br></pre></td></tr></table></figure>
-<p> bin存放编译后的可执行文件；<br> pkg存放编译后的包文件；<br> src存放项目源文件。<br> 一般，bin和pkg目录可以不创建，go命令会自动创建（如 go install），只需要创建src目录即可。对于pkg目录，曾经有人问：我把Go中的包放入pkg下面，怎么不行啊？他直接把Go包的源文件放入了pkg中。这显然是不对的。pkg中的文件是Go编译生成的，而不是手动放进去的。（一般文件后缀.a）对于src目录，存放源文件，Go中源文件以包（package）的形式组织。通常，新建一个包就在src目录中新建一个文件夹。</p>
-</li>
 </ol>
 ]]></content>
       <categories>
@@ -686,6 +619,73 @@
 <li><a href="https://www.kancloud.cn/liupengjie/go/570004">golang</a></li>
 <li><a href="https://www.runoob.com/go/go-tutorial.html">Go 语言教程</a></li>
 <li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html">理解Go import</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>golang</category>
+        <category>go</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+        <tag>go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>golang 环境搭建</title>
+    <url>/2019/04/21/golang/golang-install/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>开始学习golang</p>
+</blockquote>
+<h4 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h4><p>centos7</p>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
+<li><a href="https://golang.org/dl/">go官网</a>下载安装包</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ol start="2">
+<li>根据自己需要解压安装</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>配置环境变量<br>在/etc/profile文件中添加export PATH=$PATH:/usr/local/go/bin</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/profile</span><br><span class="line"># source /etc/profile</span><br></pre></td></tr></table></figure></li>
+<li><p>测试是否安装成功</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># go version</span><br><span class="line">go version go1.12.4 linux/amd64</span><br></pre></td></tr></table></figure>
+
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a href="https://golang.org/doc/install">官网</a></li>
+<li><a href="https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/01.1.md">安装go</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>golang</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>golang 项目组织</title>
+    <url>/2019/04/25/golang/golang-project/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>项目目录结构如何组织，一般语言都是没有规定。但Go语言这方面做了规定，这样可以保持一致性</p>
+</blockquote>
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><ol>
+<li>GOROOT就是Go被安装的地方</li>
+<li>GOPATH指向你的工作区,这就是如何让Go找到你的代码</li>
+<li>其他环境变量,一般情况不需要设置，要查看所有Go环境变量，请输入:go env<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Users\tungS&gt;go env</span><br><span class="line">set GOARCH=amd64</span><br><span class="line">set GOBIN=</span><br><span class="line">set GOCACHE=C:\Users\tungS\AppData\Local\go-build</span><br><span class="line">set GOEXE=.exe</span><br><span class="line">set GOFLAGS=</span><br><span class="line">set GOHOSTARCH=amd64</span><br><span class="line">set GOHOSTOS=windows</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+<span id="more"></span></li>
+</ol>
+<h4 id="代码组织结构"><a href="#代码组织结构" class="headerlink" title="代码组织结构"></a>代码组织结构</h4><ol>
+<li><p>一般的，一个Go项目在GOPATH下，会有如下三个目录：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">|--bin</span><br><span class="line">|--pkg</span><br><span class="line">|--src</span><br></pre></td></tr></table></figure>
+<p> bin存放编译后的可执行文件；<br> pkg存放编译后的包文件；<br> src存放项目源文件。<br> 一般，bin和pkg目录可以不创建，go命令会自动创建（如 go install），只需要创建src目录即可。对于pkg目录，曾经有人问：我把Go中的包放入pkg下面，怎么不行啊？他直接把Go包的源文件放入了pkg中。这显然是不对的。pkg中的文件是Go编译生成的，而不是手动放进去的。（一般文件后缀.a）对于src目录，存放源文件，Go中源文件以包（package）的形式组织。通常，新建一个包就在src目录中新建一个文件夹。</p>
+</li>
 </ol>
 ]]></content>
       <categories>
@@ -943,67 +943,52 @@
       </tags>
   </entry>
   <entry>
-    <title>Sonatype Nexus Repository Manager私服搭建</title>
-    <url>/2019/02/28/nexus/nexus/</url>
-    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>在使用java开发用maven来管理工程常常会从远程仓库下载jar包，由于网络原因有时候会下载很慢；还有公司内部产品开发的代码又不能上传到中央仓库；故需要搭建一个maven的私有仓库。选择Sonatype Nexus来作为maven的私有仓库，Sonatype Nexus还可以做docker、npm等等的私有仓库。</p>
-</blockquote>
-<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>  Redhat 7.5 操作系统</li>
-<li>  Sonatype Nexus Repository Manager 3.15</li>
-<li>  jdk1.8</li>
+    <title>记录Linux CentOS 系统安装Mysql数据库</title>
+    <url>/2017/11/28/mysql/mysql-install-linux/</url>
+    <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>  Linux CentOS6 操作系统</li>
+<li>  Mysql5.6 安装包</li>
 </ul>
+<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://dev.mysql.com/downloads/mysql/5.6.html#downloads">官网</a>下载社区版。本文安装的是mysql5.6。<br><img src="/images/mysql/17.jpg"></p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="确认系统是否已经安装mysql，如果安装卸载后再安装"><a href="#确认系统是否已经安装mysql，如果安装卸载后再安装" class="headerlink" title="确认系统是否已经安装mysql，如果安装卸载后再安装"></a>确认系统是否已经安装mysql，如果安装卸载后再安装</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -qa |grep -i mysql</span></span><br></pre></td></tr></table></figure>
+<p>如果安装mysql，卸载</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+<p>注意：如果卸载不掉可以加nodeps强制卸载，或用yum命令卸载</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm --nodeps</span></span><br><span class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm --nodeps</span></span><br><span class="line"><span class="comment">#yum remove MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#yum remove MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+<h5 id="解压安装包"><a href="#解压安装包" class="headerlink" title="解压安装包"></a>解压安装包</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#tar -xvf MySQL-5.6.38-1.el6.x86_64.rpm-bundle.tar</span></span><br></pre></td></tr></table></figure>
 <span id="more"></span>
+<h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#yum -y install perl</span></span><br><span class="line"><span class="comment">#rpm -ivh numactl-2.0.9-2.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#rpm -ivh libaio-0.3.107-10.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+<h5 id="安装Mysql-server"><a href="#安装Mysql-server" class="headerlink" title="安装Mysql-server"></a>安装Mysql-server</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ivh MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+<h5 id="安装Mysql-client"><a href="#安装Mysql-client" class="headerlink" title="安装Mysql-client"></a>安装Mysql-client</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ivh MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
+<h5 id="自定义数据路径"><a href="#自定义数据路径" class="headerlink" title="自定义数据路径"></a>自定义数据路径</h5><p>根据自己的实际情况创建数据文件夹，例如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mkdir /home/data</span></span><br></pre></td></tr></table></figure>
+<p>把默认的数据文件移动到刚刚创建的数据目录下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mv /var/lib/mysql /home/data</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h4><ol>
-<li>下载jdk安装包</li>
-<li><a href="https://help.sonatype.com/repomanager3/download/download-archives---repository-manager-3">官网</a>下载Sonatype Nexus Repository Manager安装包<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># wget http://download.sonatype.com/nexus/3/nexus-3.15.2-01-unix.tar.gz</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ol>
-<li><p>修改最大文件打开数<br> nexus要求最大文件打开数不小于65536，默认1024<br> 打开文件/etc/security/limits.conf在文件末尾添加配置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">* soft nofile 204800  </span><br><span class="line">* hard nofile 204800  </span><br><span class="line">* soft nproc 204800  </span><br><span class="line">* hard nproc 204800</span><br></pre></td></tr></table></figure>
+<h5 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">datadir = /home/data/mysql</span><br><span class="line">port = 3306</span><br><span class="line">server_id = 1</span><br><span class="line">socket = /home/data/mysql/mysql.sock</span><br><span class="line">log_bin = mysql-bin</span><br><span class="line">binlog_format = mixed  </span><br><span class="line">expire_logs_days = 30</span><br><span class="line">log_error = /home/data/mysql/logs/mysql-error.log</span><br><span class="line">explicit_defaults_for_timestamp=1</span><br></pre></td></tr></table></figure>
+<p>注：此处重点是修改datadir和socket的路径</p>
+<h5 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#service mysql start</span></span><br><span class="line">Starting MySQL. SUCCESS! </span><br></pre></td></tr></table></figure>
 
-<p> * 代表针对所有用户<br> noproc     是代表最大进程数<br> nofile     是代表最大文件打开数</p>
-</li>
-<li><p>创建用户组及用户并设置密码<br> Sonatype Nexus 不推荐root</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">groupadd nexus</span><br><span class="line">useradd -g nexus nexus</span><br><span class="line">passwd xxx</span><br></pre></td></tr></table></figure>
-<p> xxx:你的密码</p>
-</li>
+<h5 id="登陆mysql"><a href="#登陆mysql" class="headerlink" title="登陆mysql"></a>登陆mysql</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mysql -uroot -p</span></span><br></pre></td></tr></table></figure>
+<p>注：这个地方输入默认密码，默认密码在/root/.mysql_secret文件中。此处应该会报错，解决办法如下</p>
+<ol>
+<li>mysql 命令加参数<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mysql -h 127.0.0.1 -uroot -p</span></span><br></pre></td></tr></table></figure></li>
+<li>加软链接(快捷方式)<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#ln -s /home/data/mysql/mysql.sock /var/lib/mysql</span></span><br></pre></td></tr></table></figure></li>
+<li>修改配置，但这个方法没有成功，网上很多资料成功了</li>
 </ol>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
-<li>解压到/opt/nexus目录<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tar -zvxf nexus-3.15.2-01-unix.tar.gz</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><ol>
-<li><p>配置jdk</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus</span><br></pre></td></tr></table></figure>
-<p> 找到INSTALL4J_JAVA_HOME_OVERRIDE添加java home目录</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSTALL4J_JAVA_HOME_OVERRIDE=/opt/java/jdk1.8.0_131</span><br></pre></td></tr></table></figure></li>
-<li><p>配置启动用户</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus.rc </span><br></pre></td></tr></table></figure>
-<p> 默认为nexus用户修改root用户</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">run_as_user=&quot;root&quot;</span><br></pre></td></tr></table></figure></li>
-<li><p>配置WEB端口为80。默认为8081，如何不修改默认端口，启动用户无需配置</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># /opt/nexus/nexus-3.15.2-01/etc/nexus-default.properties</span><br></pre></td></tr></table></figure></li>
-<li><p>配置开机启动<br> 在目录/etc/systemd/system/添加nexus.service文件</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/systemd/system/nexus.service</span><br></pre></td></tr></table></figure>
-<p> 添加如下内容</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=nexus service</span><br><span class="line">After=network.target</span><br><span class="line">  </span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">LimitNOFILE=65536</span><br><span class="line">ExecStart=/opt/nexus/nexus-3.15.2-01/bin/nexus start</span><br><span class="line">ExecStop=/opt/nexus/nexus-3.15.2-01/bin/nexus stop</span><br><span class="line">User=root</span><br><span class="line">Restart=on-abort</span><br><span class="line">  </span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
-<p> 激活服务并添加开机启动</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># systemctl daemon-reload</span><br><span class="line"># systemctl enable nexus.service</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># systemctl start nexus.service</span><br></pre></td></tr></table></figure>
-<p>查看日志，监控是否成功</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tail -f /opt/nexus/sonatype-work/nexus3/log/nexus.log</span><br></pre></td></tr></table></figure>
+<p>登陆成功后，首先要设置密码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#set password = password(&#x27;此处为复杂度高的密码&#x27;);</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>我想用80端口，所以用root用户启动。用nexus用户启动无法用80端口，会报一个错误，没找到解决办法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jvm 1    | 2017-04-28 11:20:10,040+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED InstrumentedSelectChannelCon</span><br><span class="line">nector@0.0.0.0:80: java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    | java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2014</span><br><span class="line">0903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2</span><br><span class="line">0140903]</span><br><span class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.InstrumentedSelectChannelConnector.doStart(InstrumentedSelectChannelConnector.java:85) ~[nexus-bootstra</span><br><span class="line">p-2.12.0-01.jar:2.12.0-01]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.Server.doStart(Server.java:293) [jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.JettyServer$JettyMainThread.run(JettyServer.java:247) [nexus-bootstrap-2.12.0-01.jar:2.12.0-01]</span><br><span class="line">jvm 1    | 2017-04-28 11:20:10,041+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@7fafc8f3: java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    | java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br></pre></td></tr></table></figure>
 
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://help.sonatype.com/repomanager3/installation/run-as-a-service#RunasaService-systemd">centos7 开机启动</a></p>
+<h5 id="mysql服务加入开机启动项"><a href="#mysql服务加入开机启动项" class="headerlink" title="mysql服务加入开机启动项"></a>mysql服务加入开机启动项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#chkconfig mysql on</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>到此就安装结束了，剩余工作就是优化、配置mysql，适用于自己的项目。</p>
 ]]></content>
+      <categories>
+        <category>Mysql</category>
+      </categories>
       <tags>
-        <tag>Nexus</tag>
-        <tag>Sonatype Nexus</tag>
-        <tag>Maven</tag>
+        <tag>Mysql Linux CentOS</tag>
       </tags>
   </entry>
   <entry>
@@ -1074,55 +1059,6 @@
       </tags>
   </entry>
   <entry>
-    <title>记录Linux CentOS 系统安装Mysql数据库</title>
-    <url>/2017/11/28/mysql/mysql-install-linux/</url>
-    <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>  Linux CentOS6 操作系统</li>
-<li>  Mysql5.6 安装包</li>
-</ul>
-<h4 id="下载mysql安装包"><a href="#下载mysql安装包" class="headerlink" title="下载mysql安装包"></a>下载mysql安装包</h4><p>在<a href="https://dev.mysql.com/downloads/mysql/5.6.html#downloads">官网</a>下载社区版。本文安装的是mysql5.6。<br><img src="/images/mysql/17.jpg"></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="确认系统是否已经安装mysql，如果安装卸载后再安装"><a href="#确认系统是否已经安装mysql，如果安装卸载后再安装" class="headerlink" title="确认系统是否已经安装mysql，如果安装卸载后再安装"></a>确认系统是否已经安装mysql，如果安装卸载后再安装</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -qa |grep -i mysql</span></span><br></pre></td></tr></table></figure>
-<p>如果安装mysql，卸载</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
-<p>注意：如果卸载不掉可以加nodeps强制卸载，或用yum命令卸载</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ev MySQL-server-5.6.38-1.el6.x86_64.rpm --nodeps</span></span><br><span class="line"><span class="comment">#rpm -ev MySQL-client-5.6.38-1.el6.x86_64.rpm --nodeps</span></span><br><span class="line"><span class="comment">#yum remove MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#yum remove MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
-<h5 id="解压安装包"><a href="#解压安装包" class="headerlink" title="解压安装包"></a>解压安装包</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#tar -xvf MySQL-5.6.38-1.el6.x86_64.rpm-bundle.tar</span></span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h5 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#yum -y install perl</span></span><br><span class="line"><span class="comment">#rpm -ivh numactl-2.0.9-2.el6.x86_64.rpm</span></span><br><span class="line"><span class="comment">#rpm -ivh libaio-0.3.107-10.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
-<h5 id="安装Mysql-server"><a href="#安装Mysql-server" class="headerlink" title="安装Mysql-server"></a>安装Mysql-server</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ivh MySQL-server-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
-<h5 id="安装Mysql-client"><a href="#安装Mysql-client" class="headerlink" title="安装Mysql-client"></a>安装Mysql-client</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#rpm -ivh MySQL-client-5.6.38-1.el6.x86_64.rpm</span></span><br></pre></td></tr></table></figure>
-<h5 id="自定义数据路径"><a href="#自定义数据路径" class="headerlink" title="自定义数据路径"></a>自定义数据路径</h5><p>根据自己的实际情况创建数据文件夹，例如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mkdir /home/data</span></span><br></pre></td></tr></table></figure>
-<p>把默认的数据文件移动到刚刚创建的数据目录下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mv /var/lib/mysql /home/data</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">datadir = /home/data/mysql</span><br><span class="line">port = 3306</span><br><span class="line">server_id = 1</span><br><span class="line">socket = /home/data/mysql/mysql.sock</span><br><span class="line">log_bin = mysql-bin</span><br><span class="line">binlog_format = mixed  </span><br><span class="line">expire_logs_days = 30</span><br><span class="line">log_error = /home/data/mysql/logs/mysql-error.log</span><br><span class="line">explicit_defaults_for_timestamp=1</span><br></pre></td></tr></table></figure>
-<p>注：此处重点是修改datadir和socket的路径</p>
-<h5 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#service mysql start</span></span><br><span class="line">Starting MySQL. SUCCESS! </span><br></pre></td></tr></table></figure>
-
-<h5 id="登陆mysql"><a href="#登陆mysql" class="headerlink" title="登陆mysql"></a>登陆mysql</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mysql -uroot -p</span></span><br></pre></td></tr></table></figure>
-<p>注：这个地方输入默认密码，默认密码在/root/.mysql_secret文件中。此处应该会报错，解决办法如下</p>
-<ol>
-<li>mysql 命令加参数<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#mysql -h 127.0.0.1 -uroot -p</span></span><br></pre></td></tr></table></figure></li>
-<li>加软链接(快捷方式)<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#ln -s /home/data/mysql/mysql.sock /var/lib/mysql</span></span><br></pre></td></tr></table></figure></li>
-<li>修改配置，但这个方法没有成功，网上很多资料成功了</li>
-</ol>
-<p>登陆成功后，首先要设置密码</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#set password = password(&#x27;此处为复杂度高的密码&#x27;);</span></span><br></pre></td></tr></table></figure>
-
-
-<h5 id="mysql服务加入开机启动项"><a href="#mysql服务加入开机启动项" class="headerlink" title="mysql服务加入开机启动项"></a>mysql服务加入开机启动项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#chkconfig mysql on</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>到此就安装结束了，剩余工作就是优化、配置mysql，适用于自己的项目。</p>
-]]></content>
-      <categories>
-        <category>Mysql</category>
-      </categories>
-      <tags>
-        <tag>Mysql Linux CentOS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>记录Windows 系统安装mysql数据库</title>
     <url>/2017/01/16/mysql/mysql-install/</url>
     <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
@@ -1157,6 +1093,70 @@
       </categories>
       <tags>
         <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Sonatype Nexus Repository Manager私服搭建</title>
+    <url>/2019/02/28/nexus/nexus/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>在使用java开发用maven来管理工程常常会从远程仓库下载jar包，由于网络原因有时候会下载很慢；还有公司内部产品开发的代码又不能上传到中央仓库；故需要搭建一个maven的私有仓库。选择Sonatype Nexus来作为maven的私有仓库，Sonatype Nexus还可以做docker、npm等等的私有仓库。</p>
+</blockquote>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>  Redhat 7.5 操作系统</li>
+<li>  Sonatype Nexus Repository Manager 3.15</li>
+<li>  jdk1.8</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h4><ol>
+<li>下载jdk安装包</li>
+<li><a href="https://help.sonatype.com/repomanager3/download/download-archives---repository-manager-3">官网</a>下载Sonatype Nexus Repository Manager安装包<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># wget http://download.sonatype.com/nexus/3/nexus-3.15.2-01-unix.tar.gz</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ol>
+<li><p>修改最大文件打开数<br> nexus要求最大文件打开数不小于65536，默认1024<br> 打开文件/etc/security/limits.conf在文件末尾添加配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">* soft nofile 204800  </span><br><span class="line">* hard nofile 204800  </span><br><span class="line">* soft nproc 204800  </span><br><span class="line">* hard nproc 204800</span><br></pre></td></tr></table></figure>
+
+<p> * 代表针对所有用户<br> noproc     是代表最大进程数<br> nofile     是代表最大文件打开数</p>
+</li>
+<li><p>创建用户组及用户并设置密码<br> Sonatype Nexus 不推荐root</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">groupadd nexus</span><br><span class="line">useradd -g nexus nexus</span><br><span class="line">passwd xxx</span><br></pre></td></tr></table></figure>
+<p> xxx:你的密码</p>
+</li>
+</ol>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>解压到/opt/nexus目录<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tar -zvxf nexus-3.15.2-01-unix.tar.gz</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><ol>
+<li><p>配置jdk</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus</span><br></pre></td></tr></table></figure>
+<p> 找到INSTALL4J_JAVA_HOME_OVERRIDE添加java home目录</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSTALL4J_JAVA_HOME_OVERRIDE=/opt/java/jdk1.8.0_131</span><br></pre></td></tr></table></figure></li>
+<li><p>配置启动用户</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /opt/nexus/nexus-3.15.2-01/bin/nexus.rc </span><br></pre></td></tr></table></figure>
+<p> 默认为nexus用户修改root用户</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">run_as_user=&quot;root&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p>配置WEB端口为80。默认为8081，如何不修改默认端口，启动用户无需配置</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># /opt/nexus/nexus-3.15.2-01/etc/nexus-default.properties</span><br></pre></td></tr></table></figure></li>
+<li><p>配置开机启动<br> 在目录/etc/systemd/system/添加nexus.service文件</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/systemd/system/nexus.service</span><br></pre></td></tr></table></figure>
+<p> 添加如下内容</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=nexus service</span><br><span class="line">After=network.target</span><br><span class="line">  </span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">LimitNOFILE=65536</span><br><span class="line">ExecStart=/opt/nexus/nexus-3.15.2-01/bin/nexus start</span><br><span class="line">ExecStop=/opt/nexus/nexus-3.15.2-01/bin/nexus stop</span><br><span class="line">User=root</span><br><span class="line">Restart=on-abort</span><br><span class="line">  </span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p> 激活服务并添加开机启动</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># systemctl daemon-reload</span><br><span class="line"># systemctl enable nexus.service</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># systemctl start nexus.service</span><br></pre></td></tr></table></figure>
+<p>查看日志，监控是否成功</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># tail -f /opt/nexus/sonatype-work/nexus3/log/nexus.log</span><br></pre></td></tr></table></figure>
+
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>我想用80端口，所以用root用户启动。用nexus用户启动无法用80端口，会报一个错误，没找到解决办法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jvm 1    | 2017-04-28 11:20:10,040+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED InstrumentedSelectChannelCon</span><br><span class="line">nector@0.0.0.0:80: java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    | java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2014</span><br><span class="line">0903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v2</span><br><span class="line">0140903]</span><br><span class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.InstrumentedSelectChannelConnector.doStart(InstrumentedSelectChannelConnector.java:85) ~[nexus-bootstra</span><br><span class="line">p-2.12.0-01.jar:2.12.0-01]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.Server.doStart(Server.java:293) [jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64) [jetty-util-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.sonatype.nexus.bootstrap.jetty.JettyServer$JettyMainThread.run(JettyServer.java:247) [nexus-bootstrap-2.12.0-01.jar:2.12.0-01]</span><br><span class="line">jvm 1    | 2017-04-28 11:20:10,041+0800 WARN  [jetty-main-1] *SYSTEM org.eclipse.jetty.util.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@7fafc8f3: java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    | java.net.SocketException: Permission denied</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:433) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.Net.bind(Net.java:425) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_131]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.open(SelectChannelConnector.java:187) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.java:316) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br><span class="line">jvm 1    |      at org.eclipse.jetty.server.nio.SelectChannelConnector.doStart(SelectChannelConnector.java:265) ~[jetty-server-8.1.16.v20140903.jar:8.1.16.v20140903]</span><br></pre></td></tr></table></figure>
+
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://help.sonatype.com/repomanager3/installation/run-as-a-service#RunasaService-systemd">centos7 开机启动</a></p>
+]]></content>
+      <tags>
+        <tag>Nexus</tag>
+        <tag>Sonatype Nexus</tag>
+        <tag>Maven</tag>
       </tags>
   </entry>
   <entry>
@@ -1931,44 +1931,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Windows下安装redis</title>
-    <url>/2018/12/10/cache/redis/redis-install/</url>
-    <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
-<li>  Windows10 操作系统</li>
-<li>  Redis 安装包</li>
-</ul>
-<h4 id="下载redis安装包"><a href="#下载redis安装包" class="headerlink" title="下载redis安装包"></a>下载redis安装包</h4><p>在<a href="https://github.com/MicrosoftArchive/redis/releases">github</a>下载Redis-x64-3.2.100.zip包</p>
-<span id="more"></span>
-
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="命令方式"><a href="#命令方式" class="headerlink" title="命令方式"></a>命令方式</h5><ol>
-<li>解压Redis-x64-3.2.100.zip</li>
-<li>在解压后文件夹中的CMD命令窗口运行下面命令<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-server.exe redis.windows.conf</span><br></pre></td></tr></table></figure>
- 结果如图：<br> <img src="/images/redis/win_redis.jpg"></li>
-</ol>
-<h5 id="服务方式"><a href="#服务方式" class="headerlink" title="服务方式"></a>服务方式</h5><ol>
-<li>解压Redis-x64-3.2.100.zip</li>
-<li>在解压后文件夹中的CMD命令窗口运行下面命令，把redis部署为windows服务<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-server.exe --service-install redis.windows.conf</span><br></pre></td></tr></table></figure>
- 结果如图：<br> <img src="/images/redis/win_redis_service.jpg"></li>
-<li>启动redis服务<ul>
-<li>用redis-server –service-start命令启动<br><img src="/images/redis/win_redis_service_start.jpg"></li>
-<li>或在控制面板–管理工具–服务中启动<br><img src="/images/redis/win_service_start.jpg"></li>
-</ul>
-</li>
-</ol>
-<h5 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h5><p>在解压后文件夹中的CMD命令窗口运行下面命令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-cli.exe</span><br></pre></td></tr></table></figure>
-<p><img src="/images/redis/win_redis_test.jpg"></p>
-<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>开始Redis之旅吧！</p>
-]]></content>
-      <categories>
-        <category>cache</category>
-      </categories>
-      <tags>
-        <tag>cache</tag>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux下安装redis</title>
     <url>/2018/12/10/cache/redis/redis-install-linux/</url>
     <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
@@ -2000,6 +1962,44 @@
 <li>配置并启动<br>拷贝/opt/redis-4.0.11/redis.conf文件到一个目录或不拷贝直接用,然后启动<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># /usr/local/bin/redis-server /opt/redis-4.0.11/redis.conf</span><br></pre></td></tr></table></figure></li>
 <li>测试<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># /usr/local/bin/redis-cli</span><br></pre></td></tr></table></figure></li>
 </ol>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>开始Redis之旅吧！</p>
+]]></content>
+      <categories>
+        <category>cache</category>
+      </categories>
+      <tags>
+        <tag>cache</tag>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows下安装redis</title>
+    <url>/2018/12/10/cache/redis/redis-install/</url>
+    <content><![CDATA[<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>  Windows10 操作系统</li>
+<li>  Redis 安装包</li>
+</ul>
+<h4 id="下载redis安装包"><a href="#下载redis安装包" class="headerlink" title="下载redis安装包"></a>下载redis安装包</h4><p>在<a href="https://github.com/MicrosoftArchive/redis/releases">github</a>下载Redis-x64-3.2.100.zip包</p>
+<span id="more"></span>
+
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="命令方式"><a href="#命令方式" class="headerlink" title="命令方式"></a>命令方式</h5><ol>
+<li>解压Redis-x64-3.2.100.zip</li>
+<li>在解压后文件夹中的CMD命令窗口运行下面命令<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-server.exe redis.windows.conf</span><br></pre></td></tr></table></figure>
+ 结果如图：<br> <img src="/images/redis/win_redis.jpg"></li>
+</ol>
+<h5 id="服务方式"><a href="#服务方式" class="headerlink" title="服务方式"></a>服务方式</h5><ol>
+<li>解压Redis-x64-3.2.100.zip</li>
+<li>在解压后文件夹中的CMD命令窗口运行下面命令，把redis部署为windows服务<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-server.exe --service-install redis.windows.conf</span><br></pre></td></tr></table></figure>
+ 结果如图：<br> <img src="/images/redis/win_redis_service.jpg"></li>
+<li>启动redis服务<ul>
+<li>用redis-server –service-start命令启动<br><img src="/images/redis/win_redis_service_start.jpg"></li>
+<li>或在控制面板–管理工具–服务中启动<br><img src="/images/redis/win_service_start.jpg"></li>
+</ul>
+</li>
+</ol>
+<h5 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h5><p>在解压后文件夹中的CMD命令窗口运行下面命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># redis-cli.exe</span><br></pre></td></tr></table></figure>
+<p><img src="/images/redis/win_redis_test.jpg"></p>
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>开始Redis之旅吧！</p>
 ]]></content>
       <categories>
@@ -2211,6 +2211,72 @@
       </tags>
   </entry>
   <entry>
+    <title>OpenSSL 生成自定义证书</title>
+    <url>/2019/01/06/web/container/ssl_cert/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>本文用来记录通过OpenSSL生成自定义证书并在浏览器设置可信任</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS7 系统</li>
+<li>nginx 1.12.2</li>
+<li>Windows 10</li>
+<li>IE 11</li>
+<li>chrome 71</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="OpenSSL配置"><a href="#OpenSSL配置" class="headerlink" title="OpenSSL配置"></a>OpenSSL配置</h4><p>在linux系统中修改OpenSSL配置是为了,让chrome浏览器对为网站可信任<br><img src="/images/web/container/sslcert.jpg"></p>
+<ol>
+<li><p>拷贝OpenSSL配置文件准备修改</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /etc/pki/tls/</span><br><span class="line"># cp openssl.cnf openssl_m.cnf</span><br></pre></td></tr></table></figure></li>
+<li><p>修改openssl_m.cnf文件</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/pki/tls/openssl_m.cnf</span><br></pre></td></tr></table></figure>
+<p> a. 找到[ req ] 段落，添加req_extentions  = v3_req配置：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">####################################################################</span><br><span class="line">[ req ]</span><br><span class="line">default_bits        = 2048</span><br><span class="line">default_md      = sha256</span><br><span class="line">default_keyfile     = privkey.pem</span><br><span class="line">distinguished_name  = req_distinguished_name</span><br><span class="line">attributes      = req_attributes</span><br><span class="line">x509_extensions = v3_ca # The extentions to add to the self signed cert</span><br><span class="line">#需要添加的配置</span><br><span class="line">req_extentions  = v3_req</span><br></pre></td></tr></table></figure>
+
+<p> b. 添加v3_req配置信息</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[ v3_req ]</span><br><span class="line"></span><br><span class="line"># Extensions to add to a certificate request</span><br><span class="line"></span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = nonRepudiation, digitalSignature, keyEncipherment</span><br><span class="line">#需要添加的配置</span><br><span class="line">subjectAltName = @alt_names</span><br></pre></td></tr></table></figure>
+
+<p> c. 添加alt_names配置信息,可以添加多个</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[ alt_names ]</span><br><span class="line">DNS.1 = www.test.com</span><br></pre></td></tr></table></figure>
+<p> 注：这里填入的即为Subject Alternative Names的域名名称</p>
+</li>
+</ol>
+<h4 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h4><p>直接用脚本生成</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line"></span><br><span class="line"># create self-signed server certificate:</span><br><span class="line"></span><br><span class="line">read -p &quot;Enter your domain [www.example.com]: &quot; DOMAIN</span><br><span class="line"></span><br><span class="line">echo &quot;Create server key...&quot;</span><br><span class="line"></span><br><span class="line">openssl genrsa -des3 -out $DOMAIN.key 2048</span><br><span class="line"></span><br><span class="line">echo &quot;Create server certificate signing request...&quot;</span><br><span class="line"></span><br><span class="line">SUBJECT=&quot;/C=US/ST=Mars/L=iTranswarp/O=iTranswarp/OU=iTranswarp/CN=$DOMAIN&quot;</span><br><span class="line"></span><br><span class="line">#openssl req -new  -subj $SUBJECT -key $DOMAIN.key -out $DOMAIN.csr -extensions v3_req</span><br><span class="line">openssl req -new -subj $SUBJECT  -key $DOMAIN.key -out $DOMAIN.csr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &quot;Remove password...&quot;</span><br><span class="line"></span><br><span class="line">mv $DOMAIN.key $DOMAIN.origin.key</span><br><span class="line">openssl rsa -in $DOMAIN.origin.key -out $DOMAIN.key</span><br><span class="line"></span><br><span class="line">echo &quot;Sign SSL certificate...&quot;</span><br><span class="line"></span><br><span class="line">openssl x509 -req -days 3650 -extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req   -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt</span><br><span class="line"></span><br><span class="line">echo &quot;TODO:&quot;</span><br><span class="line">echo &quot;Copy $DOMAIN.crt to /etc/nginx/ssl/$DOMAIN.crt&quot;</span><br><span class="line">echo &quot;Copy $DOMAIN.key to /etc/nginx/ssl/$DOMAIN.key&quot;</span><br><span class="line">echo &quot;Add configuration in nginx:&quot;</span><br><span class="line">echo &quot;server &#123;&quot;</span><br><span class="line">echo &quot;    ...&quot;</span><br><span class="line">echo &quot;    listen 443 ssl;&quot;</span><br><span class="line">echo &quot;    ssl_certificate     /etc/nginx/ssl/$DOMAIN.crt;&quot;</span><br><span class="line">echo &quot;    ssl_certificate_key /etc/nginx/ssl/$DOMAIN.key;&quot;</span><br><span class="line">echo &quot;&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>关键点就是：-extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req给证书添加上扩展属性<br><img src="/images/web/container/certext.jpg"></p>
+<h4 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h4><ol>
+<li>把生成的xxx.crt 和xxx.key 拷贝到/etc/nginx/ssl/</li>
+<li>修改nginx.conf<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate     /etc/nginx/ssl/www.test.com.crt;</span><br><span class="line">    ssl_certificate_key /etc/nginx/ssl/www.test.com.key;</span><br><span class="line">    listen       443 default_server;</span><br><span class="line">    listen       [::]:443 default_server;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>重启nginx服务</li>
+</ol>
+<h4 id="导入证书"><a href="#导入证书" class="headerlink" title="导入证书"></a>导入证书</h4><ol>
+<li>把<a href="http://www.test.com.crt拷贝到windows系统中/">www.test.com.crt拷贝到windows系统中</a></li>
+<li>双击<a href="http://www.test.com.crt文件打开/">www.test.com.crt文件打开</a></li>
+<li>点击“Install Certificate”<br><img src="/images/web/container/install_cert.jpg"></li>
+<li>选择“Local Machine” 点击“Next”<br><img src="/images/web/container/install_cert2.jpg"></li>
+<li>选择“Place all certificates in the following store” 点击“Browser”</li>
+<li>选择“Trusted Root Certification Authorities” 点击“OK”<br><img src="/images/web/container/install_cert3.jpg"></li>
+<li>点击“Next” 点击“Finish”</li>
+</ol>
+<h4 id="再次访问网站"><a href="#再次访问网站" class="headerlink" title="再次访问网站"></a>再次访问网站</h4><p><img src="/images/web/container/sslcert_chrome.jpg"></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a href="https://blog.csdn.net/zssai2015/article/details/85049905">OpenSSL创建的自签名证书在chrome端无法信任</a></li>
+<li><a href="https://www.linuxidc.com/Linux/2016-12/138670.htm">OpenSSL生成v3证书方法及配置文件</a></li>
+<li><a href="https://www.liaoxuefeng.com/article/0014189023237367e8d42829de24b6eaf893ca47df4fb5e000">给Nginx配置一个自签名的SSL证书</a></li>
+<li><a href="https://github.com/michaelliao/itranswarp.js/blob/master/conf/ssl/gencert.sh">脚本</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>web</tag>
+        <tag>nginx</tag>
+        <tag>SSL</tag>
+        <tag>高可用</tag>
+        <tag>自定义证书</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>nginx+keepalived 主从搭建</title>
     <url>/2019/01/04/web/container/nginx_keepalived/</url>
     <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
@@ -2306,74 +2372,8 @@
       <tags>
         <tag>web</tag>
         <tag>nginx</tag>
+        <tag>高可用</tag>
         <tag>keepalived</tag>
-        <tag>高可用</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OpenSSL 生成自定义证书</title>
-    <url>/2019/01/06/web/container/ssl_cert/</url>
-    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>本文用来记录通过OpenSSL生成自定义证书并在浏览器设置可信任</p>
-</blockquote>
-<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
-<li>Linux CentOS7 系统</li>
-<li>nginx 1.12.2</li>
-<li>Windows 10</li>
-<li>IE 11</li>
-<li>chrome 71</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="OpenSSL配置"><a href="#OpenSSL配置" class="headerlink" title="OpenSSL配置"></a>OpenSSL配置</h4><p>在linux系统中修改OpenSSL配置是为了,让chrome浏览器对为网站可信任<br><img src="/images/web/container/sslcert.jpg"></p>
-<ol>
-<li><p>拷贝OpenSSL配置文件准备修改</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /etc/pki/tls/</span><br><span class="line"># cp openssl.cnf openssl_m.cnf</span><br></pre></td></tr></table></figure></li>
-<li><p>修改openssl_m.cnf文件</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># vi /etc/pki/tls/openssl_m.cnf</span><br></pre></td></tr></table></figure>
-<p> a. 找到[ req ] 段落，添加req_extentions  = v3_req配置：</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">####################################################################</span><br><span class="line">[ req ]</span><br><span class="line">default_bits        = 2048</span><br><span class="line">default_md      = sha256</span><br><span class="line">default_keyfile     = privkey.pem</span><br><span class="line">distinguished_name  = req_distinguished_name</span><br><span class="line">attributes      = req_attributes</span><br><span class="line">x509_extensions = v3_ca # The extentions to add to the self signed cert</span><br><span class="line">#需要添加的配置</span><br><span class="line">req_extentions  = v3_req</span><br></pre></td></tr></table></figure>
-
-<p> b. 添加v3_req配置信息</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[ v3_req ]</span><br><span class="line"></span><br><span class="line"># Extensions to add to a certificate request</span><br><span class="line"></span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = nonRepudiation, digitalSignature, keyEncipherment</span><br><span class="line">#需要添加的配置</span><br><span class="line">subjectAltName = @alt_names</span><br></pre></td></tr></table></figure>
-
-<p> c. 添加alt_names配置信息,可以添加多个</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[ alt_names ]</span><br><span class="line">DNS.1 = www.test.com</span><br></pre></td></tr></table></figure>
-<p> 注：这里填入的即为Subject Alternative Names的域名名称</p>
-</li>
-</ol>
-<h4 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h4><p>直接用脚本生成</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line"></span><br><span class="line"># create self-signed server certificate:</span><br><span class="line"></span><br><span class="line">read -p &quot;Enter your domain [www.example.com]: &quot; DOMAIN</span><br><span class="line"></span><br><span class="line">echo &quot;Create server key...&quot;</span><br><span class="line"></span><br><span class="line">openssl genrsa -des3 -out $DOMAIN.key 2048</span><br><span class="line"></span><br><span class="line">echo &quot;Create server certificate signing request...&quot;</span><br><span class="line"></span><br><span class="line">SUBJECT=&quot;/C=US/ST=Mars/L=iTranswarp/O=iTranswarp/OU=iTranswarp/CN=$DOMAIN&quot;</span><br><span class="line"></span><br><span class="line">#openssl req -new  -subj $SUBJECT -key $DOMAIN.key -out $DOMAIN.csr -extensions v3_req</span><br><span class="line">openssl req -new -subj $SUBJECT  -key $DOMAIN.key -out $DOMAIN.csr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &quot;Remove password...&quot;</span><br><span class="line"></span><br><span class="line">mv $DOMAIN.key $DOMAIN.origin.key</span><br><span class="line">openssl rsa -in $DOMAIN.origin.key -out $DOMAIN.key</span><br><span class="line"></span><br><span class="line">echo &quot;Sign SSL certificate...&quot;</span><br><span class="line"></span><br><span class="line">openssl x509 -req -days 3650 -extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req   -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt</span><br><span class="line"></span><br><span class="line">echo &quot;TODO:&quot;</span><br><span class="line">echo &quot;Copy $DOMAIN.crt to /etc/nginx/ssl/$DOMAIN.crt&quot;</span><br><span class="line">echo &quot;Copy $DOMAIN.key to /etc/nginx/ssl/$DOMAIN.key&quot;</span><br><span class="line">echo &quot;Add configuration in nginx:&quot;</span><br><span class="line">echo &quot;server &#123;&quot;</span><br><span class="line">echo &quot;    ...&quot;</span><br><span class="line">echo &quot;    listen 443 ssl;&quot;</span><br><span class="line">echo &quot;    ssl_certificate     /etc/nginx/ssl/$DOMAIN.crt;&quot;</span><br><span class="line">echo &quot;    ssl_certificate_key /etc/nginx/ssl/$DOMAIN.key;&quot;</span><br><span class="line">echo &quot;&#125;&quot;</span><br></pre></td></tr></table></figure>
-
-<p>关键点就是：-extfile /etc/pki/tls/openssl_m.cnf  -extensions v3_req给证书添加上扩展属性<br><img src="/images/web/container/certext.jpg"></p>
-<h4 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h4><ol>
-<li>把生成的xxx.crt 和xxx.key 拷贝到/etc/nginx/ssl/</li>
-<li>修改nginx.conf<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate     /etc/nginx/ssl/www.test.com.crt;</span><br><span class="line">    ssl_certificate_key /etc/nginx/ssl/www.test.com.key;</span><br><span class="line">    listen       443 default_server;</span><br><span class="line">    listen       [::]:443 default_server;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>重启nginx服务</li>
-</ol>
-<h4 id="导入证书"><a href="#导入证书" class="headerlink" title="导入证书"></a>导入证书</h4><ol>
-<li>把<a href="http://www.test.com.crt拷贝到windows系统中/">www.test.com.crt拷贝到windows系统中</a></li>
-<li>双击<a href="http://www.test.com.crt文件打开/">www.test.com.crt文件打开</a></li>
-<li>点击“Install Certificate”<br><img src="/images/web/container/install_cert.jpg"></li>
-<li>选择“Local Machine” 点击“Next”<br><img src="/images/web/container/install_cert2.jpg"></li>
-<li>选择“Place all certificates in the following store” 点击“Browser”</li>
-<li>选择“Trusted Root Certification Authorities” 点击“OK”<br><img src="/images/web/container/install_cert3.jpg"></li>
-<li>点击“Next” 点击“Finish”</li>
-</ol>
-<h4 id="再次访问网站"><a href="#再次访问网站" class="headerlink" title="再次访问网站"></a>再次访问网站</h4><p><img src="/images/web/container/sslcert_chrome.jpg"></p>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
-<li><a href="https://blog.csdn.net/zssai2015/article/details/85049905">OpenSSL创建的自签名证书在chrome端无法信任</a></li>
-<li><a href="https://www.linuxidc.com/Linux/2016-12/138670.htm">OpenSSL生成v3证书方法及配置文件</a></li>
-<li><a href="https://www.liaoxuefeng.com/article/0014189023237367e8d42829de24b6eaf893ca47df4fb5e000">给Nginx配置一个自签名的SSL证书</a></li>
-<li><a href="https://github.com/michaelliao/itranswarp.js/blob/master/conf/ssl/gencert.sh">脚本</a></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>web</tag>
-        <tag>nginx</tag>
-        <tag>高可用</tag>
-        <tag>SSL</tag>
-        <tag>自定义证书</tag>
       </tags>
   </entry>
   <entry>
