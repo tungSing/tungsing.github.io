@@ -2,9 +2,11 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.0.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -12,16 +14,14 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tungsing.cc","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="前言 记录一下阅读该书籍的理解与感想。  026：忽视概率偏误 累计奖金为什么会越来越多  有两种赌博：第一种赌博你有可能赢1000万欧元，第二种赌博你可能赢1万欧元。你会参加哪一种呢？如果你在第一种赌博里赢了，你的生活将会彻底改变：你可以辞掉工作，从此靠利息生活。如果你在第二种赌博里赢了，你可以美美地前往加勒比海度假，然后一切照旧。第一种赌博赢的概率是亿分之一，第二种赌博赢的概率是万分之一。好吧">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 记录一下阅读该书籍的理解与感想。  026：忽视概率偏误 累计奖金为什么会越来越多  有两种赌博：第一种赌博你有可能赢1000万欧元，第二种赌博你可能赢1万欧元。你会参加哪一种呢？如果你在第一种赌博里赢了，你的生活将会彻底改变：你可以辞掉工作，从此靠利息生活。如果你在第二种赌博里赢了，你可以美美地前往加勒比海度假，然后一切照旧。第一种赌博赢的概率是亿分之一，第二种赌博赢的概率是万分之一。好吧">
 <meta property="og:type" content="article">
 <meta property="og:title" content="清醒思考的艺术阅读笔记">
 <meta property="og:url" content="http://tungsing.cc/2022/01/06/book/the_art_of_thinking_clearly/chapter_two/index.html">
@@ -36,73 +36,46 @@
 <meta property="article:tag" content="逻辑">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="http://tungsing.cc/2022/01/06/book/the_art_of_thinking_clearly/chapter_two/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>清醒思考的艺术阅读笔记 | TungSing's Blog</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2022/01/06/book/the_art_of_thinking_clearly/chapter_two/","path":"2022/01/06/book/the_art_of_thinking_clearly/chapter_two/","title":"清醒思考的艺术阅读笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>清醒思考的艺术阅读笔记 | TungSing's Blog</title>
   
 
 
 
 
-
-
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 <link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">TungSing's Blog</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">用心记录一切！</p>
   </div>
@@ -116,39 +89,14 @@
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-photos">
-
-    <a href="/photos/" rel="section"><i class="fa fa-fw fa-image"></i>相册</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">60</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -159,23 +107,22 @@
 
 
   <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
            type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
 
@@ -183,27 +130,100 @@
   </div>
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#026%EF%BC%9A%E5%BF%BD%E8%A7%86%E6%A6%82%E7%8E%87%E5%81%8F%E8%AF%AF"><span class="nav-number">2.</span> <span class="nav-text">026：忽视概率偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#027%EF%BC%9A%E9%9B%B6%E9%A3%8E%E9%99%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">027：零风险偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#028%EF%BC%9A%E7%A8%80%E5%B0%91%E6%80%A7%E8%B0%AC%E8%AF%AF"><span class="nav-number">4.</span> <span class="nav-text">028：稀少性谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#029%EF%BC%9A%E5%BF%BD%E8%A7%86%E5%9F%BA%E6%9C%AC%E6%AF%94%E7%8E%87"><span class="nav-number">5.</span> <span class="nav-text">029：忽视基本比率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#030%EF%BC%9A%E8%B5%8C%E5%BE%92%E8%B0%AC%E8%AF%AF"><span class="nav-number">6.</span> <span class="nav-text">030：赌徒谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#031%EF%BC%9A%E9%94%9A%E5%AE%9A%E6%95%88%E5%BA%94"><span class="nav-number">7.</span> <span class="nav-text">031：锚定效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#032%EF%BC%9A%E5%BD%92%E7%BA%B3%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">032：归纳法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#033%EF%BC%9A%E8%A7%84%E9%81%BF%E6%8D%9F%E5%A4%B1"><span class="nav-number">9.</span> <span class="nav-text">033：规避损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#034%EF%BC%9A%E7%A4%BE%E4%BC%9A%E6%80%A7%E6%87%88%E6%80%A0"><span class="nav-number">10.</span> <span class="nav-text">034：社会性懈怠</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#035%EF%BC%9A%E6%8C%87%E6%95%B0%E5%A2%9E%E9%95%BF"><span class="nav-number">11.</span> <span class="nav-text">035：指数增长</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#036%EF%BC%9A%E8%B5%A2%E5%AE%B6%E7%9A%84%E8%AF%85%E5%92%92"><span class="nav-number">12.</span> <span class="nav-text">036：赢家的诅咒</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#037%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81%E8%B0%AC%E8%AF%AF"><span class="nav-number">13.</span> <span class="nav-text">037：基本特征谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#038%EF%BC%9A%E9%94%99%E8%AF%AF%E7%9A%84%E5%9B%A0%E6%9E%9C%E5%85%B3%E7%B3%BB"><span class="nav-number">14.</span> <span class="nav-text">038：错误的因果关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#039%EF%BC%9A%E5%85%89%E7%8E%AF%E6%95%88%E5%BA%94"><span class="nav-number">15.</span> <span class="nav-text">039：光环效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#040%EF%BC%9A%E6%9B%BF%E4%BB%A3%E9%80%94%E5%BE%84"><span class="nav-number">16.</span> <span class="nav-text">040：替代途径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#041%EF%BC%9A%E9%A2%84%E6%B5%8B%E7%9A%84%E9%94%99%E8%A7%89"><span class="nav-number">17.</span> <span class="nav-text">041：预测的错觉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#042%EF%BC%9A%E5%85%B3%E8%81%94%E8%B0%AC%E8%AF%AF"><span class="nav-number">18.</span> <span class="nav-text">042：关联谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#043%EF%BC%9A%E6%A1%86%E6%9E%B6%E6%95%88%E5%BA%94"><span class="nav-number">19.</span> <span class="nav-text">043：框架效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#044%EF%BC%9A%E8%A1%8C%E5%8A%A8%E5%81%8F%E8%AF%AF"><span class="nav-number">20.</span> <span class="nav-text">044：行动偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#045%EF%BC%9A%E4%B8%8D%E4%BD%9C%E4%B8%BA%E5%81%8F%E8%AF%AF"><span class="nav-number">21.</span> <span class="nav-text">045：不作为偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#046%EF%BC%9A%E8%87%AA%E5%88%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">22.</span> <span class="nav-text">046：自利偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#047%EF%BC%9A%E4%BA%AB%E4%B9%90%E9%80%82%E5%BA%94%E7%97%87"><span class="nav-number">23.</span> <span class="nav-text">047：享乐适应症</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#048%EF%BC%9A%E8%87%AA%E6%88%91%E9%80%89%E6%8B%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">24.</span> <span class="nav-text">048：自我选择偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#049%EF%BC%9A%E8%81%94%E6%83%B3%E5%81%8F%E8%AF%AF"><span class="nav-number">25.</span> <span class="nav-text">049：联想偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#050%EF%BC%9A%E6%96%B0%E6%89%8B%E7%9A%84%E8%BF%90%E6%B0%94"><span class="nav-number">26.</span> <span class="nav-text">050：新手的运气</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#051%EF%BC%9A%E8%AE%A4%E7%9F%A5%E5%A4%B1%E8%B0%83"><span class="nav-number">27.</span> <span class="nav-text">051：认知失调</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#052%EF%BC%9A%E5%8F%8C%E6%9B%B2%E8%B4%B4%E7%8E%B0"><span class="nav-number">28.</span> <span class="nav-text">052：双曲贴现</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
 
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
 
-          <div class="content post posts-expand">
-            
+    <div class="main-inner post posts-expand">
 
-    
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2022/01/06/book/the_art_of_thinking_clearly/chapter_two/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -220,24 +240,26 @@
           清醒思考的艺术阅读笔记
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-01-06 10:01:23" itemprop="dateCreated datePublished" datetime="2022-01-06T10:01:23Z">2022-01-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-11 09:11:05" itemprop="dateModified" datetime="2022-01-11T09:11:05Z">2022-01-11</time>
-              </span>
+      <time title="创建时间：2022-01-06 10:01:23" itemprop="dateCreated datePublished" datetime="2022-01-06T10:01:23Z">2022-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-11 09:11:05" itemprop="dateModified" datetime="2022-01-11T09:11:05Z">2022-01-11</time>
+    </span>
 
-          
+  
+</div>
 
         </div>
       </header>
@@ -246,8 +268,6 @@
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
         <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>记录一下阅读该书籍的理解与感想。</p>
 </blockquote>
@@ -258,7 +278,8 @@
 　　</p>
 <p>结论：我们很难区分各种风险，除非风险为零。由于我们不能直觉地理解风险，我们必须计算。在概率公开的地方——像彩票——这就很容易。而在普通生活中，风险很难估计，但又是躲也躲不过的。</p>
 <p>个人理解：我们对生活中的概率不太敏感，以后遇到有事情要多思考概率的大小，以便做出合理的判断。</p>
-<a id="more"></a>
+<span id="more"></span>
+
 <h4 id="027：零风险偏误"><a href="#027：零风险偏误" class="headerlink" title="027：零风险偏误"></a>027：零风险偏误</h4><blockquote>
 <p>你为什么会为零风险支付过多</p>
 </blockquote>
@@ -488,7 +509,7 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/book/" rel="tag"># book</a>
               <a href="/tags/%E6%80%9D%E8%80%83/" rel="tag"># 思考</a>
@@ -497,133 +518,32 @@
 
         
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2021/12/05/book/the_art_of_thinking_clearly/chapter_one/" rel="prev" title="清醒思考的艺术阅读笔记">
-      <i class="fa fa-chevron-left"></i> 清醒思考的艺术阅读笔记
-    </a></div>
-      <div class="post-nav-item"></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/05/book/the_art_of_thinking_clearly/chapter_one/" rel="prev" title="清醒思考的艺术阅读笔记">
+                  <i class="fa fa-chevron-left"></i> 清醒思考的艺术阅读笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#026%EF%BC%9A%E5%BF%BD%E8%A7%86%E6%A6%82%E7%8E%87%E5%81%8F%E8%AF%AF"><span class="nav-number">2.</span> <span class="nav-text">026：忽视概率偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#027%EF%BC%9A%E9%9B%B6%E9%A3%8E%E9%99%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">027：零风险偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#028%EF%BC%9A%E7%A8%80%E5%B0%91%E6%80%A7%E8%B0%AC%E8%AF%AF"><span class="nav-number">4.</span> <span class="nav-text">028：稀少性谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#029%EF%BC%9A%E5%BF%BD%E8%A7%86%E5%9F%BA%E6%9C%AC%E6%AF%94%E7%8E%87"><span class="nav-number">5.</span> <span class="nav-text">029：忽视基本比率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#030%EF%BC%9A%E8%B5%8C%E5%BE%92%E8%B0%AC%E8%AF%AF"><span class="nav-number">6.</span> <span class="nav-text">030：赌徒谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#031%EF%BC%9A%E9%94%9A%E5%AE%9A%E6%95%88%E5%BA%94"><span class="nav-number">7.</span> <span class="nav-text">031：锚定效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#032%EF%BC%9A%E5%BD%92%E7%BA%B3%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">032：归纳法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#033%EF%BC%9A%E8%A7%84%E9%81%BF%E6%8D%9F%E5%A4%B1"><span class="nav-number">9.</span> <span class="nav-text">033：规避损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#034%EF%BC%9A%E7%A4%BE%E4%BC%9A%E6%80%A7%E6%87%88%E6%80%A0"><span class="nav-number">10.</span> <span class="nav-text">034：社会性懈怠</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#035%EF%BC%9A%E6%8C%87%E6%95%B0%E5%A2%9E%E9%95%BF"><span class="nav-number">11.</span> <span class="nav-text">035：指数增长</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#036%EF%BC%9A%E8%B5%A2%E5%AE%B6%E7%9A%84%E8%AF%85%E5%92%92"><span class="nav-number">12.</span> <span class="nav-text">036：赢家的诅咒</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#037%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81%E8%B0%AC%E8%AF%AF"><span class="nav-number">13.</span> <span class="nav-text">037：基本特征谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#038%EF%BC%9A%E9%94%99%E8%AF%AF%E7%9A%84%E5%9B%A0%E6%9E%9C%E5%85%B3%E7%B3%BB"><span class="nav-number">14.</span> <span class="nav-text">038：错误的因果关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#039%EF%BC%9A%E5%85%89%E7%8E%AF%E6%95%88%E5%BA%94"><span class="nav-number">15.</span> <span class="nav-text">039：光环效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#040%EF%BC%9A%E6%9B%BF%E4%BB%A3%E9%80%94%E5%BE%84"><span class="nav-number">16.</span> <span class="nav-text">040：替代途径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#041%EF%BC%9A%E9%A2%84%E6%B5%8B%E7%9A%84%E9%94%99%E8%A7%89"><span class="nav-number">17.</span> <span class="nav-text">041：预测的错觉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#042%EF%BC%9A%E5%85%B3%E8%81%94%E8%B0%AC%E8%AF%AF"><span class="nav-number">18.</span> <span class="nav-text">042：关联谬误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#043%EF%BC%9A%E6%A1%86%E6%9E%B6%E6%95%88%E5%BA%94"><span class="nav-number">19.</span> <span class="nav-text">043：框架效应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#044%EF%BC%9A%E8%A1%8C%E5%8A%A8%E5%81%8F%E8%AF%AF"><span class="nav-number">20.</span> <span class="nav-text">044：行动偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#045%EF%BC%9A%E4%B8%8D%E4%BD%9C%E4%B8%BA%E5%81%8F%E8%AF%AF"><span class="nav-number">21.</span> <span class="nav-text">045：不作为偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#046%EF%BC%9A%E8%87%AA%E5%88%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">22.</span> <span class="nav-text">046：自利偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#047%EF%BC%9A%E4%BA%AB%E4%B9%90%E9%80%82%E5%BA%94%E7%97%87"><span class="nav-number">23.</span> <span class="nav-text">047：享乐适应症</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#048%EF%BC%9A%E8%87%AA%E6%88%91%E9%80%89%E6%8B%A9%E5%81%8F%E8%AF%AF"><span class="nav-number">24.</span> <span class="nav-text">048：自我选择偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#049%EF%BC%9A%E8%81%94%E6%83%B3%E5%81%8F%E8%AF%AF"><span class="nav-number">25.</span> <span class="nav-text">049：联想偏误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#050%EF%BC%9A%E6%96%B0%E6%89%8B%E7%9A%84%E8%BF%90%E6%B0%94"><span class="nav-number">26.</span> <span class="nav-text">050：新手的运气</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#051%EF%BC%9A%E8%AE%A4%E7%9F%A5%E5%A4%B1%E8%B0%83"><span class="nav-number">27.</span> <span class="nav-text">051：认知失调</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#052%EF%BC%9A%E5%8F%8C%E6%9B%B2%E8%B4%B4%E7%8E%B0"><span class="nav-number">28.</span> <span class="nav-text">052：双曲贴现</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">tungSing</p>
-  <div class="site-description" itemprop="description">多读书多看报</div>
+    </footer>
+  </article>
 </div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">43</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">60</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+
+
+
+
+
+
 </div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-  </div>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
 
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
@@ -632,37 +552,22 @@
   <span class="author" itemprop="copyrightHolder">tungSing</span>
 </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
 
-
+  <script src="/js/third-party/fancybox.js"></script>
 
 
   
@@ -670,24 +575,6 @@
 
 
 
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
 
 </body>
 </html>

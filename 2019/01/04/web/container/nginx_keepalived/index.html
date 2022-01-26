@@ -2,9 +2,11 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.0.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -12,16 +14,14 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tungsing.cc","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="前言 本文用来记录nginx加keepalived实现高可用，避免出现单点故障。  准备 Linux CentOS7 系统 nginx 1.12.2 keepalived 1.3.5">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 本文用来记录nginx加keepalived实现高可用，避免出现单点故障。  准备 Linux CentOS7 系统 nginx 1.12.2 keepalived 1.3.5">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nginx+keepalived 主从搭建">
 <meta property="og:url" content="http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/index.html">
@@ -37,78 +37,51 @@
 <meta property="article:author" content="tungSing">
 <meta property="article:tag" content="web">
 <meta property="article:tag" content="nginx">
-<meta property="article:tag" content="高可用">
 <meta property="article:tag" content="keepalived">
+<meta property="article:tag" content="高可用">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://tungsing.cc/images/web/container/nginx_keepalived.png">
+
 
 <link rel="canonical" href="http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>nginx+keepalived 主从搭建 | TungSing's Blog</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/","path":"2019/01/04/web/container/nginx_keepalived/","title":"nginx+keepalived 主从搭建"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>nginx+keepalived 主从搭建 | TungSing's Blog</title>
   
 
 
 
 
-
-
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 <link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">TungSing's Blog</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">用心记录一切！</p>
   </div>
@@ -122,39 +95,14 @@
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-photos">
-
-    <a href="/photos/" rel="section"><i class="fa fa-fw fa-image"></i>相册</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">60</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -165,23 +113,22 @@
 
 
   <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
            type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
 
@@ -189,27 +136,100 @@
   </div>
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%92%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">规划图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Master%E9%85%8D%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text">Master配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Backup%E9%85%8D%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">Backup配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
 
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
 
-          <div class="content post posts-expand">
-            
+    <div class="main-inner post posts-expand">
 
-    
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2019/01/04/web/container/nginx_keepalived/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -226,24 +246,26 @@
           nginx+keepalived 主从搭建
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-01-04 06:01:22" itemprop="dateCreated datePublished" datetime="2019-01-04T06:01:22Z">2019-01-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-05-18 08:37:31" itemprop="dateModified" datetime="2019-05-18T08:37:31Z">2019-05-18</time>
-              </span>
+      <time title="创建时间：2019-01-04 06:01:22" itemprop="dateCreated datePublished" datetime="2019-01-04T06:01:22Z">2019-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-05-18 08:37:31" itemprop="dateModified" datetime="2019-05-18T08:37:31Z">2019-05-18</time>
+    </span>
 
-          
+  
+</div>
 
         </div>
       </header>
@@ -252,8 +274,6 @@
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
         <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
 <p>本文用来记录nginx加keepalived实现高可用，避免出现单点故障。</p>
 </blockquote>
@@ -262,8 +282,9 @@
 <li>nginx 1.12.2</li>
 <li>keepalived 1.3.5</li>
 </ul>
-<a id="more"></a>
-<h4 id="规划图"><a href="#规划图" class="headerlink" title="规划图"></a>规划图</h4><p><img src="/images/web/container/nginx_keepalived.png" alt=""></p>
+<span id="more"></span>
+
+<h4 id="规划图"><a href="#规划图" class="headerlink" title="规划图"></a>规划图</h4><p><img src="/images/web/container/nginx_keepalived.png"></p>
 <table>
 <thead>
 <tr>
@@ -274,8 +295,7 @@
 <th>主从</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>10.200.1.200</td>
 <td>10.200.1.5</td>
 <td>nginx_master</td>
@@ -289,8 +309,7 @@
 <td>80</td>
 <td>Backup</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h4 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h4><p>把搭建过程中的坑写的前边，避免下次再遇到</p>
 <ol>
 <li>机器的hostname一定要修改，不能出现相同的，相同会导致VIP不漂移</li>
@@ -303,48 +322,46 @@
 </li>
 </ol>
 <h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
-<li>在VirtualBox下安装CentOS7操作系统，配置IP地址和hostname</li>
-<li><p>通过yum命令来安装epel-release、nginx、keepalived</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># yum install epel-release -y</div><div class="line"># yum install nginx -y</div><div class="line"># yum install keepalived -y</div></pre></td></tr></table></figure>
+<li><p>在VirtualBox下安装CentOS7操作系统，配置IP地址和hostname</p>
 </li>
+<li><p>通过yum命令来安装epel-release、nginx、keepalived</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># yum install epel-release -y</span><br><span class="line"># yum install nginx -y</span><br><span class="line"># yum install keepalived -y</span><br></pre></td></tr></table></figure></li>
 <li><p>复制第一步安装好的系统，配置IP地址和hostname</p>
 </li>
 </ol>
 <h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="Master配置"><a href="#Master配置" class="headerlink" title="Master配置"></a>Master配置</h5><ol>
 <li><p>keepalived 配置</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi etc/keepalived/keepalived.conf</div></pre></td></tr></table></figure>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line">#全局配置</div><div class="line">global_defs &#123;</div><div class="line">    #运行keepalived的机器的一个标识</div><div class="line">    router_id LVS_DEVEL_MASTER</div><div class="line">&#125;</div><div class="line"></div><div class="line">#VRRPD配置</div><div class="line">vrrp_script check_nginx &#123;</div><div class="line">  #脚本监测</div><div class="line">  script &quot;/opt/check_nginx.sh&quot;</div><div class="line">  #脚本执行间隔，每2s检测一次</div><div class="line">  interval 2</div><div class="line">  #脚本结果导致的优先级变更，检测失败（脚本返回非0）则优先级 -20</div><div class="line">  weight -20</div><div class="line">&#125;</div><div class="line"></div><div class="line">#定义vrrp实例</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #指定keepalived的角色，MASTER表示此主机是主服务器，BACKUP表示此主机是备用服务器</div><div class="line">    state MASTER</div><div class="line">    #指定HA监测网络的接口。与本机 IP 地址所在的网络接口相同</div><div class="line">    interface enp0s3</div><div class="line">    #虚拟路由标识，这个标识是一个数字，同一个vrrp实例使用唯一的标识。即同一vrrp_instance下，MASTER和BACKUP必须是一致的  </div><div class="line">    virtual_router_id 51</div><div class="line">    #定义优先级，数字越大，优先级越高</div><div class="line">    priority 100</div><div class="line">    #设定MASTER与BACKUP负载均衡器之间同步检查的时间间隔，单位是秒</div><div class="line">    advert_int 1</div><div class="line">    #设置验证类型和密码。主从必须一样</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    #VRRP HA 虚拟地址 如果有多个VIP，继续换行填写 </div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.200.1.200</div><div class="line">    &#125;</div><div class="line">    #执行nginx检测脚本。注意这个设置不能紧挨着写在vrrp_script配置块的后面（实验中碰过的坑），否则nginx监控失效！！</div><div class="line">    track_script &#123;</div><div class="line">       check_nginx</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># vi etc/keepalived/keepalived.conf</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">! Configuration File for keepalived</span><br><span class="line">#全局配置</span><br><span class="line">global_defs &#123;</span><br><span class="line">    #运行keepalived的机器的一个标识</span><br><span class="line">    router_id LVS_DEVEL_MASTER</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#VRRPD配置</span><br><span class="line">vrrp_script check_nginx &#123;</span><br><span class="line">  #脚本监测</span><br><span class="line">  script &quot;/opt/check_nginx.sh&quot;</span><br><span class="line">  #脚本执行间隔，每2s检测一次</span><br><span class="line">  interval 2</span><br><span class="line">  #脚本结果导致的优先级变更，检测失败（脚本返回非0）则优先级 -20</span><br><span class="line">  weight -20</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#定义vrrp实例</span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    #指定keepalived的角色，MASTER表示此主机是主服务器，BACKUP表示此主机是备用服务器</span><br><span class="line">    state MASTER</span><br><span class="line">    #指定HA监测网络的接口。与本机 IP 地址所在的网络接口相同</span><br><span class="line">    interface enp0s3</span><br><span class="line">    #虚拟路由标识，这个标识是一个数字，同一个vrrp实例使用唯一的标识。即同一vrrp_instance下，MASTER和BACKUP必须是一致的  </span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    #定义优先级，数字越大，优先级越高</span><br><span class="line">    priority 100</span><br><span class="line">    #设定MASTER与BACKUP负载均衡器之间同步检查的时间间隔，单位是秒</span><br><span class="line">    advert_int 1</span><br><span class="line">    #设置验证类型和密码。主从必须一样</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    #VRRP HA 虚拟地址 如果有多个VIP，继续换行填写 </span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        10.200.1.200</span><br><span class="line">    &#125;</span><br><span class="line">    #执行nginx检测脚本。注意这个设置不能紧挨着写在vrrp_script配置块的后面（实验中碰过的坑），否则nginx监控失效！！</span><br><span class="line">    track_script &#123;</span><br><span class="line">       check_nginx</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>监测脚本编写</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">#检查nginx进程是否存在</div><div class="line">counter=$(ps -C nginx --no-heading|wc -l)</div><div class="line">pids=$(pidof keepalived)</div><div class="line">if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; ]; then</div><div class="line">     #尝试启动一次nginx，停止5秒后再次检测</div><div class="line">     #/usr/bin/systemctl start nginx</div><div class="line">    sleep 2</div><div class="line">    counter=$(ps -C nginx --no-heading|wc -l)</div><div class="line">    if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; -a &quot;$&#123;pids&#125;&quot; != &quot;&quot; ]; then</div><div class="line">        #如果启动没成功，就杀掉keepalive触发主备切换</div><div class="line">        #/usr/bin/systemctl stop keepalived</div><div class="line">        #如果关闭了selinux可以只用上边的命令，如果没有直接用kill</div><div class="line">        #kill -9 $pids</div><div class="line">    fi</div><div class="line">fi</div></pre></td></tr></table></figure>
-</li>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">#检查nginx进程是否存在</span><br><span class="line">counter=$(ps -C nginx --no-heading|wc -l)</span><br><span class="line">pids=$(pidof keepalived)</span><br><span class="line">if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; ]; then</span><br><span class="line">     #尝试启动一次nginx，停止5秒后再次检测</span><br><span class="line">     #/usr/bin/systemctl start nginx</span><br><span class="line">    sleep 2</span><br><span class="line">    counter=$(ps -C nginx --no-heading|wc -l)</span><br><span class="line">    if [ &quot;$&#123;counter&#125;&quot; = &quot;0&quot; -a &quot;$&#123;pids&#125;&quot; != &quot;&quot; ]; then</span><br><span class="line">        #如果启动没成功，就杀掉keepalive触发主备切换</span><br><span class="line">        #/usr/bin/systemctl stop keepalived</span><br><span class="line">        #如果关闭了selinux可以只用上边的命令，如果没有直接用kill</span><br><span class="line">        #kill -9 $pids</span><br><span class="line">    fi</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></li>
 <li><p>监测脚本授权</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># chmod +x /opt/check_nginx.sh</div></pre></td></tr></table></figure>
-</li>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># chmod +x /opt/check_nginx.sh</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h5 id="Backup配置"><a href="#Backup配置" class="headerlink" title="Backup配置"></a>Backup配置</h5><ol>
 <li><p>keepalived 配置</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># vi /etc/keepalived/keepalived.conf</div></pre></td></tr></table></figure>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line"></div><div class="line">global_defs &#123;</div><div class="line">    #和Master不同的地方</div><div class="line">    router_id LVS_DEVEL_BACKUP</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_script check_nginx &#123;</div><div class="line">  script &quot;sh /opt/check_nginx.sh&quot; </div><div class="line">  interval 2 </div><div class="line">  weight -20</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #和Master不同的地方</div><div class="line">    state BACKUP</div><div class="line">    interface enp0s3</div><div class="line">    virtual_router_id 51</div><div class="line">    #和Master不同的地方</div><div class="line">    priority 90</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.200.1.200</div><div class="line">    &#125;</div><div class="line">    track_script &#123;</div><div class="line">       check_nginx</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># vi /etc/keepalived/keepalived.conf</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;</span><br><span class="line">    #和Master不同的地方</span><br><span class="line">    router_id LVS_DEVEL_BACKUP</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script check_nginx &#123;</span><br><span class="line">  script &quot;sh /opt/check_nginx.sh&quot; </span><br><span class="line">  interval 2 </span><br><span class="line">  weight -20</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    #和Master不同的地方</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface enp0s3</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    #和Master不同的地方</span><br><span class="line">    priority 90</span><br><span class="line">    advert_int 1</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        10.200.1.200</span><br><span class="line">    &#125;</span><br><span class="line">    track_script &#123;</span><br><span class="line">       check_nginx</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>直接把Master的脚本拷贝过来</p>
 </li>
 </ol>
 <h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><ol>
-<li><p>关闭master的nginx服务，测试nginx是否会被重启<br> <img src="/images/web/container/nk_master_1.jpg" alt=""><br> 检查页面是否正常</p>
+<li><p>关闭master的nginx服务，测试nginx是否会被重启<br> <img src="/images/web/container/nk_master_1.jpg"><br> 检查页面是否正常</p>
 </li>
 <li><p>测试VIP是否会漂移</p>
 <ul>
 <li>注释检测脚本启动nginx服务的命令</li>
-<li>查看页面<br><img src="/images/web/container/nk_master_2.jpg" alt=""></li>
-<li>执行systemctl stop nginx命令，查看页面<br><img src="/images/web/container/nk_backup_1.jpg" alt=""></li>
+<li>查看页面<br><img src="/images/web/container/nk_master_2.jpg"></li>
+<li>执行systemctl stop nginx命令，查看页面<br><img src="/images/web/container/nk_backup_1.jpg"></li>
 </ul>
 </li>
 </ol>
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>本记录只记录了核心的部分，如果是生成环境用，还有在熟悉其他的配置，比如发邮件配置等</p>
 <h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
-<li><a href="https://juejin.im/entry/5b21c4c55188257d7541c860" target="_blank" rel="external">nginx笔记</a></li>
-<li><a href="https://blog.csdn.net/u010391029/article/details/48311699" target="_blank" rel="external">Keepalived原理与实战精讲–VRRP协议</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/entry/5b21c4c55188257d7541c860">nginx笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010391029/article/details/48311699">Keepalived原理与实战精讲–VRRP协议</a></li>
 </ol>
 
     </div>
@@ -353,146 +370,45 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/web/" rel="tag"># web</a>
               <a href="/tags/nginx/" rel="tag"># nginx</a>
-              <a href="/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/" rel="tag"># 高可用</a>
               <a href="/tags/keepalived/" rel="tag"># keepalived</a>
+              <a href="/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/" rel="tag"># 高可用</a>
           </div>
 
         
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2018/12/10/cache/redis/redis-info/" rel="prev" title="redis info 命令">
-      <i class="fa fa-chevron-left"></i> redis info 命令
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/01/06/web/container/ssl_cert/" rel="next" title="OpenSSL 生成自定义证书">
-      OpenSSL 生成自定义证书 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/10/cache/redis/redis-info/" rel="prev" title="redis info 命令">
+                  <i class="fa fa-chevron-left"></i> redis info 命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/06/web/container/ssl_cert/" rel="next" title="OpenSSL 生成自定义证书">
+                  OpenSSL 生成自定义证书 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
   </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%92%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">规划图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Master%E9%85%8D%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text">Master配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Backup%E9%85%8D%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">Backup配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">tungSing</p>
-  <div class="site-description" itemprop="description">多读书多看报</div>
 </div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">43</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">60</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+
+
+
+
+
+
 </div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-  </div>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
 
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
@@ -501,37 +417,22 @@
   <span class="author" itemprop="copyrightHolder">tungSing</span>
 </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
 
-
+  <script src="/js/third-party/fancybox.js"></script>
 
 
   
@@ -539,24 +440,6 @@
 
 
 
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
 
 </body>
 </html>

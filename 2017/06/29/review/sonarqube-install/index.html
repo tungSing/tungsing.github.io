@@ -2,9 +2,11 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.0.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -12,16 +14,14 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tungsing.cc","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="前言 SonarQube（曾用名Sonar（声纳））是一个开源的代码质量管理系统。官网地址https:&#x2F;&#x2F;www.sonarqube.org&#x2F;  准备 Windows Server 2008 系统 JDK Mysql sonarqube-6.3.1安装包  安装JDK安装JDK就不在赘述，sonarqube6需要jdk8支持。">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 SonarQube（曾用名Sonar（声纳））是一个开源的代码质量管理系统。官网地址https:&#x2F;&#x2F;www.sonarqube.org&#x2F;  准备 Windows Server 2008 系统 JDK Mysql sonarqube-6.3.1安装包  安装JDK安装JDK就不在赘述，sonarqube6需要jdk8支持。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SonarQube安装">
 <meta property="og:url" content="http://tungsing.cc/2017/06/29/review/sonarqube-install/index.html">
@@ -42,73 +42,46 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://tungsing.cc/images/sonarqube/1.jpg">
 
+
 <link rel="canonical" href="http://tungsing.cc/2017/06/29/review/sonarqube-install/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>SonarQube安装 | TungSing's Blog</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2017/06/29/review/sonarqube-install/","path":"2017/06/29/review/sonarqube-install/","title":"SonarQube安装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SonarQube安装 | TungSing's Blog</title>
   
 
 
 
 
-
-
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 <link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">TungSing's Blog</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">用心记录一切！</p>
   </div>
@@ -122,39 +95,14 @@
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-photos">
-
-    <a href="/photos/" rel="section"><i class="fa fa-fw fa-image"></i>相册</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">60</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -165,23 +113,22 @@
 
 
   <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
            type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
 
@@ -189,27 +136,100 @@
   </div>
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85JDK"><span class="nav-number">3.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Mysql"><span class="nav-number">4.</span> <span class="nav-text">安装Mysql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SonarQube-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">SonarQube 安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E5%88%B0%E4%B8%80%E4%B8%AA%E7%9B%AE%E5%BD%95%E4%B8%8B"><span class="nav-number">5.1.</span> <span class="nav-text">解压缩文件到一个目录下</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9wrapper-conf%E6%96%87%E4%BB%B6%EF%BC%8C%E6%8C%87%E5%AE%9Ajava%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%97%A0%E9%9C%80%E4%BF%AE%E6%94%B9%E3%80%82"><span class="nav-number">5.2.</span> <span class="nav-text">修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-number">5.3.</span> <span class="nav-text">配置数据库连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%82%B9%E5%87%BBbin-windows-x86-64%E7%9B%AE%E5%BD%95%E4%B8%8BStartSonar-bat%E5%90%AF%E5%8A%A8SonarQube%EF%BC%8C%E8%BF%98%E5%8F%AF%E4%BB%A5%E6%8A%8ASonarQube%E6%B3%A8%E5%86%8C%E5%88%B0windows%E6%9C%8D%E5%8A%A1%E9%87%8C%E9%9D%A2"><span class="nav-number">5.4.</span> <span class="nav-text">点击bin&#x2F;windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BE%93%E5%85%A5URL%E5%9C%B0%E5%9D%80%EF%BC%8C%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="nav-number">5.5.</span> <span class="nav-text">在浏览器中输入URL地址，测试是否安装成功</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%A8%E7%AE%A1%E7%90%86%E7%99%BB%E9%99%86%E7%B3%BB%E7%BB%9F%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E6%8F%92%E4%BB%B6"><span class="nav-number">5.6.</span> <span class="nav-text">用管理登陆系统，可以安装中文插件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">6.</span> <span class="nav-text">结语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
 
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
 
-          <div class="content post posts-expand">
-            
+    <div class="main-inner post posts-expand">
 
-    
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2017/06/29/review/sonarqube-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -226,24 +246,26 @@
           SonarQube安装
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-06-29 01:57:48" itemprop="dateCreated datePublished" datetime="2017-06-29T01:57:48Z">2017-06-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2017-09-25 06:40:03" itemprop="dateModified" datetime="2017-09-25T06:40:03Z">2017-09-25</time>
-              </span>
+      <time title="创建时间：2017-06-29 01:57:48" itemprop="dateCreated datePublished" datetime="2017-06-29T01:57:48Z">2017-06-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-09-25 06:40:03" itemprop="dateModified" datetime="2017-09-25T06:40:03Z">2017-09-25</time>
+    </span>
 
-          
+  
+</div>
 
         </div>
       </header>
@@ -252,27 +274,26 @@
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
         <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
-<p>SonarQube（曾用名Sonar（声纳））是一个开源的代码质量管理系统。官网地址<a href="https://www.sonarqube.org/" target="_blank" rel="external">https://www.sonarqube.org/</a></p>
+<p>SonarQube（曾用名Sonar（声纳））是一个开源的代码质量管理系统。官网地址<a target="_blank" rel="noopener" href="https://www.sonarqube.org/">https://www.sonarqube.org/</a></p>
 </blockquote>
 <h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
 <li>Windows Server 2008 系统</li>
 <li>JDK</li>
 <li>Mysql</li>
-<li><a href="https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.3.1.zip" target="_blank" rel="external">sonarqube-6.3.1安装包</a></li>
+<li><a target="_blank" rel="noopener" href="https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.3.1.zip">sonarqube-6.3.1安装包</a></li>
 </ul>
 <h4 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h4><p>安装JDK就不在赘述，sonarqube6需要jdk8支持。</p>
-<a id="more"></a>
+<span id="more"></span>
+
 <h4 id="安装Mysql"><a href="#安装Mysql" class="headerlink" title="安装Mysql"></a>安装Mysql</h4><p>SonarQube是自带了数据库的，可以不用安装mysql数据库，本文安装mysql数据库是为了获得更好的使用体验。</p>
-<h4 id="SonarQube-安装配置"><a href="#SonarQube-安装配置" class="headerlink" title="SonarQube 安装配置"></a>SonarQube 安装配置</h4><h5 id="解压缩文件到一个目录下"><a href="#解压缩文件到一个目录下" class="headerlink" title="解压缩文件到一个目录下"></a>解压缩文件到一个目录下</h5><p><img src="/images/sonarqube/1.jpg" alt=""></p>
-<h5 id="修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。"><a href="#修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。" class="headerlink" title="修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。"></a>修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。</h5><p><img src="/images/sonarqube/2.jpg" alt=""></p>
-<h5 id="配置数据库连接"><a href="#配置数据库连接" class="headerlink" title="配置数据库连接"></a>配置数据库连接</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sonar.jdbc.username=用户名</div><div class="line">sonar.jdbc.password=密码</div><div class="line">sonar.jdbc.url=jdbc:mysql://host:port/sonar?useUnicode=<span class="literal">true</span>&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=<span class="literal">true</span>&amp;useConfigs=maxPerformance</div></pre></td></tr></table></figure>
-<p><img src="/images/sonarqube/3.jpg" alt=""></p>
-<h5 id="点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面"><a href="#点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面" class="headerlink" title="点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面"></a>点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面</h5><p><img src="/images/sonarqube/4.jpg" alt=""></p>
-<h5 id="在浏览器中输入URL地址，测试是否安装成功"><a href="#在浏览器中输入URL地址，测试是否安装成功" class="headerlink" title="在浏览器中输入URL地址，测试是否安装成功"></a>在浏览器中输入URL地址，测试是否安装成功</h5><p><img src="/images/sonarqube/5.jpg" alt=""><br>看到这个页面表明已经安装成功</p>
-<h5 id="用管理登陆系统，可以安装中文插件"><a href="#用管理登陆系统，可以安装中文插件" class="headerlink" title="用管理登陆系统，可以安装中文插件"></a>用管理登陆系统，可以安装中文插件</h5><p><img src="/images/sonarqube/6.jpg" alt=""></p>
+<h4 id="SonarQube-安装配置"><a href="#SonarQube-安装配置" class="headerlink" title="SonarQube 安装配置"></a>SonarQube 安装配置</h4><h5 id="解压缩文件到一个目录下"><a href="#解压缩文件到一个目录下" class="headerlink" title="解压缩文件到一个目录下"></a>解压缩文件到一个目录下</h5><p><img src="/images/sonarqube/1.jpg"></p>
+<h5 id="修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。"><a href="#修改wrapper-conf文件，指定java，如果已经配置环境变量无需修改。" class="headerlink" title="修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。"></a>修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。</h5><p><img src="/images/sonarqube/2.jpg"></p>
+<h5 id="配置数据库连接"><a href="#配置数据库连接" class="headerlink" title="配置数据库连接"></a>配置数据库连接</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sonar.jdbc.username=用户名</span><br><span class="line">sonar.jdbc.password=密码</span><br><span class="line">sonar.jdbc.url=jdbc:mysql://host:port/sonar?useUnicode=<span class="literal">true</span>&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=<span class="literal">true</span>&amp;useConfigs=maxPerformance</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sonarqube/3.jpg"></p>
+<h5 id="点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面"><a href="#点击bin-windows-x86-64目录下StartSonar-bat启动SonarQube，还可以把SonarQube注册到windows服务里面" class="headerlink" title="点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面"></a>点击bin/windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面</h5><p><img src="/images/sonarqube/4.jpg"></p>
+<h5 id="在浏览器中输入URL地址，测试是否安装成功"><a href="#在浏览器中输入URL地址，测试是否安装成功" class="headerlink" title="在浏览器中输入URL地址，测试是否安装成功"></a>在浏览器中输入URL地址，测试是否安装成功</h5><p><img src="/images/sonarqube/5.jpg"><br>看到这个页面表明已经安装成功</p>
+<h5 id="用管理登陆系统，可以安装中文插件"><a href="#用管理登陆系统，可以安装中文插件" class="headerlink" title="用管理登陆系统，可以安装中文插件"></a>用管理登陆系统，可以安装中文插件</h5><p><img src="/images/sonarqube/6.jpg"></p>
 <h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>使用SonarQube的第一步就完成了，接下来我们就可以配置检查规则来使用它了。</p>
 
     </div>
@@ -281,7 +302,7 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/SonarQube/" rel="tag"># SonarQube</a>
               <a href="/tags/review/" rel="tag"># review</a>
@@ -289,136 +310,35 @@
 
         
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2017/05/03/front/gulp-use/" rel="prev" title="Gulp项目工程构建说明">
-      <i class="fa fa-chevron-left"></i> Gulp项目工程构建说明
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2017/09/25/review/sonarqube-config/" rel="next" title="SonarQube配置">
-      SonarQube配置 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/05/03/front/gulp-use/" rel="prev" title="Gulp项目工程构建说明">
+                  <i class="fa fa-chevron-left"></i> Gulp项目工程构建说明
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/09/25/review/sonarqube-config/" rel="next" title="SonarQube配置">
+                  SonarQube配置 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85JDK"><span class="nav-number">3.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Mysql"><span class="nav-number">4.</span> <span class="nav-text">安装Mysql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SonarQube-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">SonarQube 安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E5%88%B0%E4%B8%80%E4%B8%AA%E7%9B%AE%E5%BD%95%E4%B8%8B"><span class="nav-number">5.1.</span> <span class="nav-text">解压缩文件到一个目录下</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9wrapper-conf%E6%96%87%E4%BB%B6%EF%BC%8C%E6%8C%87%E5%AE%9Ajava%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%97%A0%E9%9C%80%E4%BF%AE%E6%94%B9%E3%80%82"><span class="nav-number">5.2.</span> <span class="nav-text">修改wrapper.conf文件，指定java，如果已经配置环境变量无需修改。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-number">5.3.</span> <span class="nav-text">配置数据库连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%82%B9%E5%87%BBbin-windows-x86-64%E7%9B%AE%E5%BD%95%E4%B8%8BStartSonar-bat%E5%90%AF%E5%8A%A8SonarQube%EF%BC%8C%E8%BF%98%E5%8F%AF%E4%BB%A5%E6%8A%8ASonarQube%E6%B3%A8%E5%86%8C%E5%88%B0windows%E6%9C%8D%E5%8A%A1%E9%87%8C%E9%9D%A2"><span class="nav-number">5.4.</span> <span class="nav-text">点击bin&#x2F;windows-x86-64目录下StartSonar.bat启动SonarQube，还可以把SonarQube注册到windows服务里面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BE%93%E5%85%A5URL%E5%9C%B0%E5%9D%80%EF%BC%8C%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="nav-number">5.5.</span> <span class="nav-text">在浏览器中输入URL地址，测试是否安装成功</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%A8%E7%AE%A1%E7%90%86%E7%99%BB%E9%99%86%E7%B3%BB%E7%BB%9F%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E6%8F%92%E4%BB%B6"><span class="nav-number">5.6.</span> <span class="nav-text">用管理登陆系统，可以安装中文插件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">6.</span> <span class="nav-text">结语</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">tungSing</p>
-  <div class="site-description" itemprop="description">多读书多看报</div>
+    </footer>
+  </article>
 </div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">43</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">60</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+
+
+
+
+
+
 </div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-  </div>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
 
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
@@ -427,37 +347,22 @@
   <span class="author" itemprop="copyrightHolder">tungSing</span>
 </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
 
-
+  <script src="/js/third-party/fancybox.js"></script>
 
 
   
@@ -465,24 +370,6 @@
 
 
 
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
 
 </body>
 </html>
