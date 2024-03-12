@@ -1,1 +1,424 @@
-<!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><meta name=viewport content="width=device-width"><meta name=theme-color content=#222><meta name=generator content="Hexo 6.0.0"><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon-next.png><link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32-next.png><link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16-next.png><link rel=mask-icon href=/images/logo.svg color=#222><link rel=stylesheet href=/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin=anonymous><script class=next-config data-name=main type=application/json>{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src=/js/config.js></script><meta name=description content="前言 很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。  准备 Windows 系统 Node.js Hexo Git Github 一个属于自己的域名  安装Node.js在 Windows 环境下安装 Node.js 非常简单，仅须到官网下载安装文件并执行即可完成安装。下载完成直接双击安"><meta property=og:type content=article><meta property=og:title content="基于Hexo 和 Github Pages 免费搭建自己的博客"><meta property=og:url content=http://tungsing.cc/2017/01/13/hexo-github/index.html><meta property=og:site_name content="TungSing&#39;s Blog"><meta property=og:description content="前言 很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。  准备 Windows 系统 Node.js Hexo Git Github 一个属于自己的域名  安装Node.js在 Windows 环境下安装 Node.js 非常简单，仅须到官网下载安装文件并执行即可完成安装。下载完成直接双击安"><meta property=og:locale content=zh_CN><meta property=og:image content=http://tungsing.cc/images/1.jpg><meta property=og:image content=http://tungsing.cc/images/3.jpg><meta property=og:image content=http://tungsing.cc/images/17.png><meta property=og:image content=http://tungsing.cc/images/2.jpg><meta property=og:image content=http://tungsing.cc/images/4.png><meta property=og:image content=http://tungsing.cc/images/5.jpg><meta property=og:image content=http://tungsing.cc/images/6.jpg><meta property=og:image content=http://tungsing.cc/images/8.png><meta property=og:image content=http://tungsing.cc/images/9.png><meta property=og:image content=http://tungsing.cc/images/10.png><meta property=og:image content=http://tungsing.cc/images/11.png><meta property=og:image content=http://tungsing.cc/images/12.png><meta property=og:image content=http://tungsing.cc/images/13.png><meta property=og:image content=http://tungsing.cc/images/14.png><meta property=og:image content=http://tungsing.cc/images/15.png><meta property=og:image content=http://tungsing.cc/images/ip.png><meta property=og:image content=http://tungsing.cc/images/16.jpg><meta property=article:published_time content=2017-01-13T12:45:18.512Z><meta property=article:modified_time content=2017-01-17T02:58:25.190Z><meta property=article:author content=tungSing><meta property=article:tag content=Hexo><meta property=article:tag content="Github Pages"><meta property=article:tag content=Node.js><meta property=article:tag content=Git><meta name=twitter:card content=summary><meta name=twitter:image content=http://tungsing.cc/images/1.jpg><link rel=canonical href=http://tungsing.cc/2017/01/13/hexo-github/ ><script class=next-config data-name=page type=application/json>{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2017/01/13/hexo-github/","path":"2017/01/13/hexo-github/","title":"基于Hexo 和 Github Pages 免费搭建自己的博客"}</script><script class=next-config data-name=calendar type=application/json>""</script><title>基于Hexo 和 Github Pages 免费搭建自己的博客 | TungSing's Blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript><link rel=alternate href=/atom.xml title="TungSing's Blog" type=application/atom+xml></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label=切换导航栏 role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><p class=site-title>TungSing's Blog</p><i class=logo-line></i></a><p class=site-subtitle itemprop=description>用心记录一切！</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ rel=section><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href=/tags/ rel=section><i class="fa fa-tags fa-fw"></i>标签<span class=badge>70</span></a></li><li class="menu-item menu-item-categories"><a href=/categories/ rel=section><i class="fa fa-th fa-fw"></i>分类<span class=badge>10</span></a></li><li class="menu-item menu-item-archives"><a href=/archives/ rel=section><i class="fa fa-archive fa-fw"></i>归档<span class=badge>55</span></a></li><li class="menu-item menu-item-photos"><a href=/photos/ rel=section><i class="fa fa-image fa-fw"></i>相册</a></li><li class="menu-item menu-item-about"><a href=/about/ rel=section><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-search"><a role=button class=popup-trigger><i class="fa fa-search fa-fw"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><ol class=nav><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%89%8D%E8%A8%80><span class=nav-number>1.</span> <span class=nav-text>前言</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%87%86%E5%A4%87><span class=nav-number>2.</span> <span class=nav-text>准备</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%AE%89%E8%A3%85Node-js><span class=nav-number>3.</span> <span class=nav-text>安装Node.js</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#Hexo><span class=nav-number>4.</span> <span class=nav-text>Hexo</span></a><ol class=nav-child><li class="nav-item nav-level-5"><a class=nav-link href=#Hexo-%E5%AE%89%E8%A3%85><span class=nav-number>4.1.</span> <span class=nav-text>Hexo 安装</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#Hexo%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE><span class=nav-number>4.2.</span> <span class=nav-text>Hexo初始化配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%AE%89%E8%A3%85Git><span class=nav-number>5.</span> <span class=nav-text>安装Git</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0Github-Pages%E4%B8%8A><span class=nav-number>6.</span> <span class=nav-text>将博客部署到Github Pages上</span></a><ol class=nav-child><li class="nav-item nav-level-5"><a class=nav-link href=#%E6%B3%A8%E5%86%8CGithub%E8%B4%A6%E6%88%B7><span class=nav-number>6.1.</span> <span class=nav-text>注册Github账户</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81%E5%BA%93><span class=nav-number>6.2.</span> <span class=nav-text>创建项目代码库</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E9%85%8D%E7%BD%AESSH%E5%AF%86%E9%92%A5><span class=nav-number>6.3.</span> <span class=nav-text>配置SSH密钥</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E5%B0%86%E6%9C%AC%E5%9C%B0%E7%9A%84Hexo%E6%96%87%E4%BB%B6%E6%9B%B4%E6%96%B0%E5%88%B0Github%E7%9A%84%E5%BA%93%E4%B8%AD><span class=nav-number>6.4.</span> <span class=nav-text>将本地的Hexo文件更新到Github的库中</span></a></li></ol></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%B0%86%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E5%85%B3%E8%81%94%E5%88%B0Github-Pages%E4%B8%8A><span class=nav-number>7.</span> <span class=nav-text>将自己的域名关联到Github Pages上</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E7%BB%93%E8%AF%AD><span class=nav-number>8.</span> <span class=nav-text>结语</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99><span class=nav-number>9.</span> <span class=nav-text>参考资料</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><p class=site-author-name itemprop=name>tungSing</p><div class=site-description itemprop=description>多读书多看报</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/ ><span class=site-state-item-count>55</span> <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/ ><span class=site-state-item-count>10</span> <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/ ><span class=site-state-item-count>70</span> <span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-author site-overview-item animated"><span class=links-of-author-item><a href=https://github.com/tungsing title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel=noopener target=_blank><i class="fab fa-github fa-fw"></i>GitHub</a> </span><span class=links-of-author-item><a href=https://twitter.com/dongsheng__gao title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel=noopener target=_blank><i class="fab fa-twitter fa-fw"></i>Twitter</a></span></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=back-to-top role=button aria-label=返回顶部><i class="fa fa-arrow-up"></i> <span>0%</span></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang=zh-CN><link itemprop=mainEntityOfPage href=http://tungsing.cc/2017/01/13/hexo-github/ ><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content=/images/avatar.gif><meta itemprop=name content=tungSing><meta itemprop=description content=多读书多看报></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="TungSing's Blog"></span><header class=post-header><h1 class=post-title itemprop="name headline">基于Hexo 和 Github Pages 免费搭建自己的博客</h1><div class=post-meta-container><div class=post-meta><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i> </span><span class=post-meta-item-text>发表于</span> <time title="创建时间：2017-01-13 12:45:18" itemprop="dateCreated datePublished" datetime=2017-01-13T12:45:18Z>2017-01-13</time> </span><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i> </span><span class=post-meta-item-text>更新于</span> <time title="修改时间：2017-01-17 02:58:25" itemprop=dateModified datetime=2017-01-17T02:58:25Z>2017-01-17</time></span></div></div></header><div class=post-body itemprop=articleBody><h4 id=前言><a href=#前言 class=headerlink title=前言></a>前言</h4><blockquote><p>很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。</p></blockquote><h4 id=准备><a href=#准备 class=headerlink title=准备></a>准备</h4><ul><li>Windows 系统</li><li>Node.js</li><li>Hexo</li><li>Git</li><li>Github</li><li>一个属于自己的域名</li></ul><h4 id=安装Node-js><a href=#安装Node-js class=headerlink title=安装Node.js></a>安装Node.js</h4><p>在 Windows 环境下安装 Node.js 非常简单，仅须到<a target=_blank rel=noopener href=https://nodejs.org/en/download/ >官网下载</a>安装文件并执行即可完成安装。<br><img src=/images/1.jpg><br>下载完成直接双击安装即可。</p><span id=more></span><h4 id=Hexo><a href=#Hexo class=headerlink title=Hexo></a>Hexo</h4><p><a target=_blank rel=noopener href=https://hexo.io/zh-cn/docs/ >Hexo</a> 是一个快速、简洁且高效的博客框架。Hexo 使用Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p><h5 id=Hexo-安装><a href=#Hexo-安装 class=headerlink title="Hexo 安装"></a>Hexo 安装</h5><p>打开window命令窗口执行</p><figure class="highlight bash"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line>$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure><h5 id=Hexo初始化配置><a href=#Hexo初始化配置 class=headerlink title=Hexo初始化配置></a>Hexo初始化配置</h5><p>根据自己喜好建立目录（如F:\Blog\Hexo），通过windows命令窗口进入F:\Blog\Hexo，执行以下操作。</p><figure class="highlight bash"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line>$ hexo init</span><br><span class=line>$ npm install</span><br></pre></td></tr></table></figure><p>安装 Hexo 完成后，Hexo 将会在指定文件夹中新建所需要的文件。Hexo文件夹下的目录如下：<br><img src=/images/3.jpg></p><p>执行下面语句，执行完即可在浏览器中输入<a target=_blank rel=noopener href=http://localhost:9000/ >http://localhost:9000/</a> 查看效果</p><figure class="highlight bash"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line>$ hexo g</span><br><span class=line>$ hexo -p 9000 server</span><br></pre></td></tr></table></figure><p>效果如下：</p><p><img src=/images/17.png></p><h4 id=安装Git><a href=#安装Git class=headerlink title=安装Git></a>安装Git</h4><p>下载 <a target=_blank rel=noopener href=https://git-scm.com/downloads>git</a> 并执行即可完成安装。(上官网要翻墙)</p><p><img src=/images/2.jpg></p><p>还有其他安装方式，这就不一一介绍了。</p><h4 id=将博客部署到Github-Pages上><a href=#将博客部署到Github-Pages上 class=headerlink title="将博客部署到Github Pages上"></a>将博客部署到Github Pages上</h4><p>那么现在本地的博客已经搭建起来了，但是我们只可以通过本地连接查看我们的博客。那么我们现在需要做的就是把本地的博客发布到服务器上，让别人也可以连接我们的博客，而Github Pages就帮我完成了这件事情。但是Github Pages的代码就是寄存在Github上面的。那么接下来我们需要在Github上面创建一个新的项目。</p><h5 id=注册Github账户><a href=#注册Github账户 class=headerlink title=注册Github账户></a>注册Github账户</h5><p>1.访问<a target=_blank rel=noopener href=https://github.com/ >Github</a>首页<br>2.点击右上角的 Sign Up，注册自己的账户</p><h5 id=创建项目代码库><a href=#创建项目代码库 class=headerlink title=创建项目代码库></a>创建项目代码库</h5><p>1.注册完登陆后，我们就创建一个我们自己的Github Pages项目。点击New repository。<br>2.创建要点如下：</p><p><img src=/images/4.png></p><h5 id=配置SSH密钥><a href=#配置SSH密钥 class=headerlink title=配置SSH密钥></a>配置SSH密钥</h5><p>配置Github的SSH密钥可以让本地git项目与远程的github建立联系，让我们在本地写了代码之后直接通过git操作就可以实现本地代码库与Github代码库同步。操作如下：<br>1.桌面右键-&gt;Git Gui Here。<br><img src=/images/5.jpg><br>2.在打开的窗口打开Help-&gt;Show SSH Key，如果没有，生成一个即可。<br><img src=/images/6.jpg><br>3.登陆GitHub,进入你的Account Settings.添加你的公钥<br><img src=/images/8.png><br>4.选择SSH Keys<br><img src=/images/9.png><br>5.粘贴密钥，添加即可<br><img src=/images/10.png><br>6.桌面右键-&gt;Git Bash Here,输入下面的命令，看看设置是否成功，<a href=mailto:&#x67;&#105;&#116;&#x40;&#103;&#x69;&#116;&#104;&#117;&#98;&#46;&#99;&#x6f;&#109;>&#x67;&#105;&#116;&#x40;&#103;&#x69;&#116;&#104;&#117;&#98;&#46;&#99;&#x6f;&#109;</a>的部分不要修改</p><figure class="highlight bash"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line>ssh -T git@github.com</span><br></pre></td></tr></table></figure><h5 id=将本地的Hexo文件更新到Github的库中><a href=#将本地的Hexo文件更新到Github的库中 class=headerlink title=将本地的Hexo文件更新到Github的库中></a>将本地的Hexo文件更新到Github的库中</h5><p>1.登录Github打开自己的项目 username.github.io<br><img src=/images/11.png><br>2.打开之后，点击HTTPS，选择HTTPS类型地址<br><img src=/images/12.png><br>3.复制地址<br><img src=/images/13.png><br>4.打开你一开始创建的Hexo文件夹（如F:\Blog\Hexo），用记事本打开刚文件夹下的_config.yml文件<br><img src=/images/14.png><br>5.在配置文件里作如下修改，保存<br><img src=/images/15.png><br>6.在本地目录执行如下命令</p><figure class="highlight bash"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line>hexo g -d</span><br></pre></td></tr></table></figure><p>执行完之后会让你输入github的账号和密码，输入完后就可以登录我们自己的部署在Github Pages服务器上的博客了。对应的地址是 username.github.io。<br>7.在浏览器上输入自己的主页地址,username.github.io就可以访问自己的博客了</p><h4 id=将自己的域名关联到Github-Pages上><a href=#将自己的域名关联到Github-Pages上 class=headerlink title="将自己的域名关联到Github Pages上"></a>将自己的域名关联到Github Pages上</h4><p>1.获取ip地址<br><img src=/images/ip.png><br>2.<a target=_blank rel=noopener href=http://access.enom.com/ >登陆ENOM域名的独立管理面板</a><br>3.配置ip<br><img src=/images/16.jpg><br>4.将IP输入过去即可。等待生效，最迟72小时生效。即可通过你的域名浏览你的博客主页。</p><h4 id=结语><a href=#结语 class=headerlink title=结语></a>结语</h4><p>这才完成了第一步，后边找时间写一下美化自己的博客和如何用Markdown写博客</p><h4 id=参考资料><a href=#参考资料 class=headerlink title=参考资料></a>参考资料</h4><p>1.<a target=_blank rel=noopener href=https://my.oschina.net/ryaneLee/blog/638440>小白独立搭建博客–Github Pages和Hexo简明教程</a><br>2.<a target=_blank rel=noopener href=https://hexo.io/zh-cn/docs/ >Hexo 文档</a></p></div><footer class=post-footer><div class=post-tags><a href=/tags/Hexo/ rel=tag># Hexo</a> <a href=/tags/Github-Pages/ rel=tag># Github Pages</a> <a href=/tags/Node-js/ rel=tag># Node.js</a> <a href=/tags/Git/ rel=tag># Git</a></div><div class=post-nav><div class=post-nav-item></div><div class=post-nav-item><a href=/2017/01/16/mysql/mysql-install/ rel=next title="记录Windows 系统安装mysql数据库">记录Windows 系统安装mysql数据库 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy; <span itemprop=copyrightYear>2024</span> <span class=with-love><i class="fa fa-user"></i> </span><span class=author itemprop=copyrightHolder>tungSing</span></div></div></footer><script src=https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin=anonymous></script><script src=/js/comments.js></script><script src=/js/utils.js></script><script src=/js/motion.js></script><script src=/js/next-boot.js></script><script src=/js/pjax.js></script><script src=https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin=anonymous></script><script src=/js/third-party/search/local-search.js></script><script src=/js/third-party/fancybox.js></script><script src=/js/third-party/photo/lazyload.js></script><script src=/js/third-party/photo/minigrid.min.js></script><script data-pjax src=/js/third-party/photo/photo.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。  准备 Windows 系统 Node.js Hexo Git Github 一个属于自己的域名  安装Node.js在 Windows 环境下安装 Node.js 非常简单，仅须到官网下载安装文件并执行即可完成安装。下载完成直接双击安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Hexo 和 Github Pages 免费搭建自己的博客">
+<meta property="og:url" content="http://tungsing.cc/2017/01/13/hexo-github/index.html">
+<meta property="og:site_name" content="TungSing&#39;s Blog">
+<meta property="og:description" content="前言 很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。  准备 Windows 系统 Node.js Hexo Git Github 一个属于自己的域名  安装Node.js在 Windows 环境下安装 Node.js 非常简单，仅须到官网下载安装文件并执行即可完成安装。下载完成直接双击安">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://tungsing.cc/images/1.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/3.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/17.png">
+<meta property="og:image" content="http://tungsing.cc/images/2.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/4.png">
+<meta property="og:image" content="http://tungsing.cc/images/5.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/6.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/8.png">
+<meta property="og:image" content="http://tungsing.cc/images/9.png">
+<meta property="og:image" content="http://tungsing.cc/images/10.png">
+<meta property="og:image" content="http://tungsing.cc/images/11.png">
+<meta property="og:image" content="http://tungsing.cc/images/12.png">
+<meta property="og:image" content="http://tungsing.cc/images/13.png">
+<meta property="og:image" content="http://tungsing.cc/images/14.png">
+<meta property="og:image" content="http://tungsing.cc/images/15.png">
+<meta property="og:image" content="http://tungsing.cc/images/ip.png">
+<meta property="og:image" content="http://tungsing.cc/images/16.jpg">
+<meta property="article:published_time" content="2017-01-13T12:45:18.512Z">
+<meta property="article:modified_time" content="2017-01-17T02:58:25.190Z">
+<meta property="article:author" content="tungSing">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Github Pages">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tungsing.cc/images/1.jpg">
+
+
+<link rel="canonical" href="http://tungsing.cc/2017/01/13/hexo-github/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2017/01/13/hexo-github/","path":"2017/01/13/hexo-github/","title":"基于Hexo 和 Github Pages 免费搭建自己的博客"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基于Hexo 和 Github Pages 免费搭建自己的博客 | TungSing's Blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用心记录一切！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">70</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">55</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Node-js"><span class="nav-number">3.</span> <span class="nav-text">安装Node.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hexo"><span class="nav-number">4.</span> <span class="nav-text">Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Hexo-%E5%AE%89%E8%A3%85"><span class="nav-number">4.1.</span> <span class="nav-text">Hexo 安装</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Hexo%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">Hexo初始化配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Git"><span class="nav-number">5.</span> <span class="nav-text">安装Git</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0Github-Pages%E4%B8%8A"><span class="nav-number">6.</span> <span class="nav-text">将博客部署到Github Pages上</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CGithub%E8%B4%A6%E6%88%B7"><span class="nav-number">6.1.</span> <span class="nav-text">注册Github账户</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81%E5%BA%93"><span class="nav-number">6.2.</span> <span class="nav-text">创建项目代码库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AESSH%E5%AF%86%E9%92%A5"><span class="nav-number">6.3.</span> <span class="nav-text">配置SSH密钥</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86%E6%9C%AC%E5%9C%B0%E7%9A%84Hexo%E6%96%87%E4%BB%B6%E6%9B%B4%E6%96%B0%E5%88%B0Github%E7%9A%84%E5%BA%93%E4%B8%AD"><span class="nav-number">6.4.</span> <span class="nav-text">将本地的Hexo文件更新到Github的库中</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D%E5%85%B3%E8%81%94%E5%88%B0Github-Pages%E4%B8%8A"><span class="nav-number">7.</span> <span class="nav-text">将自己的域名关联到Github Pages上</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dsh.gao@gmail.com" title="E-Mail → mailto:dsh.gao@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/tungsing_gao" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;tungsing_gao" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2017/01/13/hexo-github/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="tungSing">
+      <meta itemprop="description" content="多读书多看报">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于Hexo 和 Github Pages 免费搭建自己的博客
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-01-13 12:45:18" itemprop="dateCreated datePublished" datetime="2017-01-13T12:45:18Z">2017-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-01-17 02:58:25" itemprop="dateModified" datetime="2017-01-17T02:58:25Z">2017-01-17</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>很久前就有一个计划要搭建一个属于自己的博客，但一直瞎忙，没完成。终于在2017年初发现了十分方便的搭建博客的方式，本文是第一篇文章，也是介绍搭建过程的文章。</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Windows 系统</li>
+<li>Node.js</li>
+<li>Hexo</li>
+<li>Git</li>
+<li>Github</li>
+<li>一个属于自己的域名</li>
+</ul>
+<h4 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h4><p>在 Windows 环境下安装 Node.js 非常简单，仅须到<a target="_blank" rel="noopener" href="https://nodejs.org/en/download/">官网下载</a>安装文件并执行即可完成安装。<br><img src="/images/1.jpg"><br>下载完成直接双击安装即可。</p>
+<span id="more"></span>
+
+<h4 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h4><p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo</a> 是一个快速、简洁且高效的博客框架。Hexo 使用Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<h5 id="Hexo-安装"><a href="#Hexo-安装" class="headerlink" title="Hexo 安装"></a>Hexo 安装</h5><p>打开window命令窗口执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<h5 id="Hexo初始化配置"><a href="#Hexo初始化配置" class="headerlink" title="Hexo初始化配置"></a>Hexo初始化配置</h5><p>根据自己喜好建立目录（如F:\Blog\Hexo），通过windows命令窗口进入F:\Blog\Hexo，执行以下操作。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo init</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+<p>安装 Hexo 完成后，Hexo 将会在指定文件夹中新建所需要的文件。Hexo文件夹下的目录如下：<br><img src="/images/3.jpg"></p>
+<p>执行下面语句，执行完即可在浏览器中输入<a target="_blank" rel="noopener" href="http://localhost:9000/">http://localhost:9000/</a> 查看效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br><span class="line">$ hexo -p 9000 server</span><br></pre></td></tr></table></figure>
+
+<p>效果如下： </p>
+<p><img src="/images/17.png"></p>
+<h4 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h4><p>下载 <a target="_blank" rel="noopener" href="https://git-scm.com/downloads">git</a> 并执行即可完成安装。(上官网要翻墙)</p>
+<p><img src="/images/2.jpg"></p>
+<p>还有其他安装方式，这就不一一介绍了。</p>
+<h4 id="将博客部署到Github-Pages上"><a href="#将博客部署到Github-Pages上" class="headerlink" title="将博客部署到Github Pages上"></a>将博客部署到Github Pages上</h4><p>那么现在本地的博客已经搭建起来了，但是我们只可以通过本地连接查看我们的博客。那么我们现在需要做的就是把本地的博客发布到服务器上，让别人也可以连接我们的博客，而Github Pages就帮我完成了这件事情。但是Github Pages的代码就是寄存在Github上面的。那么接下来我们需要在Github上面创建一个新的项目。</p>
+<h5 id="注册Github账户"><a href="#注册Github账户" class="headerlink" title="注册Github账户"></a>注册Github账户</h5><p>1.访问<a target="_blank" rel="noopener" href="https://github.com/">Github</a>首页<br>2.点击右上角的 Sign Up，注册自己的账户</p>
+<h5 id="创建项目代码库"><a href="#创建项目代码库" class="headerlink" title="创建项目代码库"></a>创建项目代码库</h5><p>1.注册完登陆后，我们就创建一个我们自己的Github Pages项目。点击New repository。<br>2.创建要点如下：</p>
+<p><img src="/images/4.png"></p>
+<h5 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h5><p>配置Github的SSH密钥可以让本地git项目与远程的github建立联系，让我们在本地写了代码之后直接通过git操作就可以实现本地代码库与Github代码库同步。操作如下：<br>1.桌面右键-&gt;Git Gui Here。<br><img src="/images/5.jpg"><br>2.在打开的窗口打开Help-&gt;Show SSH Key，如果没有，生成一个即可。<br><img src="/images/6.jpg"><br>3.登陆GitHub,进入你的Account Settings.添加你的公钥<br><img src="/images/8.png"><br>4.选择SSH Keys<br><img src="/images/9.png"><br>5.粘贴密钥，添加即可<br><img src="/images/10.png"><br>6.桌面右键-&gt;Git Bash Here,输入下面的命令，看看设置是否成功，<a href="mailto:&#103;&#x69;&#x74;&#x40;&#103;&#x69;&#x74;&#104;&#117;&#x62;&#46;&#99;&#111;&#109;">&#103;&#x69;&#x74;&#x40;&#103;&#x69;&#x74;&#104;&#117;&#x62;&#46;&#99;&#111;&#109;</a>的部分不要修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<h5 id="将本地的Hexo文件更新到Github的库中"><a href="#将本地的Hexo文件更新到Github的库中" class="headerlink" title="将本地的Hexo文件更新到Github的库中"></a>将本地的Hexo文件更新到Github的库中</h5><p>1.登录Github打开自己的项目 username.github.io<br><img src="/images/11.png"><br>2.打开之后，点击HTTPS，选择HTTPS类型地址<br><img src="/images/12.png"><br>3.复制地址<br><img src="/images/13.png"><br>4.打开你一开始创建的Hexo文件夹（如F:\Blog\Hexo），用记事本打开刚文件夹下的_config.yml文件<br><img src="/images/14.png"><br>5.在配置文件里作如下修改，保存<br><img src="/images/15.png"><br>6.在本地目录执行如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+<p>执行完之后会让你输入github的账号和密码，输入完后就可以登录我们自己的部署在Github Pages服务器上的博客了。对应的地址是 username.github.io。<br>7.在浏览器上输入自己的主页地址,username.github.io就可以访问自己的博客了</p>
+<h4 id="将自己的域名关联到Github-Pages上"><a href="#将自己的域名关联到Github-Pages上" class="headerlink" title="将自己的域名关联到Github Pages上"></a>将自己的域名关联到Github Pages上</h4><p>1.获取ip地址<br><img src="/images/ip.png"><br>2.<a target="_blank" rel="noopener" href="http://access.enom.com/">登陆ENOM域名的独立管理面板</a><br>3.配置ip<br><img src="/images/16.jpg"><br>4.将IP输入过去即可。等待生效，最迟72小时生效。即可通过你的域名浏览你的博客主页。</p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>这才完成了第一步，后边找时间写一下美化自己的博客和如何用Markdown写博客</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>1.<a target="_blank" rel="noopener" href="https://my.oschina.net/ryaneLee/blog/638440">小白独立搭建博客–Github Pages和Hexo简明教程</a><br>2.<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo 文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/Github-Pages/" rel="tag"># Github Pages</a>
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/16/mysql/mysql-install/" rel="next" title="记录Windows 系统安装mysql数据库">
+                  记录Windows 系统安装mysql数据库 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"tungSing","repo":"tungsing.github.io","client_id":"52a90bdfc66139c7ae8d","client_secret":"cf1297a36b1ca9ee630211520789e614a202d310","admin_user":"tungSing","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"094e42f6d8f7d5444ced1ae39995f0bc"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+  <script src="/js/third-party/photo/lazyload.js"></script>
+  <script src="/js/third-party/photo/minigrid.min.js"></script>
+  <script data-pjax src="/js/third-party/photo/photo.js"></script>
+
+</body>
+</html>

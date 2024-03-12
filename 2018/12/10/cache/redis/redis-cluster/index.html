@@ -1,1 +1,414 @@
-<!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><meta name=viewport content="width=device-width"><meta name=theme-color content=#222><meta name=generator content="Hexo 6.0.0"><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon-next.png><link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32-next.png><link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16-next.png><link rel=mask-icon href=/images/logo.svg color=#222><link rel=stylesheet href=/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin=anonymous><script class=next-config data-name=main type=application/json>{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src=/js/config.js></script><meta name=description content="环境   CentOS7 操作系统   已安装好的Redis，具体安装看上一篇"><meta property=og:type content=article><meta property=og:title content=redis集群搭建><meta property=og:url content=http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/index.html><meta property=og:site_name content="TungSing&#39;s Blog"><meta property=og:description content="环境   CentOS7 操作系统   已安装好的Redis，具体安装看上一篇"><meta property=og:locale content=zh_CN><meta property=article:published_time content=2018-12-10T05:54:54.024Z><meta property=article:modified_time content=2019-05-18T08:34:32.881Z><meta property=article:author content=tungSing><meta property=article:tag content=cache><meta property=article:tag content=redis><meta property=article:tag content=cluster><meta name=twitter:card content=summary><link rel=canonical href=http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/ ><script class=next-config data-name=page type=application/json>{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/","path":"2018/12/10/cache/redis/redis-cluster/","title":"redis集群搭建"}</script><script class=next-config data-name=calendar type=application/json>""</script><title>redis集群搭建 | TungSing's Blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript><link rel=alternate href=/atom.xml title="TungSing's Blog" type=application/atom+xml></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label=切换导航栏 role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><p class=site-title>TungSing's Blog</p><i class=logo-line></i></a><p class=site-subtitle itemprop=description>用心记录一切！</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ rel=section><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href=/tags/ rel=section><i class="fa fa-tags fa-fw"></i>标签<span class=badge>70</span></a></li><li class="menu-item menu-item-categories"><a href=/categories/ rel=section><i class="fa fa-th fa-fw"></i>分类<span class=badge>10</span></a></li><li class="menu-item menu-item-archives"><a href=/archives/ rel=section><i class="fa fa-archive fa-fw"></i>归档<span class=badge>55</span></a></li><li class="menu-item menu-item-photos"><a href=/photos/ rel=section><i class="fa fa-image fa-fw"></i>相册</a></li><li class="menu-item menu-item-about"><a href=/about/ rel=section><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-search"><a role=button class=popup-trigger><i class="fa fa-search fa-fw"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><ol class=nav><li class="nav-item nav-level-4"><a class=nav-link href=#%E7%8E%AF%E5%A2%83><span class=nav-number>1.</span> <span class=nav-text>环境</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA><span class=nav-number>2.</span> <span class=nav-text>集群搭建</span></a><ol class=nav-child><li class="nav-item nav-level-5"><a class=nav-link href=#%E5%90%8C%E5%8F%B0%E6%9C%BA%E5%99%A8%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA><span class=nav-number>2.1.</span> <span class=nav-text>同台机器集群搭建</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%99%A8%E7%9A%84%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA><span class=nav-number>2.2.</span> <span class=nav-text>不同机器的集群搭建</span></a></li></ol></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99><span class=nav-number>3.</span> <span class=nav-text>参考资料</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><p class=site-author-name itemprop=name>tungSing</p><div class=site-description itemprop=description>多读书多看报</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/ ><span class=site-state-item-count>55</span> <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/ ><span class=site-state-item-count>10</span> <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/ ><span class=site-state-item-count>70</span> <span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-author site-overview-item animated"><span class=links-of-author-item><a href=https://github.com/tungsing title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel=noopener target=_blank><i class="fab fa-github fa-fw"></i>GitHub</a> </span><span class=links-of-author-item><a href=https://twitter.com/dongsheng__gao title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel=noopener target=_blank><i class="fab fa-twitter fa-fw"></i>Twitter</a></span></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=back-to-top role=button aria-label=返回顶部><i class="fa fa-arrow-up"></i> <span>0%</span></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang=zh-CN><link itemprop=mainEntityOfPage href=http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/ ><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content=/images/avatar.gif><meta itemprop=name content=tungSing><meta itemprop=description content=多读书多看报></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="TungSing's Blog"></span><header class=post-header><h1 class=post-title itemprop="name headline">redis集群搭建</h1><div class=post-meta-container><div class=post-meta><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i> </span><span class=post-meta-item-text>发表于</span> <time title="创建时间：2018-12-10 05:54:54" itemprop="dateCreated datePublished" datetime=2018-12-10T05:54:54Z>2018-12-10</time> </span><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i> </span><span class=post-meta-item-text>更新于</span> <time title="修改时间：2019-05-18 08:34:32" itemprop=dateModified datetime=2019-05-18T08:34:32Z>2019-05-18</time> </span><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-folder"></i> </span><span class=post-meta-item-text>分类于</span> <span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/cache/ itemprop=url rel=index><span itemprop=name>cache</span></a></span></span></div></div></header><div class=post-body itemprop=articleBody><h4 id=环境><a href=#环境 class=headerlink title=环境></a>环境</h4><ul><li>CentOS7 操作系统</li><li>已安装好的Redis，具体安装看上一篇</li></ul><span id=more></span><h4 id=集群搭建><a href=#集群搭建 class=headerlink title=集群搭建></a>集群搭建</h4><h5 id=同台机器集群搭建><a href=#同台机器集群搭建 class=headerlink title=同台机器集群搭建></a>同台机器集群搭建</h5><ol><li><p>创建文件夹<br>我们设计集群中 Redis 节点的端口号为 9000-9005，端口号即集群下各实例文件夹。数据存放在 端口号/data 文件夹中。</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br></pre></td><td class=code><pre><span class=line># mkdir /opt/redis_cluster</span><br><span class=line># cd /opt/redis_cluster</span><br><span class=line># mkdir -p 9000/data 9001/data 9002/data 9003/data 9004/data 9005/data</span><br></pre></td></tr></table></figure></li><li><p>复制一个redis.conf文件到9000目录下，并修改<br>从源码包中复制配置文件并修改</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line># cp /opt/redis-4.0.11/redis.conf /opt/redis_cluster/9000</span><br><span class=line># vi /opt/redis_cluster/9000/redis.conf</span><br></pre></td></tr></table></figure><p>重点修改以下配置</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br><span class=line>6</span><br><span class=line>7</span><br><span class=line>8</span><br><span class=line>9</span><br><span class=line>10</span><br></pre></td><td class=code><pre><span class=line>port 9000（每个节点的端口号）</span><br><span class=line>daemonize yes</span><br><span class=line>#bind 127.0.0.1(绑定当前机器 IP,可以不配置)</span><br><span class=line>dir /opt/redis_cluster/9000/data/（数据文件存放位置）</span><br><span class=line>pidfile /var/run/redis_9000.pid（pid 9000和port要对应）</span><br><span class=line>cluster-enabled yes（启动集群模式）</span><br><span class=line>cluster-config-file nodes9000.conf（9001和port要对应）</span><br><span class=line>cluster-node-timeout 15000</span><br><span class=line>appendonly yes</span><br><span class=line>protected-mode no(保护模式设置为no，如果启用了，则只能够通过lookback ip(127.0.0.1)访问Redis cache)</span><br></pre></td></tr></table></figure></li><li><p>把配置好的复制5份</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br></pre></td><td class=code><pre><span class=line># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9001</span><br><span class=line># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9002</span><br><span class=line># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9003</span><br><span class=line># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9004</span><br><span class=line># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9005</span><br></pre></td></tr></table></figure></li><li><p>挨个修改实例的配置文件<br>通过搜索会发现其实只有四个点需要修改，我们全局替换下吧，进入相应的节点文件夹，做替换就好了，不放心再手工检查下</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line># vi /opt/redis_cluster/9001/redis.conf</span><br><span class=line>:%s/9001/9002</span><br></pre></td></tr></table></figure></li><li><p>启动</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br><span class=line>6</span><br></pre></td><td class=code><pre><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9000/redis.conf</span><br><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9001/redis.conf</span><br><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9002/redis.conf</span><br><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9003/redis.conf</span><br><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9004/redis.conf</span><br><span class=line># /usr/local/bin/redis-server /opt/redis_cluster/9005/redis.conf</span><br></pre></td></tr></table></figure></li><li><p>检查是否启动成功</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line># ps -ef |grep redis</span><br><span class=line># /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</span><br></pre></td></tr></table></figure><p>连接成功，set值会报(error) CLUSTERDOWN Hash slot not served错误，原因是实例之间无法相互发现，我们继续</p></li><li><p>安装集群所需软件<br>由于 Redis 集群是用ruby实现的集群管理，所以安装ruby相关软件</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br></pre></td><td class=code><pre><span class=line># yum install ruby</span><br><span class=line># yum install rubygems</span><br><span class=line># gem install redis </span><br></pre></td></tr></table></figure><p>此处需要安装大于等于2.2的ruby版本</p></li><li><p>配置集群<br>通过redis-trib.rb命令创建集群，如果/usr/local/bin/目录没有，从源码包拷贝一个即可</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># /usr/local/bin/redis-trib.rb create --replicas 1 127.0.0.1:9000 127.0.0.1:9001 127.0.0.1:9002 127.0.0.1:9003 127.0.0.1:9004 127.0.0.1:9005</span><br></pre></td></tr></table></figure><p>交互过程中输入yes，同意即可，–replicas 1表示主从复制比例为 1:1，即一个主节点对应一个从节点</p></li><li><p>验证</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br><span class=line>6</span><br><span class=line>7</span><br><span class=line>8</span><br><span class=line>9</span><br><span class=line>10</span><br><span class=line>11</span><br><span class=line>12</span><br><span class=line>13</span><br><span class=line>14</span><br><span class=line>15</span><br><span class=line>16</span><br><span class=line>17</span><br><span class=line>18</span><br><span class=line>19</span><br><span class=line>20</span><br><span class=line>21</span><br><span class=line>22</span><br><span class=line>23</span><br><span class=line>24</span><br><span class=line>25</span><br></pre></td><td class=code><pre><span class=line>  # /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</span><br><span class=line>127.0.0.1:9000&gt; cluster info</span><br><span class=line>cluster_state:ok</span><br><span class=line>cluster_slots_assigned:16384</span><br><span class=line>cluster_slots_ok:16384</span><br><span class=line>cluster_slots_pfail:0</span><br><span class=line>cluster_slots_fail:0</span><br><span class=line>cluster_known_nodes:6</span><br><span class=line>cluster_size:3</span><br><span class=line>cluster_current_epoch:6</span><br><span class=line>cluster_my_epoch:1</span><br><span class=line>cluster_stats_messages_ping_sent:1122</span><br><span class=line>cluster_stats_messages_pong_sent:1060</span><br><span class=line>cluster_stats_messages_sent:2182</span><br><span class=line>cluster_stats_messages_ping_received:1060</span><br><span class=line>cluster_stats_messages_pong_received:1102</span><br><span class=line>cluster_stats_messages_received:2162</span><br><span class=line>127.0.0.1:9000&gt; cluster nodes</span><br><span class=line>4f8c920acc559c11153c5aaf856820ca39c443cb 10.200.1.11:9000@19000 myself,master - 0 1544424469000 1 connected 0-5460</span><br><span class=line>ec2af1f981c08bf01131545369c0600b91c5172c 10.200.1.11:9004@19004 slave 4f8c920acc559c11153c5aaf856820ca39c443cb 0 1544424468000 5 connected</span><br><span class=line>bcc85b3502c107f18557d11889739a2b6f0ed896 10.200.1.11:9003@19003 slave aadb89ee25e9849e758529c477f9af6ede99850a 0 1544424467000 4 connected</span><br><span class=line>923d1b67ee012927bf4de345143d5f93670c97b5 10.200.1.11:9001@19001 master - 0 1544424468909 2 connected 5461-10922</span><br><span class=line>aadb89ee25e9849e758529c477f9af6ede99850a 10.200.1.11:9002@19002 master - 0 1544424469920 3 connected 10923-16383</span><br><span class=line>70fad7237c2e8bb308167f7e8b7a7b670d333564 10.200.1.11:9005@19005 slave 923d1b67ee012927bf4de345143d5f93670c97b5 0 1544424468000 6 connected</span><br><span class=line>127.0.0.1:9000&gt;   </span><br></pre></td></tr></table></figure><p>通过命令，可以详细的看出集群信息和各个节点状态，主从信息以及连接数、槽信息等</p></li><li><p>测试</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br><span class=line>6</span><br><span class=line>7</span><br><span class=line>8</span><br><span class=line>9</span><br><span class=line>10</span><br></pre></td><td class=code><pre><span class=line># /usr/local/bin/redis-cli -c -h 10.200.1.11 -p 9000</span><br><span class=line>10.200.1.11:9000&gt; set name test</span><br><span class=line>-&gt; Redirected to slot [5798] located at 10.200.1.11:9001</span><br><span class=line>OK</span><br><span class=line>10.200.1.11:9001&gt; get name</span><br><span class=line>&quot;test&quot;</span><br><span class=line>10.200.1.11:9001&gt; keys *</span><br><span class=line>1) &quot;name&quot;</span><br><span class=line>2) &quot;cache:test3&quot;</span><br><span class=line>10.200.1.11:9001&gt; </span><br></pre></td></tr></table></figure></li></ol><p>-c 表示集群模式</p><h5 id=不同机器的集群搭建><a href=#不同机器的集群搭建 class=headerlink title=不同机器的集群搭建></a>不同机器的集群搭建</h5><p>和同一台机器搭建唯一的区别是通过redis-trib.rb命令创建集群，随便在一个实例上执行即可</p><h4 id=参考资料><a href=#参考资料 class=headerlink title=参考资料></a>参考资料</h4><p><a target=_blank rel=noopener href=http://www.cnblogs.com/mafly/p/redis_cluster.html>Redis 集群搭建详细指南</a></p></div><footer class=post-footer><div class=post-tags><a href=/tags/cache/ rel=tag># cache</a> <a href=/tags/redis/ rel=tag># redis</a> <a href=/tags/cluster/ rel=tag># cluster</a></div><div class=post-nav><div class=post-nav-item><a href=/2018/12/10/cache/redis/redis-install-linux/ rel=prev title=Linux下安装redis><i class="fa fa-chevron-left"></i> Linux下安装redis</a></div><div class=post-nav-item><a href=/2018/12/10/cache/redis/redis-info/ rel=next title="redis info 命令">redis info 命令 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy; <span itemprop=copyrightYear>2024</span> <span class=with-love><i class="fa fa-user"></i> </span><span class=author itemprop=copyrightHolder>tungSing</span></div></div></footer><script src=https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin=anonymous></script><script src=/js/comments.js></script><script src=/js/utils.js></script><script src=/js/motion.js></script><script src=/js/next-boot.js></script><script src=/js/pjax.js></script><script src=https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin=anonymous></script><script src=/js/third-party/search/local-search.js></script><script src=/js/third-party/fancybox.js></script><script src=/js/third-party/photo/lazyload.js></script><script src=/js/third-party/photo/minigrid.min.js></script><script data-pjax src=/js/third-party/photo/photo.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="环境   CentOS7 操作系统   已安装好的Redis，具体安装看上一篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis集群搭建">
+<meta property="og:url" content="http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/index.html">
+<meta property="og:site_name" content="TungSing&#39;s Blog">
+<meta property="og:description" content="环境   CentOS7 操作系统   已安装好的Redis，具体安装看上一篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-10T05:54:54.024Z">
+<meta property="article:modified_time" content="2019-05-18T08:34:32.881Z">
+<meta property="article:author" content="tungSing">
+<meta property="article:tag" content="cache">
+<meta property="article:tag" content="redis">
+<meta property="article:tag" content="cluster">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/","path":"2018/12/10/cache/redis/redis-cluster/","title":"redis集群搭建"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>redis集群搭建 | TungSing's Blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用心记录一切！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">70</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">55</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%8C%E5%8F%B0%E6%9C%BA%E5%99%A8%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">同台机器集群搭建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%99%A8%E7%9A%84%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-number">2.2.</span> <span class="nav-text">不同机器的集群搭建</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dsh.gao@gmail.com" title="E-Mail → mailto:dsh.gao@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/tungsing_gao" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;tungsing_gao" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/12/10/cache/redis/redis-cluster/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="tungSing">
+      <meta itemprop="description" content="多读书多看报">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis集群搭建
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-10 05:54:54" itemprop="dateCreated datePublished" datetime="2018-12-10T05:54:54Z">2018-12-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-05-18 08:34:32" itemprop="dateModified" datetime="2019-05-18T08:34:32Z">2019-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cache/" itemprop="url" rel="index"><span itemprop="name">cache</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>  CentOS7 操作系统</li>
+<li>  已安装好的Redis，具体安装看上一篇</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h4><h5 id="同台机器集群搭建"><a href="#同台机器集群搭建" class="headerlink" title="同台机器集群搭建"></a>同台机器集群搭建</h5><ol>
+<li><p>创建文件夹<br>我们设计集群中 Redis 节点的端口号为 9000-9005，端口号即集群下各实例文件夹。数据存放在 端口号/data 文件夹中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># mkdir /opt/redis_cluster</span><br><span class="line"># cd /opt/redis_cluster</span><br><span class="line"># mkdir -p 9000/data 9001/data 9002/data 9003/data 9004/data 9005/data</span><br></pre></td></tr></table></figure></li>
+<li><p>复制一个redis.conf文件到9000目录下，并修改<br>从源码包中复制配置文件并修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># cp /opt/redis-4.0.11/redis.conf /opt/redis_cluster/9000</span><br><span class="line"># vi /opt/redis_cluster/9000/redis.conf</span><br></pre></td></tr></table></figure>
+<p>重点修改以下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">port 9000（每个节点的端口号）</span><br><span class="line">daemonize yes</span><br><span class="line">#bind 127.0.0.1(绑定当前机器 IP,可以不配置)</span><br><span class="line">dir /opt/redis_cluster/9000/data/（数据文件存放位置）</span><br><span class="line">pidfile /var/run/redis_9000.pid（pid 9000和port要对应）</span><br><span class="line">cluster-enabled yes（启动集群模式）</span><br><span class="line">cluster-config-file nodes9000.conf（9001和port要对应）</span><br><span class="line">cluster-node-timeout 15000</span><br><span class="line">appendonly yes</span><br><span class="line">protected-mode no(保护模式设置为no，如果启用了，则只能够通过lookback ip(127.0.0.1)访问Redis cache)</span><br></pre></td></tr></table></figure></li>
+<li><p>把配置好的复制5份</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9001</span><br><span class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9002</span><br><span class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9003</span><br><span class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9004</span><br><span class="line"># cp -rf /opt/redis_cluster/9000/* /opt/redis_cluster/9005</span><br></pre></td></tr></table></figure></li>
+<li><p>挨个修改实例的配置文件<br>通过搜索会发现其实只有四个点需要修改，我们全局替换下吧，进入相应的节点文件夹，做替换就好了，不放心再手工检查下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># vi /opt/redis_cluster/9001/redis.conf</span><br><span class="line">:%s/9001/9002</span><br></pre></td></tr></table></figure></li>
+<li><p>启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9000/redis.conf</span><br><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9001/redis.conf</span><br><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9002/redis.conf</span><br><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9003/redis.conf</span><br><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9004/redis.conf</span><br><span class="line"># /usr/local/bin/redis-server /opt/redis_cluster/9005/redis.conf</span><br></pre></td></tr></table></figure></li>
+<li><p>检查是否启动成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ps -ef |grep redis</span><br><span class="line"># /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</span><br></pre></td></tr></table></figure>
+<p>连接成功，set值会报(error) CLUSTERDOWN Hash slot not served错误，原因是实例之间无法相互发现，我们继续</p>
+</li>
+<li><p>安装集群所需软件<br>由于 Redis 集群是用ruby实现的集群管理，所以安装ruby相关软件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># yum install ruby</span><br><span class="line"># yum install rubygems</span><br><span class="line"># gem install redis </span><br></pre></td></tr></table></figure>
+<p>此处需要安装大于等于2.2的ruby版本</p>
+</li>
+<li><p>配置集群<br>通过redis-trib.rb命令创建集群，如果/usr/local/bin/目录没有，从源码包拷贝一个即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># /usr/local/bin/redis-trib.rb create --replicas 1 127.0.0.1:9000 127.0.0.1:9001 127.0.0.1:9002 127.0.0.1:9003 127.0.0.1:9004 127.0.0.1:9005</span><br></pre></td></tr></table></figure>
+<p>交互过程中输入yes，同意即可，–replicas 1表示主从复制比例为 1:1，即一个主节点对应一个从节点</p>
+</li>
+<li><p>验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">  # /usr/local/bin/redis-cli -h 127.0.0.1 -p 9000</span><br><span class="line">127.0.0.1:9000&gt; cluster info</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_ping_sent:1122</span><br><span class="line">cluster_stats_messages_pong_sent:1060</span><br><span class="line">cluster_stats_messages_sent:2182</span><br><span class="line">cluster_stats_messages_ping_received:1060</span><br><span class="line">cluster_stats_messages_pong_received:1102</span><br><span class="line">cluster_stats_messages_received:2162</span><br><span class="line">127.0.0.1:9000&gt; cluster nodes</span><br><span class="line">4f8c920acc559c11153c5aaf856820ca39c443cb 10.200.1.11:9000@19000 myself,master - 0 1544424469000 1 connected 0-5460</span><br><span class="line">ec2af1f981c08bf01131545369c0600b91c5172c 10.200.1.11:9004@19004 slave 4f8c920acc559c11153c5aaf856820ca39c443cb 0 1544424468000 5 connected</span><br><span class="line">bcc85b3502c107f18557d11889739a2b6f0ed896 10.200.1.11:9003@19003 slave aadb89ee25e9849e758529c477f9af6ede99850a 0 1544424467000 4 connected</span><br><span class="line">923d1b67ee012927bf4de345143d5f93670c97b5 10.200.1.11:9001@19001 master - 0 1544424468909 2 connected 5461-10922</span><br><span class="line">aadb89ee25e9849e758529c477f9af6ede99850a 10.200.1.11:9002@19002 master - 0 1544424469920 3 connected 10923-16383</span><br><span class="line">70fad7237c2e8bb308167f7e8b7a7b670d333564 10.200.1.11:9005@19005 slave 923d1b67ee012927bf4de345143d5f93670c97b5 0 1544424468000 6 connected</span><br><span class="line">127.0.0.1:9000&gt;   </span><br></pre></td></tr></table></figure>
+<p>通过命令，可以详细的看出集群信息和各个节点状态，主从信息以及连接数、槽信息等</p>
+</li>
+<li><p>测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># /usr/local/bin/redis-cli -c -h 10.200.1.11 -p 9000</span><br><span class="line">10.200.1.11:9000&gt; set name test</span><br><span class="line">-&gt; Redirected to slot [5798] located at 10.200.1.11:9001</span><br><span class="line">OK</span><br><span class="line">10.200.1.11:9001&gt; get name</span><br><span class="line">&quot;test&quot;</span><br><span class="line">10.200.1.11:9001&gt; keys *</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;cache:test3&quot;</span><br><span class="line">10.200.1.11:9001&gt; </span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>  -c 表示集群模式</p>
+<h5 id="不同机器的集群搭建"><a href="#不同机器的集群搭建" class="headerlink" title="不同机器的集群搭建"></a>不同机器的集群搭建</h5><p>和同一台机器搭建唯一的区别是通过redis-trib.rb命令创建集群，随便在一个实例上执行即可</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/mafly/p/redis_cluster.html">Redis 集群搭建详细指南</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cache/" rel="tag"># cache</a>
+              <a href="/tags/redis/" rel="tag"># redis</a>
+              <a href="/tags/cluster/" rel="tag"># cluster</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/10/cache/redis/redis-install-linux/" rel="prev" title="Linux下安装redis">
+                  <i class="fa fa-chevron-left"></i> Linux下安装redis
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/10/cache/redis/redis-info/" rel="next" title="redis info 命令">
+                  redis info 命令 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"tungSing","repo":"tungsing.github.io","client_id":"52a90bdfc66139c7ae8d","client_secret":"cf1297a36b1ca9ee630211520789e614a202d310","admin_user":"tungSing","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"9e708ca6300f17b2fbc28d5005171446"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+  <script src="/js/third-party/photo/lazyload.js"></script>
+  <script src="/js/third-party/photo/minigrid.min.js"></script>
+  <script data-pjax src="/js/third-party/photo/photo.js"></script>
+
+</body>
+</html>

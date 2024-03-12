@@ -1,1 +1,56 @@
-photo={page:1,offset:100,init:function(){var i=this;$("#photosImg").length>0&&$.getJSON("/images/photoslist.json",(function(t){i.render(i.page,t)}))},render:function(i,t){var e=(i-1)*this.offset,n=i*this.offset;if(!(e>=t.length)){for(var a,o,s,r,d="",g=e;g<n&&g<t.length;g++)o=(a=t[g].split(" ")[1]).split(".")[0],r=(s=t[g].split(" ")[0]).split(".")[0],d+='<div class="card" style="width:310px"><div class="ImageInCard" style="height:'+310*s.split(".")[1]/r+'px"><a data-fancybox="gallery" href="/images/photos/'+a+'?raw=true" data-caption="'+o+'"><img src="/images/photos/'+a+'?raw=true"/></a></div></div>';$(".ImageGrid").append(d),$(".ImageGrid").lazyload(),this.minigrid()}},minigrid:function(){var i=new Minigrid({container:".ImageGrid",item:".card",gutter:12,done:function(){}});i.mount(),$(window).resize((function(){i.mount()}))}},photo.init();
+photo ={
+    page: 1,
+    //offset 用于设置照片数量的上限
+    offset: 100,
+    init: function () {
+        var that = this;
+        //这里设置的是刚才生成的 json 文件路径
+        var imgDiv = $("#photosImg").length > 0;
+        if(imgDiv){
+          $.getJSON("/images/photoslist.json", function (data) {
+            that.render(that.page, data);
+            //that.scroll(data);
+          });
+        }
+    },
+    render: function (page, data) {
+        var begin = (page - 1) * this.offset;
+        var end = page * this.offset;
+        if (begin >= data.length) return;
+        var html, imgNameWithPattern, imgName, imageSize, imageX, imageY, li = "";
+        for (var i = begin; i < end && i < data.length; i++) {
+           imgNameWithPattern = data[i].split(' ')[1];
+           imgName = imgNameWithPattern.split('.')[0]
+           imageSize = data[i].split(' ')[0];
+           imageX = imageSize.split('.')[0];
+           imageY = imageSize.split('.')[1];
+           //这里 250 指的是图片的宽度，可以根据自己的需要调整相册中照片的大小
+            li += '<div class="card" style="width:310px">' +
+                    '<div class="ImageInCard" style="height:'+ 310 * imageY / imageX + 'px">' +
+                    //href 和 src 的链接地址是相册照片外部链接，也可以放博客目录里
+                      '<a data-fancybox="gallery" href="/images/photos/' + imgNameWithPattern + '?raw=true" data-caption="' + imgName + '">' +
+                        '<img src="/images/photos/' + imgNameWithPattern + '?raw=true"/>' +
+                      '</a>' +
+                    '</div>' +
+                    // '<div class="TextInCard">' + imgName + '</div>' +  //图片下显示文件名作为说明的功能
+                  '</div>'
+        }
+        $(".ImageGrid").append(li);
+        $(".ImageGrid").lazyload();
+        this.minigrid();
+    },
+    minigrid: function() {
+        var grid = new Minigrid({
+            container: '.ImageGrid',
+            item: '.card',
+            gutter: 12,
+            done : function(){
+            }
+        });
+        grid.mount();
+        $(window).resize(function() {
+           grid.mount();
+        });
+    }
+}
+photo.init();

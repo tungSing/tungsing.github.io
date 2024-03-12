@@ -1,3 +1,421 @@
-<!DOCTYPE html><html lang=zh-CN><head><meta charset=UTF-8><meta name=viewport content="width=device-width"><meta name=theme-color content=#222><meta name=generator content="Hexo 6.0.0"><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon-next.png><link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32-next.png><link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16-next.png><link rel=mask-icon href=/images/logo.svg color=#222><link rel=stylesheet href=/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin=anonymous><script class=next-config data-name=main type=application/json>{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src=/js/config.js></script><meta name=description content="前言 为了代码适配Websphere，而搭建的环境  准备 Linux CentOS7 系统 WebSphere 8.5  安装IBM Installation Manager下载IBM Installation Manager基于IBM Installation Manager安装WebSphere，故下载 需要登录才可以下载，注册一个IBM ID就行"><meta property=og:type content=article><meta property=og:title content="WebSphere 安装"><meta property=og:url content=http://tungsing.cc/2018/09/14/web/container/was-install/index.html><meta property=og:site_name content="TungSing&#39;s Blog"><meta property=og:description content="前言 为了代码适配Websphere，而搭建的环境  准备 Linux CentOS7 系统 WebSphere 8.5  安装IBM Installation Manager下载IBM Installation Manager基于IBM Installation Manager安装WebSphere，故下载 需要登录才可以下载，注册一个IBM ID就行"><meta property=og:locale content=zh_CN><meta property=og:image content=http://tungsing.cc/images/web/container/was1.jpg><meta property=og:image content=http://tungsing.cc/images/web/container/was2.jpg><meta property=og:image content=http://tungsing.cc/images/web/container/was3.jpg><meta property=og:image content=http://tungsing.cc/images/web/container/was4.jpg><meta property=og:image content=http://tungsing.cc/images/web/container/was5.jpg><meta property=article:published_time content=2018-09-14T02:56:59.263Z><meta property=article:modified_time content=2019-05-18T08:37:45.082Z><meta property=article:author content=tungSing><meta property=article:tag content=java><meta property=article:tag content=web><meta property=article:tag content=WebSphere><meta property=article:tag content=was><meta name=twitter:card content=summary><meta name=twitter:image content=http://tungsing.cc/images/web/container/was1.jpg><link rel=canonical href=http://tungsing.cc/2018/09/14/web/container/was-install/ ><script class=next-config data-name=page type=application/json>{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2018/09/14/web/container/was-install/","path":"2018/09/14/web/container/was-install/","title":"WebSphere 安装"}</script><script class=next-config data-name=calendar type=application/json>""</script><title>WebSphere 安装 | TungSing's Blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript><link rel=alternate href=/atom.xml title="TungSing's Blog" type=application/atom+xml></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label=切换导航栏 role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><p class=site-title>TungSing's Blog</p><i class=logo-line></i></a><p class=site-subtitle itemprop=description>用心记录一切！</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ rel=section><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href=/tags/ rel=section><i class="fa fa-tags fa-fw"></i>标签<span class=badge>70</span></a></li><li class="menu-item menu-item-categories"><a href=/categories/ rel=section><i class="fa fa-th fa-fw"></i>分类<span class=badge>10</span></a></li><li class="menu-item menu-item-archives"><a href=/archives/ rel=section><i class="fa fa-archive fa-fw"></i>归档<span class=badge>55</span></a></li><li class="menu-item menu-item-photos"><a href=/photos/ rel=section><i class="fa fa-image fa-fw"></i>相册</a></li><li class="menu-item menu-item-about"><a href=/about/ rel=section><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-search"><a role=button class=popup-trigger><i class="fa fa-search fa-fw"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span> <span class=toggle-line></span> <span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><ol class=nav><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%89%8D%E8%A8%80><span class=nav-number>1.</span> <span class=nav-text>前言</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%87%86%E5%A4%87><span class=nav-number>2.</span> <span class=nav-text>准备</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%AE%89%E8%A3%85IBM-Installation-Manager><span class=nav-number>3.</span> <span class=nav-text>安装IBM Installation Manager</span></a><ol class=nav-child><li class="nav-item nav-level-5"><a class=nav-link href=#%E4%B8%8B%E8%BD%BDIBM-Installation-Manager><span class=nav-number>3.1.</span> <span class=nav-text>下载IBM Installation Manager</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E8%A7%A3%E5%8E%8B%E5%B9%B6%E5%AE%89%E8%A3%85><span class=nav-number>3.2.</span> <span class=nav-text>解压并安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%AE%89%E8%A3%85WAS><span class=nav-number>4.</span> <span class=nav-text>安装WAS</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%AE%89%E8%A3%85WAS-1><span class=nav-number>5.</span> <span class=nav-text>安装WAS</span></a><ol class=nav-child><li class="nav-item nav-level-5"><a class=nav-link href=#%E4%B8%8B%E8%BD%BDWAS%E5%AE%89%E8%A3%85%E5%8C%85-%E4%B8%8D%E5%AF%B9><span class=nav-number>5.1.</span> <span class=nav-text>下载WAS安装包(不对)</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E8%A7%A3%E5%8E%8B><span class=nav-number>5.2.</span> <span class=nav-text>解压</span></a></li><li class="nav-item nav-level-5"><a class=nav-link href=#%E5%AE%89%E8%A3%85><span class=nav-number>5.3.</span> <span class=nav-text>安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E6%9B%B4%E6%96%B0WAS><span class=nav-number>6.</span> <span class=nav-text>更新WAS</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8><span class=nav-number>7.</span> <span class=nav-text>配置使用</span></a></li><li class="nav-item nav-level-4"><a class=nav-link href=#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99><span class=nav-number>8.</span> <span class=nav-text>参考资料</span></a></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><p class=site-author-name itemprop=name>tungSing</p><div class=site-description itemprop=description>多读书多看报</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/ ><span class=site-state-item-count>55</span> <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/ ><span class=site-state-item-count>10</span> <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/ ><span class=site-state-item-count>70</span> <span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-author site-overview-item animated"><span class=links-of-author-item><a href=https://github.com/tungsing title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel=noopener target=_blank><i class="fab fa-github fa-fw"></i>GitHub</a> </span><span class=links-of-author-item><a href=https://twitter.com/dongsheng__gao title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel=noopener target=_blank><i class="fab fa-twitter fa-fw"></i>Twitter</a></span></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=back-to-top role=button aria-label=返回顶部><i class="fa fa-arrow-up"></i> <span>0%</span></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang=zh-CN><link itemprop=mainEntityOfPage href=http://tungsing.cc/2018/09/14/web/container/was-install/ ><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content=/images/avatar.gif><meta itemprop=name content=tungSing><meta itemprop=description content=多读书多看报></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="TungSing's Blog"></span><header class=post-header><h1 class=post-title itemprop="name headline">WebSphere 安装</h1><div class=post-meta-container><div class=post-meta><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i> </span><span class=post-meta-item-text>发表于</span> <time title="创建时间：2018-09-14 02:56:59" itemprop="dateCreated datePublished" datetime=2018-09-14T02:56:59Z>2018-09-14</time> </span><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i> </span><span class=post-meta-item-text>更新于</span> <time title="修改时间：2019-05-18 08:37:45" itemprop=dateModified datetime=2019-05-18T08:37:45Z>2019-05-18</time></span></div></div></header><div class=post-body itemprop=articleBody><h4 id=前言><a href=#前言 class=headerlink title=前言></a>前言</h4><blockquote><p>为了代码适配Websphere，而搭建的环境</p></blockquote><h4 id=准备><a href=#准备 class=headerlink title=准备></a>准备</h4><ul><li>Linux CentOS7 系统</li><li>WebSphere 8.5</li></ul><h4 id=安装IBM-Installation-Manager><a href=#安装IBM-Installation-Manager class=headerlink title="安装IBM Installation Manager"></a>安装IBM Installation Manager</h4><h5 id=下载IBM-Installation-Manager><a href=#下载IBM-Installation-Manager class=headerlink title="下载IBM Installation Manager"></a>下载IBM Installation Manager</h5><p>基于<a target=_blank rel=noopener href="https://www-945.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Rational&product=ibm/Rational/IBM+Installation+Manager&function=all">IBM Installation Manager</a>安装WebSphere，故下载</p><p><img src=/images/web/container/was1.jpg><br>需要登录才可以下载，注册一个IBM ID就行<br><img src=/images/web/container/was2.jpg></p><span id=more></span><h5 id=解压并安装><a href=#解压并安装 class=headerlink title=解压并安装></a>解压并安装</h5><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># unzip agent.installer.linux.gtk.x86_64_1.8.9000.20180313_1417.zip</span><br></pre></td></tr></table></figure><p>在解压目录中执行如下命令,默认安装目录为/opt/IBM/InstallationManager</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># ./installc -log log_file -acceptLicense</span><br></pre></td></tr></table></figure><p><a target=_blank rel=noopener href=https://www.ibm.com/support/knowledgecenter/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/t_silent_installIM_IMinst.html>installc命令的用法详见官方文档)</a></p><h4 id=安装WAS><a href=#安装WAS class=headerlink title=安装WAS></a>安装WAS</h4><h4 id=安装WAS-1><a href=#安装WAS-1 class=headerlink title=安装WAS></a>安装WAS</h4><h5 id=下载WAS安装包-不对><a href=#下载WAS安装包-不对 class=headerlink title=下载WAS安装包(不对)></a>下载WAS安装包(不对)</h5><p>到<a target=_blank rel=noopener href="http://www-01.ibm.com/support/docview.wss?uid=swg27038624#linux">官方地址</a>按步骤下载Linux版本的WAS。需要使用绑定了site number的IBM ID登录 <a target=_blank rel=noopener href="https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/blueid/Entitlement?jadeAction=DISPLAY_SELF_NOMINATION">IBM Passport Advantage Online website</a>，检索Part number找到相应的文件进行下载。以WAS ND 8.5.5为例， “CIK2HML,CIK2IML,CIK2JML”对应三个文件。<br><img src=/images/web/container/was3.jpg></p><h5 id=解压><a href=#解压 class=headerlink title=解压></a>解压</h5><ol><li><p>解压WAS安装源的压缩包</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br></pre></td><td class=code><pre><span class=line># unzip was.repo.8550.basetrial_part1.zip -d was/</span><br><span class=line># unzip was.repo.8550.basetrial_part2.zip -d was/</span><br><span class=line># unzip was.repo.8550.basetrial_part3.zip -d was/</span><br></pre></td></tr></table></figure></li><li><p>通过IM的listAvailablePackages命令验证安装包的版本</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories /opt/software/was/</span><br></pre></td></tr></table></figure><p>显示结果:com.ibm.websphere.BASETRIAL.v85_8.5.5000.20130514_1044<br>输出的结果中com.ibm.websphere.BASETRIAL.v85是WAS的offering_ID，</p><pre><code>       8.5.5000.20130514_1044是offering_version，
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CLobster+Two:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tungsing.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 为了代码适配Websphere，而搭建的环境  准备 Linux CentOS7 系统 WebSphere 8.5  安装IBM Installation Manager下载IBM Installation Manager基于IBM Installation Manager安装WebSphere，故下载 需要登录才可以下载，注册一个IBM ID就行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebSphere 安装">
+<meta property="og:url" content="http://tungsing.cc/2018/09/14/web/container/was-install/index.html">
+<meta property="og:site_name" content="TungSing&#39;s Blog">
+<meta property="og:description" content="前言 为了代码适配Websphere，而搭建的环境  准备 Linux CentOS7 系统 WebSphere 8.5  安装IBM Installation Manager下载IBM Installation Manager基于IBM Installation Manager安装WebSphere，故下载 需要登录才可以下载，注册一个IBM ID就行">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://tungsing.cc/images/web/container/was1.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/web/container/was2.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/web/container/was3.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/web/container/was4.jpg">
+<meta property="og:image" content="http://tungsing.cc/images/web/container/was5.jpg">
+<meta property="article:published_time" content="2018-09-14T02:56:59.263Z">
+<meta property="article:modified_time" content="2019-05-18T08:37:45.082Z">
+<meta property="article:author" content="tungSing">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="WebSphere">
+<meta property="article:tag" content="was">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tungsing.cc/images/web/container/was1.jpg">
+
+
+<link rel="canonical" href="http://tungsing.cc/2018/09/14/web/container/was-install/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tungsing.cc/2018/09/14/web/container/was-install/","path":"2018/09/14/web/container/was-install/","title":"WebSphere 安装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>WebSphere 安装 | TungSing's Blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="TungSing's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">TungSing's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用心记录一切！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">70</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">55</span></a></li>
+        <li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-image fa-fw"></i>相册</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85IBM-Installation-Manager"><span class="nav-number">3.</span> <span class="nav-text">安装IBM Installation Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDIBM-Installation-Manager"><span class="nav-number">3.1.</span> <span class="nav-text">下载IBM Installation Manager</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E5%B9%B6%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.</span> <span class="nav-text">解压并安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85WAS"><span class="nav-number">4.</span> <span class="nav-text">安装WAS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85WAS-1"><span class="nav-number">5.</span> <span class="nav-text">安装WAS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDWAS%E5%AE%89%E8%A3%85%E5%8C%85-%E4%B8%8D%E5%AF%B9"><span class="nav-number">5.1.</span> <span class="nav-text">下载WAS安装包(不对)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">5.3.</span> <span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0WAS"><span class="nav-number">6.</span> <span class="nav-text">更新WAS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">配置使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tungSing</p>
+  <div class="site-description" itemprop="description">多读书多看报</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tungsing" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tungsing" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dsh.gao@gmail.com" title="E-Mail → mailto:dsh.gao@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/dongsheng__gao" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;dongsheng__gao" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/tungsing_gao" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;tungsing_gao" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i>Telegram</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tungsing.cc/2018/09/14/web/container/was-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="tungSing">
+      <meta itemprop="description" content="多读书多看报">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TungSing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WebSphere 安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-14 02:56:59" itemprop="dateCreated datePublished" datetime="2018-09-14T02:56:59Z">2018-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-05-18 08:37:45" itemprop="dateModified" datetime="2019-05-18T08:37:45Z">2019-05-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>为了代码适配Websphere，而搭建的环境</p>
+</blockquote>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><ul>
+<li>Linux CentOS7 系统</li>
+<li>WebSphere 8.5</li>
+</ul>
+<h4 id="安装IBM-Installation-Manager"><a href="#安装IBM-Installation-Manager" class="headerlink" title="安装IBM Installation Manager"></a>安装IBM Installation Manager</h4><h5 id="下载IBM-Installation-Manager"><a href="#下载IBM-Installation-Manager" class="headerlink" title="下载IBM Installation Manager"></a>下载IBM Installation Manager</h5><p>基于<a target="_blank" rel="noopener" href="https://www-945.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Rational&product=ibm/Rational/IBM+Installation+Manager&function=all">IBM Installation Manager</a>安装WebSphere，故下载</p>
+<p><img src="/images/web/container/was1.jpg"><br>需要登录才可以下载，注册一个IBM ID就行<br><img src="/images/web/container/was2.jpg"></p>
+<span id="more"></span>
+
+<h5 id="解压并安装"><a href="#解压并安装" class="headerlink" title="解压并安装"></a>解压并安装</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># unzip agent.installer.linux.gtk.x86_64_1.8.9000.20180313_1417.zip</span><br></pre></td></tr></table></figure>
+
+<p>在解压目录中执行如下命令,默认安装目录为/opt/IBM/InstallationManager</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ./installc -log log_file -acceptLicense</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/t_silent_installIM_IMinst.html">installc命令的用法详见官方文档)</a></p>
+<h4 id="安装WAS"><a href="#安装WAS" class="headerlink" title="安装WAS"></a>安装WAS</h4><h4 id="安装WAS-1"><a href="#安装WAS-1" class="headerlink" title="安装WAS"></a>安装WAS</h4><h5 id="下载WAS安装包-不对"><a href="#下载WAS安装包-不对" class="headerlink" title="下载WAS安装包(不对)"></a>下载WAS安装包(不对)</h5><p>到<a target="_blank" rel="noopener" href="http://www-01.ibm.com/support/docview.wss?uid=swg27038624#linux">官方地址</a>按步骤下载Linux版本的WAS。需要使用绑定了site number的IBM ID登录 <a target="_blank" rel="noopener" href="https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/blueid/Entitlement?jadeAction=DISPLAY_SELF_NOMINATION">IBM Passport Advantage Online website</a>，检索Part number找到相应的文件进行下载。以WAS ND 8.5.5为例， “CIK2HML,CIK2IML,CIK2JML”对应三个文件。<br><img src="/images/web/container/was3.jpg"></p>
+<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5><ol>
+<li><p>解压WAS安装源的压缩包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># unzip was.repo.8550.basetrial_part1.zip -d was/</span><br><span class="line"># unzip was.repo.8550.basetrial_part2.zip -d was/</span><br><span class="line"># unzip was.repo.8550.basetrial_part3.zip -d was/</span><br></pre></td></tr></table></figure></li>
+<li><p>通过IM的listAvailablePackages命令验证安装包的版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories /opt/software/was/</span><br></pre></td></tr></table></figure>
+<p>显示结果:com.ibm.websphere.BASETRIAL.v85_8.5.5000.20130514_1044<br>输出的结果中com.ibm.websphere.BASETRIAL.v85是WAS的offering_ID，</p>
+<pre><code>       8.5.5000.20130514_1044是offering_version，
        在下文中更新WAS的时候会用到。
-</code></pre></li></ol><h5 id=安装><a href=#安装 class=headerlink title=安装></a>安装</h5><ul><li>用install命令进行安装，-installationDirectory参数指定安装路径<figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.BASETRIAL.v85 -repositories /opt/software/was/ -installationDirectory /opt/IBM/WebSphere/AppServer/ -acceptLicense -showProgress</span><br></pre></td></tr></table></figure></li><li>安装成功<br><img src=/images/web/container/was4.jpg></li><li>验证<figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages -verbose</span><br></pre></td></tr></table></figure><img src=/images/web/container/was5.jpg></li></ul><h4 id=更新WAS><a href=#更新WAS class=headerlink title=更新WAS></a>更新WAS</h4><h4 id=配置使用><a href=#配置使用 class=headerlink title=配置使用></a>配置使用</h4><ol><li><p>创建应用概要文件</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br></pre></td><td class=code><pre><span class=line># ./manageprofiles.sh -create -profileName AppSvr01  -profilePath /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/ -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -hostName 127.0.0.1</span><br></pre></td></tr></table></figure></li><li><p>启动</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br></pre></td><td class=code><pre><span class=line># cd /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/bin</span><br><span class=line># ./startServer.sh server1</span><br></pre></td></tr></table></figure></li><li><p>登陆管理控制台<br>查看控制台端口</p><figure class="highlight plaintext"><table><tr><td class=gutter><pre><span class=line>1</span><br><span class=line>2</span><br><span class=line>3</span><br><span class=line>4</span><br><span class=line>5</span><br><span class=line>6</span><br></pre></td><td class=code><pre><span class=line># more /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/dev01Node01Cell/nodes/dev01Node01/serverindex.xml</span><br><span class=line></span><br><span class=line>&lt;specialEndpoints xmi:id=&quot;NamedEndPoint_1282247807415&quot; endPointName=&quot;WC_adminhost_secure&quot;&gt;</span><br><span class=line>   &lt;endPoint xmi:id=&quot;EndPoint_1282247807415&quot; host=&quot;*&quot; port=&quot;9060&quot;/&gt;</span><br><span class=line>&lt;/specialEndpoints&gt;</span><br><span class=line> </span><br></pre></td></tr></table></figure><p><code>WC_adminhost_secure</code></p></li></ol><h4 id=参考资料><a href=#参考资料 class=headerlink title=参考资料></a>参考资料</h4><ol><li><a target=_blank rel=noopener href=http://www.leonlu.cc/profession/5-WAS-installation-with-cmd/ >命令行方式安装IBM WebSphere Application Server</a></li><li><a target=_blank rel=noopener href=https://blog.csdn.net/mfanoffice2012/article/details/81605126>WebSphere 8.5.5 静默安装及升级补丁</a></li></ol></div><footer class=post-footer><div class=post-tags><a href=/tags/java/ rel=tag># java</a> <a href=/tags/web/ rel=tag># web</a> <a href=/tags/WebSphere/ rel=tag># WebSphere</a> <a href=/tags/was/ rel=tag># was</a></div><div class=post-nav><div class=post-nav-item><a href=/2018/05/16/oracle/oracle-install/ rel=prev title="记录Linux(Red Hat) 系统安装Oracle数据库"><i class="fa fa-chevron-left"></i> 记录Linux(Red Hat) 系统安装Oracle数据库</a></div><div class=post-nav-item><a href=/2018/09/14/web/container/weblogic-install/ rel=next title="Weblogic 静默安装">Weblogic 静默安装 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy; <span itemprop=copyrightYear>2024</span> <span class=with-love><i class="fa fa-user"></i> </span><span class=author itemprop=copyrightHolder>tungSing</span></div></div></footer><script src=https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin=anonymous></script><script src=/js/comments.js></script><script src=/js/utils.js></script><script src=/js/motion.js></script><script src=/js/next-boot.js></script><script src=/js/pjax.js></script><script src=https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin=anonymous></script><script src=/js/third-party/search/local-search.js></script><script src=/js/third-party/fancybox.js></script><script src=/js/third-party/photo/lazyload.js></script><script src=/js/third-party/photo/minigrid.min.js></script><script data-pjax src=/js/third-party/photo/photo.js></script></body></html>
+</code></pre>
+</li>
+</ol>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><ul>
+<li>用install命令进行安装，-installationDirectory参数指定安装路径<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.BASETRIAL.v85 -repositories /opt/software/was/ -installationDirectory /opt/IBM/WebSphere/AppServer/ -acceptLicense -showProgress</span><br></pre></td></tr></table></figure></li>
+<li>安装成功<br><img src="/images/web/container/was4.jpg"></li>
+<li>验证<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages -verbose</span><br></pre></td></tr></table></figure>
+<img src="/images/web/container/was5.jpg">  </li>
+</ul>
+<h4 id="更新WAS"><a href="#更新WAS" class="headerlink" title="更新WAS"></a>更新WAS</h4><h4 id="配置使用"><a href="#配置使用" class="headerlink" title="配置使用"></a>配置使用</h4><ol>
+<li><p>创建应用概要文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ./manageprofiles.sh -create -profileName AppSvr01  -profilePath /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/ -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -hostName 127.0.0.1</span><br></pre></td></tr></table></figure></li>
+<li><p>启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># cd /opt/IBM/WebSphere/AppServer/profiles/AppSvr01/bin</span><br><span class="line"># ./startServer.sh server1</span><br></pre></td></tr></table></figure></li>
+<li><p>登陆管理控制台<br>查看控制台端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># more /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/dev01Node01Cell/nodes/dev01Node01/serverindex.xml</span><br><span class="line"></span><br><span class="line">&lt;specialEndpoints xmi:id=&quot;NamedEndPoint_1282247807415&quot; endPointName=&quot;WC_adminhost_secure&quot;&gt;</span><br><span class="line">   &lt;endPoint xmi:id=&quot;EndPoint_1282247807415&quot; host=&quot;*&quot; port=&quot;9060&quot;/&gt;</span><br><span class="line">&lt;/specialEndpoints&gt;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p><code>WC_adminhost_secure</code></p>
+</li>
+</ol>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a target="_blank" rel="noopener" href="http://www.leonlu.cc/profession/5-WAS-installation-with-cmd/">命令行方式安装IBM WebSphere Application Server</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/mfanoffice2012/article/details/81605126">WebSphere 8.5.5 静默安装及升级补丁</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/web/" rel="tag"># web</a>
+              <a href="/tags/WebSphere/" rel="tag"># WebSphere</a>
+              <a href="/tags/was/" rel="tag"># was</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/16/oracle/oracle-install/" rel="prev" title="记录Linux(Red Hat) 系统安装Oracle数据库">
+                  <i class="fa fa-chevron-left"></i> 记录Linux(Red Hat) 系统安装Oracle数据库
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/14/web/container/weblogic-install/" rel="next" title="Weblogic 静默安装">
+                  Weblogic 静默安装 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tungSing</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"tungSing","repo":"tungsing.github.io","client_id":"52a90bdfc66139c7ae8d","client_secret":"cf1297a36b1ca9ee630211520789e614a202d310","admin_user":"tungSing","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"6e2f1638283fec470d80ebcb9a4f5eb8"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+  <script src="/js/third-party/photo/lazyload.js"></script>
+  <script src="/js/third-party/photo/minigrid.min.js"></script>
+  <script data-pjax src="/js/third-party/photo/photo.js"></script>
+
+</body>
+</html>

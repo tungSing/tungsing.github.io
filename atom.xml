@@ -245,9 +245,9 @@
     
     
     
-    <category term="docker" scheme="http://tungsing.cc/tags/docker/"/>
-    
     <category term="java" scheme="http://tungsing.cc/tags/java/"/>
+    
+    <category term="docker" scheme="http://tungsing.cc/tags/docker/"/>
     
   </entry>
   
