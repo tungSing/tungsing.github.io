@@ -6,15 +6,56 @@
   <link href="http://tungsing.cc/atom.xml" rel="self"/>
   
   <link href="http://tungsing.cc/"/>
-  <updated>2024-02-18T06:05:22.186Z</updated>
+  <updated>2025-01-16T07:02:36.241Z</updated>
   <id>http://tungsing.cc/</id>
   
   <author>
-    <name>tungSing</name>
+    <name>TungSing</name>
     
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>回顾2024</title>
+    <link href="http://tungsing.cc/2025/01/14/my/2024/"/>
+    <id>http://tungsing.cc/2025/01/14/my/2024/</id>
+    <published>2025-01-14T02:47:42.024Z</published>
+    <updated>2025-01-16T07:02:36.241Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/my/2024.jpg"></p><p>2024年已悄然落幕，2025年崭新开启。是时候回顾过往，总结经验，为未来的发展积累宝贵的参考与启示。</p><span id="more"></span><p><strong>生活</strong></p><p>回顾过去的一年，似乎没有什么特别值得铭记的事情，但有一些片段依然深刻地留在脑海中。</p><p>最深刻的经历莫过于频繁的医院就诊，不仅花费了不少时间和精力，医保卡里这么多年的钱也被清空了。这让我更加意识到健康的重要性，希望新的一年能更加注重身体管理，减少此类经历。</p><p>在阅读方面，去年完成了一本颇具深度的书籍——《原则：应对变化中的世界秩序》。此外，还在阅读《逻辑新引：怎样辨别是非》，但仅阅读了100页，书中大量的逻辑推理需要深入思考，阅读进度有所放缓，不过我计划在新的一年里继续推进，争取彻底理解其中的核心思想。另外，《Dinosaurs Before Dark》也已经接近尾声，争取在农历新年前完成。另外视频课程今年只学习了《透视HTTP协议》，对HTTP协议的新版本也有全面的认识。</p><p>财务方面，去年在银行办理的数十万元的贷款，目前即将到期，需要认真筹划还款方案，以免对生活产生不必要的压力。同时，投资方面也有些不尽人意，手中的旅游股始终表现平平，即使在大盘大涨的日子里也未见起色，因此打算离场不玩了。</p><p><strong>工作</strong></p><p>工作方面，年初的时候完成了中文天气在线产品的研发，之后把产品发布上线，并持续维护中，目前该产品用户数在10W+，尚未达到收支平衡，新的一年要加大推广和新功能的迭代；同时年初的时候还完成了专家气象图的一个项目，核心参与基本就我们的算法工程师和前端工程师，我只是让大家舒服的配合起来，项目比较小，历时1个月完成；还有就是法院项目了，完成了验收和新项目继续签订，可能是由于大环境的影响，新旧项目中间耽搁大约半年，但平时活还一样的干。去年收获最大的项目应该是9月份开始的气象交通项目，在这个项目中接触了更多的GIS知识、气象数据和行业数据结合的难点，收获最大的应该是如何保证气象数据和行业数据能以最快的方式产生出最新的产品，已提供给用户使用。</p><p>在工作方面，年初成功完成了中文天气在线产品的研发，并顺利发布上线。目前产品用户数已突破10W+，尽管尚未达到收支平衡，但新的一年将加大推广力度，并持续进行新功能的开发与迭代。</p><p>同时，在年初还顺利完成了专家气象图项目的研发，团队核心成员为算法工程师和前端工程师。我主要负责协调团队合作，确保项目顺利推进。项目规模较小，仅用一个月便圆满完成。</p><p>此外，法院项目也取得了阶段性成果，顺利完成验收并签订了新项目合同。然而，由于大环境影响，新旧项目间隔近半年，但日常工作仍有序推进。</p><p>去年收获最大的项目当属9月份启动的气象交通项目。该项目基于气象数据，结合高速与铁路等交通数据，实现了风险预报与预测，能够为交通出行与活动提供科学参考。在该项目中，我进一步深入了解了GIS知识，探索了气象数据与行业数据融合的难点，并重点掌握了如何以最快的方式将数据转化为用户可用的最新产品。</p><p>回望这一年，有收获也有挑战。新的一年，希望自己能够更加从容地面对生活中的各种变化，保持健康、持续学习，同时更加理性地规划财务，协调好工作，让生活更加稳定与充实。</p><p><strong>思考</strong></p><p>如何苟住不失业，并能有所突破？</p><p>我的想法是：保持低调且负责任的态度，持续自我提升，以增强核心竞争力和适应能力。以不变应万变。</p><p><strong>2025</strong></p><ul><li>多锻炼</li><li>多读书</li><li>搭建AI大模型，学习其使用及原理</li><li>努力搞钱</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/my/2024.jpg&quot;&gt;&lt;/p&gt;
+&lt;p&gt;2024年已悄然落幕，2025年崭新开启。是时候回顾过往，总结经验，为未来的发展积累宝贵的参考与启示。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="My" scheme="http://tungsing.cc/tags/My/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>利用Mailx发送邮件</title>
+    <link href="http://tungsing.cc/2024/07/14/linux/linux-mailx/"/>
+    <id>http://tungsing.cc/2024/07/14/linux/linux-mailx/</id>
+    <published>2024-07-14T03:07:11.595Z</published>
+    <updated>2024-07-14T04:09:07.755Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/linux/linux-mailx/mail.jpg"><br>为了监控服务器运行情况，防止出故障后，长时间得不到解决，客户不满意。所以打算采用被动通知的方式，提醒运维人员及时处理系统故障。解决方案有上监控系统，比如Prometheus、Zabbix等，但项目本身不大，故采用免费的Mailx发送邮件信息来解决。</p><span id="more"></span><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><table><thead><tr><th>序号</th><th>系统</th><th>备注</th></tr></thead><tbody><tr><td>A</td><td>Centos 7</td><td></td></tr><tr><td>B</td><td>QQ邮箱</td><td></td></tr></tbody></table><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>在A服务器上安装Mailx，一般发行自带，如何没有利用yum安装</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yum install samba</span></span><br></pre></td></tr></table></figure><h3 id="配置Mailx"><a href="#配置Mailx" class="headerlink" title="配置Mailx"></a>配置Mailx</h3><h4 id="配置文件-etc-mail-rc"><a href="#配置文件-etc-mail-rc" class="headerlink" title="配置文件 /etc/mail.rc"></a>配置文件 <code>/etc/mail.rc</code></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 邮箱账户，发件人的电子邮件地址</span></span><br><span class="line"><span class="built_in">set</span> from=<span class="built_in">test</span>@qq.com</span><br><span class="line"><span class="comment"># smtp 服务器地址，smtps是ssl，普通用smtp即可</span></span><br><span class="line"><span class="built_in">set</span> smtp=smtps://smtp.qq.com:465</span><br><span class="line"><span class="comment"># SMTP认证的用户名</span></span><br><span class="line"><span class="built_in">set</span> smtp-auth-user=<span class="built_in">test</span>@qq.com</span><br><span class="line"><span class="comment">#MTP认证的密码，QQ邮箱为授权密码而非邮箱密码</span></span><br><span class="line"><span class="built_in">set</span> smtp-auth-password=xxxxx</span><br><span class="line"><span class="comment"># 是否验证SSL证书，配置 SSL 证书就可以注释掉</span></span><br><span class="line"><span class="built_in">set</span> ssl-verify=ignore</span><br><span class="line"><span class="comment"># 设置 nss 配置目录， SSL 证书目录</span></span><br><span class="line"><span class="built_in">set</span> nss-config-dir=/root/.certs</span><br></pre></td></tr></table></figure><h4 id="配置SSL证书"><a href="#配置SSL证书" class="headerlink" title="配置SSL证书"></a>配置SSL证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /root/.certs/</span><br><span class="line"><span class="built_in">echo</span> -n | openssl s_client -connect smtp.qq.com:465 | sed -ne <span class="string">&#x27;/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p&#x27;</span> &gt; ~/.certs/qq.crt</span><br><span class="line">certutil -A -n <span class="string">&quot;GeoTrust SSL CA&quot;</span> -t <span class="string">&quot;C,,&quot;</span> -d ~/.certs -i ~/.certs/qq.crt</span><br><span class="line">certutil -A -n <span class="string">&quot;GeoTrust Global CA&quot;</span> -t <span class="string">&quot;C,,&quot;</span> -d ~/.certs -i ~/.certs/qq.crt</span><br><span class="line">certutil -L -d /root/.certs</span><br></pre></td></tr></table></figure><p>为了防止出现发送邮件警告提示，还需要进入邮箱SSL证书存放目录<code>/root/.certs</code>里执行如下命令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">certutil -A -n <span class="string">&quot;GeoTrust SSL CA - G3&quot;</span> -t <span class="string">&quot;Pu,Pu,Pu&quot;</span> -d ./ -i qq.crt</span><br></pre></td></tr></table></figure><p>返回如下提示即可</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">**Notice: Trust flag u is <span class="built_in">set</span> automatically <span class="keyword">if</span> the private key is present.**</span><br></pre></td></tr></table></figure><h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;test body&quot;</span> | mail -s <span class="string">&quot;test&quot;</span>  totest@163.com</span><br></pre></td></tr></table></figure><p>如果控制台没有错误和邮箱里面已经收到了邮件，就证明配置成功了，接下来就可以是写业务的监控脚本。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>SMTP邮件服务器默认端口是25，现在25端口管控比较严格，如果25端口不可以用，就尝试采用SSL方式对应的其他端口</p><h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://www.woniusnail.com/?p=1411">Centos配置Mailx发送邮件</a><br><a href="https://www.imydl.tech/lnmp/198.html">Linux下利用mailx结合QQ邮箱发送系统邮件提醒等</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/linux/linux-mailx/mail.jpg&quot;&gt;&lt;br&gt;为了监控服务器运行情况，防止出故障后，长时间得不到解决，客户不满意。所以打算采用被动通知的方式，提醒运维人员及时处理系统故障。解决方案有上监控系统，比如Prometheus、Zabbix等，但项目本身不大，故采用免费的Mailx发送邮件信息来解决。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="Linux" scheme="http://tungsing.cc/tags/Linux/"/>
+    
+    <category term="Mailx" scheme="http://tungsing.cc/tags/Mailx/"/>
+    
+  </entry>
   
   <entry>
     <title>回顾2023</title>
@@ -568,61 +609,6 @@
     <category term="cache" scheme="http://tungsing.cc/tags/cache/"/>
     
     <category term="algorithm" scheme="http://tungsing.cc/tags/algorithm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>golang 学习</title>
-    <link href="http://tungsing.cc/2019/05/11/golang/golang-leaning/"/>
-    <id>http://tungsing.cc/2019/05/11/golang/golang-leaning/</id>
-    <published>2019-05-11T14:03:57.100Z</published>
-    <updated>2023-03-22T08:45:55.390Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote><p>为了看懂某站的源代码,就学了一下golang,记录一下学习过程慢慢积累</p></blockquote><h4 id="学习记录"><a href="#学习记录" class="headerlink" title="学习记录"></a>学习记录</h4><p>代码记录在<a href="https://github.com/tungSing/golang-learning">github</a>上面,下面列举一下文件夹的内容，以防忘记</p><span id="more"></span><table><thead><tr><th align="left">文件夹</th><th align="left">内容</th><th align="left">备注</th></tr></thead><tbody><tr><td align="left">chapter01</td><td align="left">经典Hello World</td><td align="left"></td></tr><tr><td align="left">chapter02</td><td align="left">基础语法</td><td align="left"></td></tr><tr><td align="left">chapter03</td><td align="left">数据类型</td><td align="left"></td></tr><tr><td align="left">chapter04</td><td align="left">变量</td><td align="left"></td></tr><tr><td align="left">chapter05</td><td align="left">常量</td><td align="left"></td></tr><tr><td align="left">chapter06</td><td align="left">运算符</td><td align="left"></td></tr><tr><td align="left">chapter07</td><td align="left">流程控制</td><td align="left"></td></tr><tr><td align="left">chapter08</td><td align="left">函数</td><td align="left"></td></tr><tr><td align="left">chapter09</td><td align="left">方法</td><td align="left"></td></tr><tr><td align="left">chapter10</td><td align="left">接口</td><td align="left"></td></tr><tr><td align="left">chapter11</td><td align="left">错误</td><td align="left"></td></tr><tr><td align="left">chapter12</td><td align="left">异常</td><td align="left"></td></tr><tr><td align="left">chapter13</td><td align="left">单元测试</td><td align="left"></td></tr><tr><td align="left">chapter14</td><td align="left">并发</td><td align="left"></td></tr><tr><td align="left">cmd</td><td align="left">main</td><td align="left">主程序</td></tr></tbody></table><h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol><li><a href="https://golang.org/doc/">官网</a></li><li><a href="https://www.kancloud.cn/liupengjie/go/570004">golang</a></li><li><a href="https://www.runoob.com/go/go-tutorial.html">Go 语言教程</a></li><li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html">理解Go import</a></li></ol>]]></content>
-    
-    
-    <summary type="html">&lt;h4 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;为了看懂某站的源代码,就学了一下golang,记录一下学习过程慢慢积累&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;学习记录&quot;&gt;&lt;a href=&quot;#学习记录&quot; class=&quot;headerlink&quot; title=&quot;学习记录&quot;&gt;&lt;/a&gt;学习记录&lt;/h4&gt;&lt;p&gt;代码记录在&lt;a href=&quot;https://github.com/tungSing/golang-learning&quot;&gt;github&lt;/a&gt;上面,下面列举一下文件夹的内容，以防忘记&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
-    
-    <category term="go" scheme="http://tungsing.cc/categories/go/"/>
-    
-    
-    <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
-    
-    <category term="go" scheme="http://tungsing.cc/tags/go/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>golang import 理解</title>
-    <link href="http://tungsing.cc/2019/04/25/golang/golang-import/"/>
-    <id>http://tungsing.cc/2019/04/25/golang/golang-import/</id>
-    <published>2019-04-25T03:09:58.634Z</published>
-    <updated>2023-03-22T08:45:48.880Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="包的理解"><a href="#包的理解" class="headerlink" title="包的理解"></a>包的理解</h4><p>Golang中有package的概念。在go源码文件的第一行就是先声明包名：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">package xxx</span><br></pre></td></tr></table></figure><p>这里的包名相当于一个标签，不是字符串。和所在文件夹没有关系，比如:上述源码在GOPATH/golang-learning/chapter06/文件夹下，它的包名就是<strong>xxx</strong></p><span id="more"></span><h4 id="导入包"><a href="#导入包" class="headerlink" title="导入包"></a>导入包</h4><p>用improt关键字导入包，包的导入路径是基于工作目录的。因此Go会在工作目录src子目录下查找包</p><ul><li><p>导入标准包使用的是给定的短路径，如“fmt”、“net/http”</p><p>$GOPATH/src/learning/chapter01/hello.go</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package hello</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func SayHello()  &#123;</span><br><span class="line">    fmt.Println(&quot;Hello,World!&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>项目的包，需要在工作目录下指定一个目录</p><p>$GOPATH/src/learning/cmd/main.go</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;learning/chapter01&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    hello.SayHello()</span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure><p>**注意:**同一个路径下不支持定义多个包，会报编译错误</p></li></ul><h4 id="导入包的方式"><a href="#导入包的方式" class="headerlink" title="导入包的方式"></a>导入包的方式</h4><p>导入使用包有四种方式，不同方式用途不一样</p><ol><li><p>import “learning/chapter01”<br>常规方式，通过包名hello调用SayHello方法。hello.SayHello()</p></li><li><p>import h “learning/chapter01”<br>这里的 h 是包名 hello 的别名，h.SyayHello() 。该方式合适的场景</p><ul><li>包名过于复杂或者意思不明确<br>我写的代码其实就很不明确，所以最好要起别名来明确含义<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import hello &quot;learning/chapter01&quot;</span><br></pre></td></tr></table></figure></li><li>包名和其他包冲突<br>随着项目代码的不断增加或引入第三方包，很大概率大家会用相同的包名，就需要用别名来区别<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import (</span><br><span class="line">   &quot;errors&quot;</span><br><span class="line">   bizError &quot;learning/chapter11&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li></ul></li><li><p>import . “learning/chapter01”<br>这里的点”.”符号表示，对包 hello 的调用直接省略包名，你我以后就是一家人，不分彼此，你的东西就像我就的一样，随便用。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   package main</span><br><span class="line"></span><br><span class="line">import . &quot;learning/chapter01&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    SayHello()</span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure></li><li><p>improt _ “learning/chapter01”<br>当导入一个包时，该包下的文件里所有init()函数都会被执行,我们就需要用“_”符合来导入包</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import _ &quot;learning/chapter01&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure></li></ol><h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol><li><a href="https://yushuangqi.com/blog/2016/understanding-golang-import-package.html">理解Go import</a></li></ol>]]></content>
-    
-    
-    <summary type="html">&lt;h4 id=&quot;包的理解&quot;&gt;&lt;a href=&quot;#包的理解&quot; class=&quot;headerlink&quot; title=&quot;包的理解&quot;&gt;&lt;/a&gt;包的理解&lt;/h4&gt;&lt;p&gt;Golang中有package的概念。在go源码文件的第一行就是先声明包名：&lt;/p&gt;
-&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;package xxx&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;这里的包名相当于一个标签，不是字符串。和所在文件夹没有关系，比如:上述源码在GOPATH/golang-learning/chapter06/文件夹下，它的包名就是&lt;strong&gt;xxx&lt;/strong&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="golang" scheme="http://tungsing.cc/categories/golang/"/>
-    
-    <category term="go" scheme="http://tungsing.cc/categories/go/"/>
-    
-    
-    <category term="golang" scheme="http://tungsing.cc/tags/golang/"/>
-    
-    <category term="go" scheme="http://tungsing.cc/tags/go/"/>
     
   </entry>
   
